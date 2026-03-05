@@ -337,8 +337,10 @@ fn mini_bar(value: usize, max: usize, width: usize) -> String {
     }
     let filled = ((value as f64 / max as f64) * width as f64).round() as usize;
     let filled = filled.min(width);
-    let mut bar = "█".repeat(filled);
-    bar.push_str(&"░".repeat(width - filled));
+    let bar = (0..width)
+        .map(|i| if i < filled { "▰" } else { "▱" })
+        .collect::<Vec<_>>()
+        .join(" ");
     if std::io::stdout().is_terminal() {
         bar.cyan().to_string()
     } else {
@@ -350,7 +352,10 @@ fn mini_bar(value: usize, max: usize, width: usize) -> String {
 fn print_efficiency_meter(pct: f64) {
     let width = 24usize;
     let filled = (((pct / 100.0) * width as f64).round() as usize).min(width);
-    let meter = format!("{}{}", "█".repeat(filled), "░".repeat(width - filled));
+    let meter = (0..width)
+        .map(|i| if i < filled { "▰" } else { "▱" })
+        .collect::<Vec<_>>()
+        .join(" ");
     if std::io::stdout().is_terminal() {
         let pct_str = format!("{pct:.1}%");
         let colored_pct = if pct >= 70.0 {
