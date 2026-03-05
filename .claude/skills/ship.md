@@ -386,7 +386,7 @@ cargo audit
 
 # Example output:
 # Crate: some-crate
-# Version: 0.1.0
+# Version: 0.25.0
 # Warning: vulnerability found
 # Advisory: CVE-2024-XXXXX
 ```

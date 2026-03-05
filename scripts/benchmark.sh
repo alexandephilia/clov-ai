@@ -344,7 +344,7 @@ if command -v python3 &> /dev/null && command -v ruff &> /dev/null && command -v
   cat > pyproject.toml << 'PYEOF'
 [project]
 name = "clov-bench"
-version = "0.1.0"
+version = "0.25.0"
 
 [tool.ruff]
 line-length = 88

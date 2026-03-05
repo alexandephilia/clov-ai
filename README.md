@@ -55,7 +55,7 @@ brew install clov
 ### Quick Install (Linux/macOS)
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/alexandephilia/clov-ai/refs/heads/master/install.sh | sh
+curl -fsSL https://raw.githubusercontent.com/alexandephilia/clov-ai/refs/heads/main/install.sh | sh
 ```
 
 > **Note**: clov installs to `~/.local/bin` by default. If this directory is not in your PATH, add it:
