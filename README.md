@@ -4,7 +4,6 @@
 
 **High-performance CLI proxy to minimize LLM token consumption.**
 
-[Website](https://www.clov-ai.app) | [GitHub](https://github.com/clov-ai/clov) | [Install](INSTALL.md)
 
 clov filters and compresses command outputs before they reach your LLM context, saving 60-90% of tokens on common operations.
 
@@ -13,7 +12,7 @@ clov filters and compresses command outputs before they reach your LLM context, 
 **There are TWO different projects named "clov":**
 
 1. ✅ **This project (Clov Token Omitter)** - LLM token optimizer
-   - Repos: `clov-ai/clov`
+   - Repos: `alexandephilia/clov-ai`
    - Purpose: Reduce Claude Code token consumption
 
 2. ❌ **reachingforthejack/clov** - Rust Type Kit (DIFFERENT PROJECT)
@@ -75,7 +74,7 @@ brew install clov
 ### Quick Install (Linux/macOS)
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/clov-ai/clov/refs/heads/master/install.sh | sh
+curl -fsSL https://raw.githubusercontent.com/alexandephilia/clov-ai/refs/heads/master/install.sh | sh
 ```
 
 > **Note**: clov installs to `~/.local/bin` by default. If this directory is not in your PATH, add it:
@@ -94,7 +93,7 @@ clov gain  # Must show token savings stats (not "command not found")
 
 ```bash
 # From clov-ai upstream (maintained by pszymkowiak)
-cargo install --git https://github.com/clov-ai/clov
+cargo install --git https://github.com/alexandephilia/clov-ai
 
 # OR if published to crates.io
 cargo install clov
@@ -104,7 +103,7 @@ cargo install clov
 
 ### Alternative: Pre-built Binaries
 
-Download from [clov-ai/releases](https://github.com/clov-ai/clov/releases):
+Download from [clov-ai/releases](https://github.com/alexandephilia/clov-ai/releases):
 
 - macOS: `clov-x86_64-apple-darwin.tar.gz` / `clov-aarch64-apple-darwin.tar.gz`
 - Linux: `clov-x86_64-unknown-linux-gnu.tar.gz` / `clov-aarch64-unknown-linux-gnu.tar.gz`
@@ -250,7 +249,7 @@ Command              Count    Example
 git checkout            84    git checkout feature/my-branch
 cargo run               32    cargo run -- gain --help
 ----------------------------------------------------
--> github.com/clov-ai/clov/issues
+-> github.com/alexandephilia/clov-ai/issues
 ```
 
 ### Containers
@@ -895,6 +894,5 @@ Contributions welcome! Please open an issue or PR on GitHub.
 
 ## Contact
 
-- Website: https://www.clov-ai.app
-- Email: contact@clov-ai.app
-- Issues: https://github.com/clov-ai/clov/issues
+- Issues: https://github.com/alexandephilia/clov-ai/issues
+- Issues: https://github.com/alexandephilia/clov-ai/issues

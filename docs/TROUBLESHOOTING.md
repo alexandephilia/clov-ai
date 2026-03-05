@@ -12,7 +12,7 @@ clov: 'gain' is not a clov command. See 'clov --help'.
 ```
 
 ### Root Cause
-You installed the **wrong clov package**. You have **Rust Type Kit** (reachingforthejack/clov) instead of **Clov Token Omitter** (clov-ai/clov).
+You installed the **wrong clov package**. You have **Rust Type Kit** (reachingforthejack/clov) instead of **Clov Token Omitter** (alexandephilia/clov-ai).
 
 ### Solution
 
@@ -25,12 +25,12 @@ cargo uninstall clov
 
 #### Quick Install (Linux/macOS)
 ```bash
-curl -fsSL https://github.com/clov-ai/clov/blob/master/install.sh | sh
+curl -fsSL https://github.com/alexandephilia/clov-ai/blob/master/install.sh | sh
 ```
 
 #### Alternative: Manual Installation
 ```bash
-cargo install --git https://github.com/clov-ai/clov
+cargo install --git https://github.com/alexandephilia/clov-ai
 ```
 
 **3. Verify installation:**
@@ -49,7 +49,7 @@ If `clov gain` now works, installation is correct.
 
 | Project | Repository | Purpose | Key Command |
 |---------|-----------|---------|-------------|
-| **Clov Token Omitter** ✅ | clov-ai/clov | LLM token optimizer for Claude Code | `clov gain` |
+| **Clov Token Omitter** ✅ | alexandephilia/clov-ai | LLM token optimizer for Claude Code | `clov gain` |
 | **Rust Type Kit** ❌ | reachingforthejack/clov | Rust codebase query and type generator | `clov query` |
 
 ### How to Identify Which One You Have
@@ -76,10 +76,10 @@ If **Rust Type Kit** is published to crates.io under the name `clov`, running `c
 
 ```bash
 # CORRECT - Token Omitter
-cargo install --git https://github.com/clov-ai/clov
+cargo install --git https://github.com/alexandephilia/clov-ai
 
 # OR install from fork
-git clone https://github.com/clov-ai/clov.git
+git clone https://github.com/alexandephilia/clov-ai.git
 cd clov && git checkout feat/all-features
 cargo install --path . --force
 ```
@@ -250,15 +250,15 @@ rustc --version  # Should be 1.70+ for most features
 ```
 
 **4. If still fails, report issue:**
-- GitHub: https://github.com/clov-ai/clov/issues
+- GitHub: https://github.com/alexandephilia/clov-ai/issues
 
 ---
 
 ## Need More Help?
 
 **Report issues:**
-- Fork-specific: https://github.com/clov-ai/clov/issues
-- Upstream: https://github.com/clov-ai/clov/issues
+- Fork-specific: https://github.com/alexandephilia/clov-ai/issues
+- Upstream: https://github.com/alexandephilia/clov-ai/issues
 
 **Run the diagnostic script:**
 ```bash

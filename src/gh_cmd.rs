@@ -1404,8 +1404,8 @@ mod tests {
 
 Added smart markdown filtering for gh issue/pr view commands.
 
-[![CI](https://img.shields.io/github/actions/workflow/status/clov-ai/clov/ci.yml)](https://github.com/clov-ai/clov/actions)
-[![Coverage](https://img.shields.io/codecov/c/github/clov-ai/clov)](https://codecov.io/gh/clov-ai/clov)
+[![CI](https://img.shields.io/github/actions/workflow/status/alexandephilia/clov-ai/ci.yml)](https://github.com/alexandephilia/clov-ai/actions)
+[![Coverage](https://img.shields.io/codecov/c/github/alexandephilia/clov-ai)](https://codecov.io/gh/alexandephilia/clov-ai)
 
 ![screenshot](https://user-images.githubusercontent.com/123/screenshot.png)
 

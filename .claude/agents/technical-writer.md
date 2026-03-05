@@ -115,7 +115,7 @@ clov --version  # Should show clov X.Y.Z
 
 **Option 2: From Source**
 ```bash
-git clone https://github.com/clov-ai/clov.git
+git clone https://github.com/alexandephilia/clov-ai.git
 cd clov
 cargo install --path .
 clov --version  # Verify installation
@@ -130,7 +130,7 @@ clov gain  # Should show token savings analytics
 
 **From Source** (Cargo required):
 ```bash
-git clone https://github.com/clov-ai/clov.git
+git clone https://github.com/alexandephilia/clov-ai.git
 cd clov
 cargo install --path .
 
@@ -141,7 +141,7 @@ clov --version
 
 **Binary Download** (faster):
 ```bash
-curl -sSL https://github.com/clov-ai/clov/releases/download/v0.16.0/clov-linux-x86_64 -o clov
+curl -sSL https://github.com/alexandephilia/clov-ai/releases/download/v0.16.0/clov-linux-x86_64 -o clov
 chmod +x clov
 sudo mv clov /usr/local/bin/
 clov --version
@@ -172,7 +172,7 @@ clov --version
 - **Fix**: Uninstall and reinstall correct CLOV
   ```bash
   cargo uninstall clov
-  cargo install --path .  # From clov-ai/clov repo
+  cargo install --path .  # From alexandephilia/clov-ai repo
   clov gain --help  # Should work
   ```
 ```

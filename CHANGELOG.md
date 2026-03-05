@@ -5,17 +5,17 @@ All notable changes to clov (Clov Token Omitter) will be documented in this file
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [0.25.0](https://github.com/clov-ai/clov/compare/v0.24.0...v0.25.0) (2026-03-05)
+## [0.25.0](https://github.com/alexandephilia/clov-ai/compare/v0.24.0...v0.25.0) (2026-03-05)
 
 
 ### Features
 
-* `clov rewrite` — single source of truth for LLM hook rewrites ([#241](https://github.com/clov-ai/clov/issues/241)) ([f447a3d](https://github.com/clov-ai/clov/commit/f447a3d5b136dd5b1df3d5cc4969e29a68ba3f89))
+* `clov rewrite` — single source of truth for LLM hook rewrites ([#241](https://github.com/alexandephilia/clov-ai/issues/241)) ([f447a3d](https://github.com/alexandephilia/clov-ai/commit/f447a3d5b136dd5b1df3d5cc4969e29a68ba3f89))
 
 
 ### Bug Fixes
 
-* **find:** accept native find flags (-name, -type, etc.) ([#211](https://github.com/clov-ai/clov/issues/211)) ([7ac5bc4](https://github.com/clov-ai/clov/commit/7ac5bc4bd3942841cc1abb53399025b4fcae10c9))
+* **find:** accept native find flags (-name, -type, etc.) ([#211](https://github.com/alexandephilia/clov-ai/issues/211)) ([7ac5bc4](https://github.com/alexandephilia/clov-ai/commit/7ac5bc4bd3942841cc1abb53399025b4fcae10c9))
 
 ## [Unreleased]
 
@@ -40,7 +40,7 @@ breakage, but future rule additions won't take effect until they migrate.
 
 ### Features
 
-* **rewrite**: add `clov rewrite` command — single source of truth for hook rewrites ([#241](https://github.com/clov-ai/clov/pull/241))
+* **rewrite**: add `clov rewrite` command — single source of truth for hook rewrites ([#241](https://github.com/alexandephilia/clov-ai/pull/241))
   - New `src/discover/registry.rs` handles all command → CLOV mapping
   - Hook reduced to ~50 lines (thin delegator), no duplicate logic
   - New commands automatically available in hook without hook file changes
@@ -53,221 +53,221 @@ breakage, but future rule additions won't take effect until they migrate.
 * +48 regression tests covering all command categories: aws, psql, Python, Go, JS/TS,
   compound operators, sudo/env prefixes, registry invariants (607 total, was 559)
 
-## [0.24.0](https://github.com/clov-ai/clov/compare/v0.23.0...v0.24.0) (2026-03-04)
+## [0.24.0](https://github.com/alexandephilia/clov-ai/compare/v0.23.0...v0.24.0) (2026-03-04)
 
 
 ### Features
 
-* add AWS CLI and psql modules with token-optimized output ([#216](https://github.com/clov-ai/clov/issues/216)) ([b934466](https://github.com/clov-ai/clov/commit/b934466364c131de2656eefabe933965f8424e18))
-* passthrough fallback when Clap parse fails + review fixes ([#200](https://github.com/clov-ai/clov/issues/200)) ([772b501](https://github.com/clov-ai/clov/commit/772b5012ede833c3f156816f212d469560449a30))
-* **security:** add SHA-256 hook integrity verification ([f2caca3](https://github.com/clov-ai/clov/commit/f2caca3abc330fb45a466af6a837ed79c3b00b40))
+* add AWS CLI and psql modules with token-optimized output ([#216](https://github.com/alexandephilia/clov-ai/issues/216)) ([b934466](https://github.com/alexandephilia/clov-ai/commit/b934466364c131de2656eefabe933965f8424e18))
+* passthrough fallback when Clap parse fails + review fixes ([#200](https://github.com/alexandephilia/clov-ai/issues/200)) ([772b501](https://github.com/alexandephilia/clov-ai/commit/772b5012ede833c3f156816f212d469560449a30))
+* **security:** add SHA-256 hook integrity verification ([f2caca3](https://github.com/alexandephilia/clov-ai/commit/f2caca3abc330fb45a466af6a837ed79c3b00b40))
 
 
 ### Bug Fixes
 
-* **git:** propagate exit codes in push/pull/fetch/stash/worktree ([#234](https://github.com/clov-ai/clov/issues/234)) ([5cfaecc](https://github.com/clov-ai/clov/commit/5cfaeccaba2fc6e1fe5284f57b7af7ec7c0a224d))
-* **playwright:** fix JSON parser to match real Playwright output format ([#193](https://github.com/clov-ai/clov/issues/193)) ([4eb6cf4](https://github.com/clov-ai/clov/commit/4eb6cf4b1a2333cb710970e40a96f1004d4ab0fa))
-* support additional git global options (--no-pager, --no-optional-locks, --bare, --literal-pathspecs) ([68ca712](https://github.com/clov-ai/clov/commit/68ca7126d45609a41dbff95e2770d58a11ebc0a3))
-* support git global options (-C, -c, --git-dir, --work-tree, --no-pager, --no-optional-locks, --bare, --literal-pathspecs) ([a6ccefe](https://github.com/clov-ai/clov/commit/a6ccefe8e71372b61e6e556f0d36a944d1bcbd70))
-* support git global options (-C, -c, --git-dir, --work-tree) ([982084e](https://github.com/clov-ai/clov/commit/982084ee34c17d2fe89ff9f4839374bf0caa2d19))
-* update version refs to 0.23.0, module count to 51, fmt upstream files ([eed0188](https://github.com/clov-ai/clov/commit/eed018814b141ada8140f350adc26d9f104cf368))
+* **git:** propagate exit codes in push/pull/fetch/stash/worktree ([#234](https://github.com/alexandephilia/clov-ai/issues/234)) ([5cfaecc](https://github.com/alexandephilia/clov-ai/commit/5cfaeccaba2fc6e1fe5284f57b7af7ec7c0a224d))
+* **playwright:** fix JSON parser to match real Playwright output format ([#193](https://github.com/alexandephilia/clov-ai/issues/193)) ([4eb6cf4](https://github.com/alexandephilia/clov-ai/commit/4eb6cf4b1a2333cb710970e40a96f1004d4ab0fa))
+* support additional git global options (--no-pager, --no-optional-locks, --bare, --literal-pathspecs) ([68ca712](https://github.com/alexandephilia/clov-ai/commit/68ca7126d45609a41dbff95e2770d58a11ebc0a3))
+* support git global options (-C, -c, --git-dir, --work-tree, --no-pager, --no-optional-locks, --bare, --literal-pathspecs) ([a6ccefe](https://github.com/alexandephilia/clov-ai/commit/a6ccefe8e71372b61e6e556f0d36a944d1bcbd70))
+* support git global options (-C, -c, --git-dir, --work-tree) ([982084e](https://github.com/alexandephilia/clov-ai/commit/982084ee34c17d2fe89ff9f4839374bf0caa2d19))
+* update version refs to 0.23.0, module count to 51, fmt upstream files ([eed0188](https://github.com/alexandephilia/clov-ai/commit/eed018814b141ada8140f350adc26d9f104cf368))
 
-## [0.23.0](https://github.com/clov-ai/clov/compare/v0.22.2...v0.23.0) (2026-02-28)
+## [0.23.0](https://github.com/alexandephilia/clov-ai/compare/v0.22.2...v0.23.0) (2026-02-28)
 
 
 ### Features
 
-* add mypy command with grouped error output ([#109](https://github.com/clov-ai/clov/issues/109)) ([e8ef341](https://github.com/clov-ai/clov/commit/e8ef3418537247043808dc3c88bfd189b717a0a1))
-* **gain:** add per-project token savings with -p flag ([#128](https://github.com/clov-ai/clov/issues/128)) ([2b550ee](https://github.com/clov-ai/clov/commit/2b550eebd6219a4844488d8fde1842ba3c6dec25))
+* add mypy command with grouped error output ([#109](https://github.com/alexandephilia/clov-ai/issues/109)) ([e8ef341](https://github.com/alexandephilia/clov-ai/commit/e8ef3418537247043808dc3c88bfd189b717a0a1))
+* **gain:** add per-project token savings with -p flag ([#128](https://github.com/alexandephilia/clov-ai/issues/128)) ([2b550ee](https://github.com/alexandephilia/clov-ai/commit/2b550eebd6219a4844488d8fde1842ba3c6dec25))
 
 
 ### Bug Fixes
 
-* eliminate duplicate output when grep-ing function names from git show ([#248](https://github.com/clov-ai/clov/issues/248)) ([a6f65f1](https://github.com/clov-ai/clov/commit/a6f65f11da71936d148a2562216ab45b4c4b04a0))
-* filter docker compose hook rewrites to supported subcommands ([#245](https://github.com/clov-ai/clov/issues/245)) ([dbbf980](https://github.com/clov-ai/clov/commit/dbbf980f3ba9a51d0f7eb703e7b3c52fde2b784f)), closes [#244](https://github.com/clov-ai/clov/issues/244)
-* **registry:** "fi" in IGNORED_PREFIXES shadows find commands ([#246](https://github.com/clov-ai/clov/issues/246)) ([48965c8](https://github.com/clov-ai/clov/commit/48965c85d2dd274bbdcf27b11850ccd38909e6f4))
-* remove personal preferences from project CLAUDE.md ([3a8044e](https://github.com/clov-ai/clov/commit/3a8044ef6991b2208d904b7401975fcfcb165cdb))
-* remove personal preferences from project CLAUDE.md ([d362ad0](https://github.com/clov-ai/clov/commit/d362ad0e4968cfc6aa93f9ef163512a692ca5d1b))
-* remove remaining personal project reference from CLAUDE.md ([5b59700](https://github.com/clov-ai/clov/commit/5b597002dcd99029cb9c0da9b6d38b44021bdb3a))
-* remove remaining personal project reference from CLAUDE.md ([dc09265](https://github.com/clov-ai/clov/commit/dc092655fb84a7c19a477e731eed87df5ad0b89f))
-* surface build failures in go test summary ([#274](https://github.com/clov-ai/clov/issues/274)) ([b405e48](https://github.com/clov-ai/clov/commit/b405e48ca6c4be3ba702a5d9092fa4da4dff51dc))
+* eliminate duplicate output when grep-ing function names from git show ([#248](https://github.com/alexandephilia/clov-ai/issues/248)) ([a6f65f1](https://github.com/alexandephilia/clov-ai/commit/a6f65f11da71936d148a2562216ab45b4c4b04a0))
+* filter docker compose hook rewrites to supported subcommands ([#245](https://github.com/alexandephilia/clov-ai/issues/245)) ([dbbf980](https://github.com/alexandephilia/clov-ai/commit/dbbf980f3ba9a51d0f7eb703e7b3c52fde2b784f)), closes [#244](https://github.com/alexandephilia/clov-ai/issues/244)
+* **registry:** "fi" in IGNORED_PREFIXES shadows find commands ([#246](https://github.com/alexandephilia/clov-ai/issues/246)) ([48965c8](https://github.com/alexandephilia/clov-ai/commit/48965c85d2dd274bbdcf27b11850ccd38909e6f4))
+* remove personal preferences from project CLAUDE.md ([3a8044e](https://github.com/alexandephilia/clov-ai/commit/3a8044ef6991b2208d904b7401975fcfcb165cdb))
+* remove personal preferences from project CLAUDE.md ([d362ad0](https://github.com/alexandephilia/clov-ai/commit/d362ad0e4968cfc6aa93f9ef163512a692ca5d1b))
+* remove remaining personal project reference from CLAUDE.md ([5b59700](https://github.com/alexandephilia/clov-ai/commit/5b597002dcd99029cb9c0da9b6d38b44021bdb3a))
+* remove remaining personal project reference from CLAUDE.md ([dc09265](https://github.com/alexandephilia/clov-ai/commit/dc092655fb84a7c19a477e731eed87df5ad0b89f))
+* surface build failures in go test summary ([#274](https://github.com/alexandephilia/clov-ai/issues/274)) ([b405e48](https://github.com/alexandephilia/clov-ai/commit/b405e48ca6c4be3ba702a5d9092fa4da4dff51dc))
 
-## [0.22.2](https://github.com/clov-ai/clov/compare/v0.22.1...v0.22.2) (2026-02-20)
-
-
-### Bug Fixes
-
-* **grep:** accept -n flag for grep/rg compatibility ([7d561cc](https://github.com/clov-ai/clov/commit/7d561cca51e4e177d353e6514a618e5bb09eebc6))
-* **playwright:** fix JSON parser and binary resolution ([#215](https://github.com/clov-ai/clov/issues/215)) ([461856c](https://github.com/clov-ai/clov/commit/461856c8fd78cce8e2d875ae878111d7cb3610cd))
-* propagate rg exit code in clov grep for CLI parity ([#227](https://github.com/clov-ai/clov/issues/227)) ([f1be885](https://github.com/clov-ai/clov/commit/f1be88565e602d3b6777f629d417e957a62daae2)), closes [#162](https://github.com/clov-ai/clov/issues/162)
-
-## [0.22.1](https://github.com/clov-ai/clov/compare/v0.22.0...v0.22.1) (2026-02-19)
+## [0.22.2](https://github.com/alexandephilia/clov-ai/compare/v0.22.1...v0.22.2) (2026-02-20)
 
 
 ### Bug Fixes
 
-* git branch creation silently swallowed by list mode ([#194](https://github.com/clov-ai/clov/issues/194)) ([88dc752](https://github.com/clov-ai/clov/commit/88dc752220dc79dfa09b871065b28ae6ef907231))
-* **git:** support multiple -m flags in git commit ([292225f](https://github.com/clov-ai/clov/commit/292225f2dd09bfc5274cc8b4ed92d1a519929629))
-* **git:** support multiple -m flags in git commit ([c18553a](https://github.com/clov-ai/clov/commit/c18553a55c1192610525a5341a183da46c59d50c))
-* **grep:** translate BRE \| alternation and strip -r flag for rg ([#206](https://github.com/clov-ai/clov/issues/206)) ([70d1b04](https://github.com/clov-ai/clov/commit/70d1b04093a3dfcc99991502f1530cbb13bae872))
-* propagate linter exit code in clov lint ([#207](https://github.com/clov-ai/clov/issues/207)) ([8e826fc](https://github.com/clov-ai/clov/commit/8e826fc89fe7350df82ee2b1bae8104da609f2b2)), closes [#185](https://github.com/clov-ai/clov/issues/185)
-* smart markdown body filter for gh issue/pr view ([#188](https://github.com/clov-ai/clov/issues/188)) ([#214](https://github.com/clov-ai/clov/issues/214)) ([4208015](https://github.com/clov-ai/clov/commit/4208015cce757654c150f3d71ddd004d22b4dd25))
+* **grep:** accept -n flag for grep/rg compatibility ([7d561cc](https://github.com/alexandephilia/clov-ai/commit/7d561cca51e4e177d353e6514a618e5bb09eebc6))
+* **playwright:** fix JSON parser and binary resolution ([#215](https://github.com/alexandephilia/clov-ai/issues/215)) ([461856c](https://github.com/alexandephilia/clov-ai/commit/461856c8fd78cce8e2d875ae878111d7cb3610cd))
+* propagate rg exit code in clov grep for CLI parity ([#227](https://github.com/alexandephilia/clov-ai/issues/227)) ([f1be885](https://github.com/alexandephilia/clov-ai/commit/f1be88565e602d3b6777f629d417e957a62daae2)), closes [#162](https://github.com/alexandephilia/clov-ai/issues/162)
 
-## [0.22.0](https://github.com/clov-ai/clov/compare/v0.21.1...v0.22.0) (2026-02-18)
-
-
-### Features
-
-* add `clov wc` command for compact word/line/byte counts ([#175](https://github.com/clov-ai/clov/issues/175)) ([393fa5b](https://github.com/clov-ai/clov/commit/393fa5ba2bda0eb1f8655a34084ea4c1e08070ae))
-
-## [0.21.1](https://github.com/clov-ai/clov/compare/v0.21.0...v0.21.1) (2026-02-17)
+## [0.22.1](https://github.com/alexandephilia/clov-ai/compare/v0.22.0...v0.22.1) (2026-02-19)
 
 
 ### Bug Fixes
 
-* gh run view drops --log-failed, --log, --json flags ([#159](https://github.com/clov-ai/clov/issues/159)) ([d196c2d](https://github.com/clov-ai/clov/commit/d196c2d2df9b7a807e02ace557a4eea45cfee77d))
+* git branch creation silently swallowed by list mode ([#194](https://github.com/alexandephilia/clov-ai/issues/194)) ([88dc752](https://github.com/alexandephilia/clov-ai/commit/88dc752220dc79dfa09b871065b28ae6ef907231))
+* **git:** support multiple -m flags in git commit ([292225f](https://github.com/alexandephilia/clov-ai/commit/292225f2dd09bfc5274cc8b4ed92d1a519929629))
+* **git:** support multiple -m flags in git commit ([c18553a](https://github.com/alexandephilia/clov-ai/commit/c18553a55c1192610525a5341a183da46c59d50c))
+* **grep:** translate BRE \| alternation and strip -r flag for rg ([#206](https://github.com/alexandephilia/clov-ai/issues/206)) ([70d1b04](https://github.com/alexandephilia/clov-ai/commit/70d1b04093a3dfcc99991502f1530cbb13bae872))
+* propagate linter exit code in clov lint ([#207](https://github.com/alexandephilia/clov-ai/issues/207)) ([8e826fc](https://github.com/alexandephilia/clov-ai/commit/8e826fc89fe7350df82ee2b1bae8104da609f2b2)), closes [#185](https://github.com/alexandephilia/clov-ai/issues/185)
+* smart markdown body filter for gh issue/pr view ([#188](https://github.com/alexandephilia/clov-ai/issues/188)) ([#214](https://github.com/alexandephilia/clov-ai/issues/214)) ([4208015](https://github.com/alexandephilia/clov-ai/commit/4208015cce757654c150f3d71ddd004d22b4dd25))
 
-## [0.21.0](https://github.com/clov-ai/clov/compare/v0.20.1...v0.21.0) (2026-02-17)
+## [0.22.0](https://github.com/alexandephilia/clov-ai/compare/v0.21.1...v0.22.0) (2026-02-18)
 
 
 ### Features
 
-* **docker:** add docker compose support ([#110](https://github.com/clov-ai/clov/issues/110)) ([510c491](https://github.com/clov-ai/clov/commit/510c491238731b71b58923a0f20443ade6df5ae7))
+* add `clov wc` command for compact word/line/byte counts ([#175](https://github.com/alexandephilia/clov-ai/issues/175)) ([393fa5b](https://github.com/alexandephilia/clov-ai/commit/393fa5ba2bda0eb1f8655a34084ea4c1e08070ae))
 
-## [0.20.1](https://github.com/clov-ai/clov/compare/v0.20.0...v0.20.1) (2026-02-17)
+## [0.21.1](https://github.com/alexandephilia/clov-ai/compare/v0.21.0...v0.21.1) (2026-02-17)
 
 
 ### Bug Fixes
 
-* install to ~/.local/bin instead of /usr/local/bin (closes [#155](https://github.com/clov-ai/clov/issues/155)) ([#161](https://github.com/clov-ai/clov/issues/161)) ([0b34772](https://github.com/clov-ai/clov/commit/0b34772a679f3c6b5dd9609af2f6eec6d79e4a64))
+* gh run view drops --log-failed, --log, --json flags ([#159](https://github.com/alexandephilia/clov-ai/issues/159)) ([d196c2d](https://github.com/alexandephilia/clov-ai/commit/d196c2d2df9b7a807e02ace557a4eea45cfee77d))
 
-## [0.20.0](https://github.com/clov-ai/clov/compare/v0.19.0...v0.20.0) (2026-02-16)
-
-
-### Features
-
-* add hook audit mode for verifiable rewrite metrics ([#151](https://github.com/clov-ai/clov/issues/151)) ([70c3786](https://github.com/clov-ai/clov/commit/70c37867e7282ee0ccf200022ecef8c6e4ab52f4))
-
-## [0.19.0](https://github.com/clov-ai/clov/compare/v0.18.1...v0.19.0) (2026-02-16)
+## [0.21.0](https://github.com/alexandephilia/clov-ai/compare/v0.20.1...v0.21.0) (2026-02-17)
 
 
 ### Features
 
-* tee raw output to file for LLM re-read without re-run ([#134](https://github.com/clov-ai/clov/issues/134)) ([a08a62b](https://github.com/clov-ai/clov/commit/a08a62b4e3b3c6a2ad933978b1143dcfc45cf891))
+* **docker:** add docker compose support ([#110](https://github.com/alexandephilia/clov-ai/issues/110)) ([510c491](https://github.com/alexandephilia/clov-ai/commit/510c491238731b71b58923a0f20443ade6df5ae7))
 
-## [0.18.1](https://github.com/clov-ai/clov/compare/v0.18.0...v0.18.1) (2026-02-15)
+## [0.20.1](https://github.com/alexandephilia/clov-ai/compare/v0.20.0...v0.20.1) (2026-02-17)
 
 
 ### Bug Fixes
 
-* update ARCHITECTURE.md version to 0.18.0 ([398cb08](https://github.com/clov-ai/clov/commit/398cb08125410a4de11162720cf3499d3c76f12d))
-* update version references to 0.16.0 in README.md and CLAUDE.md ([ec54833](https://github.com/clov-ai/clov/commit/ec54833621c8ca666735e1a08ed5583624b250c1))
-* update version references to 0.18.0 in docs ([c73ed47](https://github.com/clov-ai/clov/commit/c73ed470a79ab9e4771d2ad65394859e672b4123))
+* install to ~/.local/bin instead of /usr/local/bin (closes [#155](https://github.com/alexandephilia/clov-ai/issues/155)) ([#161](https://github.com/alexandephilia/clov-ai/issues/161)) ([0b34772](https://github.com/alexandephilia/clov-ai/commit/0b34772a679f3c6b5dd9609af2f6eec6d79e4a64))
 
-## [0.18.0](https://github.com/clov-ai/clov/compare/v0.17.0...v0.18.0) (2026-02-15)
+## [0.20.0](https://github.com/alexandephilia/clov-ai/compare/v0.19.0...v0.20.0) (2026-02-16)
 
 
 ### Features
 
-* **gain:** colored dashboard with efficiency meter and impact bars ([#129](https://github.com/clov-ai/clov/issues/129)) ([606b86e](https://github.com/clov-ai/clov/commit/606b86ed43902dc894e6f1711f6fe7debedc2530))
+* add hook audit mode for verifiable rewrite metrics ([#151](https://github.com/alexandephilia/clov-ai/issues/151)) ([70c3786](https://github.com/alexandephilia/clov-ai/commit/70c37867e7282ee0ccf200022ecef8c6e4ab52f4))
 
-## [0.17.0](https://github.com/clov-ai/clov/compare/v0.16.0...v0.17.0) (2026-02-15)
-
-
-### Features
-
-* **cargo:** add cargo nextest support with failures-only output ([#107](https://github.com/clov-ai/clov/issues/107)) ([68fd570](https://github.com/clov-ai/clov/commit/68fd570f2b7d5aaae7b37b07eb24eae21542595e))
-* **hook:** handle global options before subcommands ([#99](https://github.com/clov-ai/clov/issues/99)) ([7401f10](https://github.com/clov-ai/clov/commit/7401f1099f3ef14598f11947262756e3f19fce8f))
-
-## [0.16.0](https://github.com/clov-ai/clov/compare/v0.15.4...v0.16.0) (2026-02-14)
+## [0.19.0](https://github.com/alexandephilia/clov-ai/compare/v0.18.1...v0.19.0) (2026-02-16)
 
 
 ### Features
 
-* **python:** add lint dispatcher + universal format command ([#100](https://github.com/clov-ai/clov/issues/100)) ([4cae6b6](https://github.com/clov-ai/clov/commit/4cae6b6c9a4fbc91c56a99f640d217478b92e6d9))
+* tee raw output to file for LLM re-read without re-run ([#134](https://github.com/alexandephilia/clov-ai/issues/134)) ([a08a62b](https://github.com/alexandephilia/clov-ai/commit/a08a62b4e3b3c6a2ad933978b1143dcfc45cf891))
 
-## [0.15.4](https://github.com/clov-ai/clov/compare/v0.15.3...v0.15.4) (2026-02-14)
+## [0.18.1](https://github.com/alexandephilia/clov-ai/compare/v0.18.0...v0.18.1) (2026-02-15)
 
 
 ### Bug Fixes
 
-* **git:** fix for issue [#82](https://github.com/clov-ai/clov/issues/82) ([04e6bb0](https://github.com/clov-ai/clov/commit/04e6bb032ccd67b51fb69e326e27eff66c934043))
-* **git:** Returns "Not a git repository" when git status is executed in a non-repo folder [#82](https://github.com/clov-ai/clov/issues/82) ([d4cb2c0](https://github.com/clov-ai/clov/commit/d4cb2c08100d04755fa776ec8000c0b9673e4370))
+* update ARCHITECTURE.md version to 0.18.0 ([398cb08](https://github.com/alexandephilia/clov-ai/commit/398cb08125410a4de11162720cf3499d3c76f12d))
+* update version references to 0.16.0 in README.md and CLAUDE.md ([ec54833](https://github.com/alexandephilia/clov-ai/commit/ec54833621c8ca666735e1a08ed5583624b250c1))
+* update version references to 0.18.0 in docs ([c73ed47](https://github.com/alexandephilia/clov-ai/commit/c73ed470a79ab9e4771d2ad65394859e672b4123))
 
-## [0.15.3](https://github.com/clov-ai/clov/compare/v0.15.2...v0.15.3) (2026-02-13)
-
-
-### Bug Fixes
-
-* prevent UTF-8 panics on multi-byte characters ([#93](https://github.com/clov-ai/clov/issues/93)) ([155e264](https://github.com/clov-ai/clov/commit/155e26423d1fe2acbaed3dc1aab8c365324d53e0))
-
-## [0.15.2](https://github.com/clov-ai/clov/compare/v0.15.1...v0.15.2) (2026-02-13)
-
-
-### Bug Fixes
-
-* **hook:** use POSIX character classes for cross-platform grep compatibility ([#98](https://github.com/clov-ai/clov/issues/98)) ([4aafc83](https://github.com/clov-ai/clov/commit/4aafc832d4bdd438609358e2737a96bee4bb2467))
-
-## [0.15.1](https://github.com/clov-ai/clov/compare/v0.15.0...v0.15.1) (2026-02-12)
-
-
-### Bug Fixes
-
-* improve CI reliability and hook coverage ([#95](https://github.com/clov-ai/clov/issues/95)) ([ac80bfa](https://github.com/clov-ai/clov/commit/ac80bfa88f91dfaf562cdd786ecd3048c554e4f7))
-* **vitest:** robust JSON extraction for pnpm/dotenv prefixes ([#92](https://github.com/clov-ai/clov/issues/92)) ([e5adba8](https://github.com/clov-ai/clov/commit/e5adba8b214a6609cf1a2cda05f21bcf2a1adb94))
-
-## [0.15.0](https://github.com/clov-ai/clov/compare/v0.14.0...v0.15.0) (2026-02-12)
+## [0.18.0](https://github.com/alexandephilia/clov-ai/compare/v0.17.0...v0.18.0) (2026-02-15)
 
 
 ### Features
 
-* add Python and Go support ([#88](https://github.com/clov-ai/clov/issues/88)) ([a005bb1](https://github.com/clov-ai/clov/commit/a005bb15c030e16b7b87062317bddf50e12c6f32))
-* **cargo:** aggregate test output into single line ([#83](https://github.com/clov-ai/clov/issues/83)) ([#85](https://github.com/clov-ai/clov/issues/85)) ([06b1049](https://github.com/clov-ai/clov/commit/06b10491f926f9eca4323c80d00530a1598ec649))
-* make install-local.sh self-contained ([#89](https://github.com/clov-ai/clov/issues/89)) ([b82ad16](https://github.com/clov-ai/clov/commit/b82ad168533881757f45e28826cb0c4bd4cc6f97))
+* **gain:** colored dashboard with efficiency meter and impact bars ([#129](https://github.com/alexandephilia/clov-ai/issues/129)) ([606b86e](https://github.com/alexandephilia/clov-ai/commit/606b86ed43902dc894e6f1711f6fe7debedc2530))
 
-## [0.14.0](https://github.com/clov-ai/clov/compare/v0.13.1...v0.14.0) (2026-02-12)
+## [0.17.0](https://github.com/alexandephilia/clov-ai/compare/v0.16.0...v0.17.0) (2026-02-15)
 
 
 ### Features
 
-* **ci:** automate Homebrew formula update on release ([#80](https://github.com/clov-ai/clov/issues/80)) ([a0d2184](https://github.com/clov-ai/clov/commit/a0d2184bfef4d0a05225df5a83eedba3c35865b3))
+* **cargo:** add cargo nextest support with failures-only output ([#107](https://github.com/alexandephilia/clov-ai/issues/107)) ([68fd570](https://github.com/alexandephilia/clov-ai/commit/68fd570f2b7d5aaae7b37b07eb24eae21542595e))
+* **hook:** handle global options before subcommands ([#99](https://github.com/alexandephilia/clov-ai/issues/99)) ([7401f10](https://github.com/alexandephilia/clov-ai/commit/7401f1099f3ef14598f11947262756e3f19fce8f))
+
+## [0.16.0](https://github.com/alexandephilia/clov-ai/compare/v0.15.4...v0.16.0) (2026-02-14)
+
+
+### Features
+
+* **python:** add lint dispatcher + universal format command ([#100](https://github.com/alexandephilia/clov-ai/issues/100)) ([4cae6b6](https://github.com/alexandephilia/clov-ai/commit/4cae6b6c9a4fbc91c56a99f640d217478b92e6d9))
+
+## [0.15.4](https://github.com/alexandephilia/clov-ai/compare/v0.15.3...v0.15.4) (2026-02-14)
 
 
 ### Bug Fixes
 
-* add website URL (clov-ai.app) across project metadata ([#81](https://github.com/clov-ai/clov/issues/81)) ([c84fa3c](https://github.com/clov-ai/clov/commit/c84fa3c060c7acccaedb617852938c894f30f81e))
-* update stale repo URLs from pszymkowiak/clov to clov-ai/clov ([#78](https://github.com/clov-ai/clov/issues/78)) ([55d010a](https://github.com/clov-ai/clov/commit/55d010ad5eced14f525e659f9f35d051644a1246))
+* **git:** fix for issue [#82](https://github.com/alexandephilia/clov-ai/issues/82) ([04e6bb0](https://github.com/alexandephilia/clov-ai/commit/04e6bb032ccd67b51fb69e326e27eff66c934043))
+* **git:** Returns "Not a git repository" when git status is executed in a non-repo folder [#82](https://github.com/alexandephilia/clov-ai/issues/82) ([d4cb2c0](https://github.com/alexandephilia/clov-ai/commit/d4cb2c08100d04755fa776ec8000c0b9673e4370))
 
-## [0.13.1](https://github.com/clov-ai/clov/compare/v0.13.0...v0.13.1) (2026-02-12)
+## [0.15.3](https://github.com/alexandephilia/clov-ai/compare/v0.15.2...v0.15.3) (2026-02-13)
 
 
 ### Bug Fixes
 
-* **ci:** fix release artifacts not uploading ([#73](https://github.com/clov-ai/clov/issues/73)) ([bb20b1e](https://github.com/clov-ai/clov/commit/bb20b1e9e1619e0d824eb0e0b87109f30bf4f513))
-* **ci:** fix release workflow not uploading artifacts to GitHub releases ([bd76b36](https://github.com/clov-ai/clov/commit/bd76b361908d10cce508aff6ac443340dcfbdd76))
+* prevent UTF-8 panics on multi-byte characters ([#93](https://github.com/alexandephilia/clov-ai/issues/93)) ([155e264](https://github.com/alexandephilia/clov-ai/commit/155e26423d1fe2acbaed3dc1aab8c365324d53e0))
 
-## [0.13.0](https://github.com/clov-ai/clov/compare/v0.12.0...v0.13.0) (2026-02-12)
-
-
-### Features
-
-* **sqlite:** add custom sqlite db location ([6e181ae](https://github.com/clov-ai/clov/commit/6e181aec087edb50625e08b72fe7abdadbb6c72b))
-* **sqlite:** add custom sqlite db location ([93364b5](https://github.com/clov-ai/clov/commit/93364b5457619201c656fc2423763fea77633f15))
-
-## [0.12.0](https://github.com/clov-ai/clov/compare/v0.11.0...v0.12.0) (2026-02-09)
+## [0.15.2](https://github.com/alexandephilia/clov-ai/compare/v0.15.1...v0.15.2) (2026-02-13)
 
 
-### Features
+### Bug Fixes
 
-* **cargo:** add `cargo install` filtering with 80-90% token reduction ([645a773](https://github.com/clov-ai/clov/commit/645a773a65bb57dc2635aa405a6e2b87534491e3)), closes [#69](https://github.com/clov-ai/clov/issues/69)
-* **cargo:** add cargo install filtering ([447002f](https://github.com/clov-ai/clov/commit/447002f8ba3bbd2b398f85db19b50982df817a02))
+* **hook:** use POSIX character classes for cross-platform grep compatibility ([#98](https://github.com/alexandephilia/clov-ai/issues/98)) ([4aafc83](https://github.com/alexandephilia/clov-ai/commit/4aafc832d4bdd438609358e2737a96bee4bb2467))
 
-## [0.11.0](https://github.com/clov-ai/clov/compare/v0.10.0...v0.11.0) (2026-02-07)
+## [0.15.1](https://github.com/alexandephilia/clov-ai/compare/v0.15.0...v0.15.1) (2026-02-12)
+
+
+### Bug Fixes
+
+* improve CI reliability and hook coverage ([#95](https://github.com/alexandephilia/clov-ai/issues/95)) ([ac80bfa](https://github.com/alexandephilia/clov-ai/commit/ac80bfa88f91dfaf562cdd786ecd3048c554e4f7))
+* **vitest:** robust JSON extraction for pnpm/dotenv prefixes ([#92](https://github.com/alexandephilia/clov-ai/issues/92)) ([e5adba8](https://github.com/alexandephilia/clov-ai/commit/e5adba8b214a6609cf1a2cda05f21bcf2a1adb94))
+
+## [0.15.0](https://github.com/alexandephilia/clov-ai/compare/v0.14.0...v0.15.0) (2026-02-12)
 
 
 ### Features
 
-* **init:** auto-patch settings.json for frictionless hook installation ([2db7197](https://github.com/clov-ai/clov/commit/2db7197e020857c02857c8ef836279c3fd660baf))
+* add Python and Go support ([#88](https://github.com/alexandephilia/clov-ai/issues/88)) ([a005bb1](https://github.com/alexandephilia/clov-ai/commit/a005bb15c030e16b7b87062317bddf50e12c6f32))
+* **cargo:** aggregate test output into single line ([#83](https://github.com/alexandephilia/clov-ai/issues/83)) ([#85](https://github.com/alexandephilia/clov-ai/issues/85)) ([06b1049](https://github.com/alexandephilia/clov-ai/commit/06b10491f926f9eca4323c80d00530a1598ec649))
+* make install-local.sh self-contained ([#89](https://github.com/alexandephilia/clov-ai/issues/89)) ([b82ad16](https://github.com/alexandephilia/clov-ai/commit/b82ad168533881757f45e28826cb0c4bd4cc6f97))
+
+## [0.14.0](https://github.com/alexandephilia/clov-ai/compare/v0.13.1...v0.14.0) (2026-02-12)
+
+
+### Features
+
+* **ci:** automate Homebrew formula update on release ([#80](https://github.com/alexandephilia/clov-ai/issues/80)) ([a0d2184](https://github.com/alexandephilia/clov-ai/commit/a0d2184bfef4d0a05225df5a83eedba3c35865b3))
+
+
+### Bug Fixes
+
+* add website URL (clov-ai.app) across project metadata ([#81](https://github.com/alexandephilia/clov-ai/issues/81)) ([c84fa3c](https://github.com/alexandephilia/clov-ai/commit/c84fa3c060c7acccaedb617852938c894f30f81e))
+* update stale repo URLs from pszymkowiak/clov to alexandephilia/clov-ai ([#78](https://github.com/alexandephilia/clov-ai/issues/78)) ([55d010a](https://github.com/alexandephilia/clov-ai/commit/55d010ad5eced14f525e659f9f35d051644a1246))
+
+## [0.13.1](https://github.com/alexandephilia/clov-ai/compare/v0.13.0...v0.13.1) (2026-02-12)
+
+
+### Bug Fixes
+
+* **ci:** fix release artifacts not uploading ([#73](https://github.com/alexandephilia/clov-ai/issues/73)) ([bb20b1e](https://github.com/alexandephilia/clov-ai/commit/bb20b1e9e1619e0d824eb0e0b87109f30bf4f513))
+* **ci:** fix release workflow not uploading artifacts to GitHub releases ([bd76b36](https://github.com/alexandephilia/clov-ai/commit/bd76b361908d10cce508aff6ac443340dcfbdd76))
+
+## [0.13.0](https://github.com/alexandephilia/clov-ai/compare/v0.12.0...v0.13.0) (2026-02-12)
+
+
+### Features
+
+* **sqlite:** add custom sqlite db location ([6e181ae](https://github.com/alexandephilia/clov-ai/commit/6e181aec087edb50625e08b72fe7abdadbb6c72b))
+* **sqlite:** add custom sqlite db location ([93364b5](https://github.com/alexandephilia/clov-ai/commit/93364b5457619201c656fc2423763fea77633f15))
+
+## [0.12.0](https://github.com/alexandephilia/clov-ai/compare/v0.11.0...v0.12.0) (2026-02-09)
+
+
+### Features
+
+* **cargo:** add `cargo install` filtering with 80-90% token reduction ([645a773](https://github.com/alexandephilia/clov-ai/commit/645a773a65bb57dc2635aa405a6e2b87534491e3)), closes [#69](https://github.com/alexandephilia/clov-ai/issues/69)
+* **cargo:** add cargo install filtering ([447002f](https://github.com/alexandephilia/clov-ai/commit/447002f8ba3bbd2b398f85db19b50982df817a02))
+
+## [0.11.0](https://github.com/alexandephilia/clov-ai/compare/v0.10.0...v0.11.0) (2026-02-07)
+
+
+### Features
+
+* **init:** auto-patch settings.json for frictionless hook installation ([2db7197](https://github.com/alexandephilia/clov-ai/commit/2db7197e020857c02857c8ef836279c3fd660baf))
 
 ## [Unreleased]
 
@@ -291,80 +291,80 @@ breakage, but future rule additions won't take effect until they migrate.
 - Refactored `insert_hook_entry()` to use idiomatic Rust `entry()` API
 - Simplified `hook_already_present()` logic with iterator chains
 - Improved atomic write error messages for better debugging
-## [0.10.0](https://github.com/clov-ai/clov/compare/v0.9.4...v0.10.0) (2026-02-07)
+## [0.10.0](https://github.com/alexandephilia/clov-ai/compare/v0.9.4...v0.10.0) (2026-02-07)
 
 
 ### Features
 
-* Hook-first installation with 99.5% token reduction ([e7f80ad](https://github.com/clov-ai/clov/commit/e7f80ad29481393d16d19f55b3c2171a4b8b7915))
-* **init:** refactor to hook-first with slim CLOV.md ([9620f66](https://github.com/clov-ai/clov/commit/9620f66cd64c299426958d4d3d65bd8d1a9bc92d))
+* Hook-first installation with 99.5% token reduction ([e7f80ad](https://github.com/alexandephilia/clov-ai/commit/e7f80ad29481393d16d19f55b3c2171a4b8b7915))
+* **init:** refactor to hook-first with slim CLOV.md ([9620f66](https://github.com/alexandephilia/clov-ai/commit/9620f66cd64c299426958d4d3d65bd8d1a9bc92d))
 
-## [0.9.4](https://github.com/clov-ai/clov/compare/v0.9.3...v0.9.4) (2026-02-06)
-
-
-### Bug Fixes
-
-* **discover:** add cargo check support, wire ClovStatus::Passthrough, enhance clov init ([d5f8a94](https://github.com/clov-ai/clov/commit/d5f8a9460421821861a32eedefc0800fb7720912))
-
-## [0.9.3](https://github.com/clov-ai/clov/compare/v0.9.2...v0.9.3) (2026-02-06)
+## [0.9.4](https://github.com/alexandephilia/clov-ai/compare/v0.9.3...v0.9.4) (2026-02-06)
 
 
 ### Bug Fixes
 
-* P0 crashes + cargo check + dedup utilities + discover status ([05078ff](https://github.com/clov-ai/clov/commit/05078ff2dab0c8745b9fb44b1d462c0d32ae8d77))
-* P0 crashes + cargo check + dedup utilities + discover status ([60d2d25](https://github.com/clov-ai/clov/commit/60d2d252efbedaebae750b3122385b2377ab01eb))
+* **discover:** add cargo check support, wire ClovStatus::Passthrough, enhance clov init ([d5f8a94](https://github.com/alexandephilia/clov-ai/commit/d5f8a9460421821861a32eedefc0800fb7720912))
 
-## [0.9.2](https://github.com/clov-ai/clov/compare/v0.9.1...v0.9.2) (2026-02-05)
-
-
-### Bug Fixes
-
-* **git:** accept native git flags in add command (including -A) ([2ade8fe](https://github.com/clov-ai/clov/commit/2ade8fe030d8b1bc2fa294aa710ed1f5f877136f))
-* **git:** accept native git flags in add command (including -A) ([40e7ead](https://github.com/clov-ai/clov/commit/40e7eadbaf0b89a54b63bea73014eac7cf9afb05))
-
-## [0.9.1](https://github.com/clov-ai/clov/compare/v0.9.0...v0.9.1) (2026-02-04)
+## [0.9.3](https://github.com/alexandephilia/clov-ai/compare/v0.9.2...v0.9.3) (2026-02-06)
 
 
 ### Bug Fixes
 
-* **tsc:** show every TypeScript error instead of collapsing by code ([3df8ce5](https://github.com/clov-ai/clov/commit/3df8ce552585d8d0a36f9c938d381ac0bc07b220))
-* **tsc:** show every TypeScript error instead of collapsing by code ([67e8de8](https://github.com/clov-ai/clov/commit/67e8de8732363d111583e5b514d05e092355b97e))
+* P0 crashes + cargo check + dedup utilities + discover status ([05078ff](https://github.com/alexandephilia/clov-ai/commit/05078ff2dab0c8745b9fb44b1d462c0d32ae8d77))
+* P0 crashes + cargo check + dedup utilities + discover status ([60d2d25](https://github.com/alexandephilia/clov-ai/commit/60d2d252efbedaebae750b3122385b2377ab01eb))
 
-## [0.9.0](https://github.com/clov-ai/clov/compare/v0.8.1...v0.9.0) (2026-02-03)
+## [0.9.2](https://github.com/alexandephilia/clov-ai/compare/v0.9.1...v0.9.2) (2026-02-05)
+
+
+### Bug Fixes
+
+* **git:** accept native git flags in add command (including -A) ([2ade8fe](https://github.com/alexandephilia/clov-ai/commit/2ade8fe030d8b1bc2fa294aa710ed1f5f877136f))
+* **git:** accept native git flags in add command (including -A) ([40e7ead](https://github.com/alexandephilia/clov-ai/commit/40e7eadbaf0b89a54b63bea73014eac7cf9afb05))
+
+## [0.9.1](https://github.com/alexandephilia/clov-ai/compare/v0.9.0...v0.9.1) (2026-02-04)
+
+
+### Bug Fixes
+
+* **tsc:** show every TypeScript error instead of collapsing by code ([3df8ce5](https://github.com/alexandephilia/clov-ai/commit/3df8ce552585d8d0a36f9c938d381ac0bc07b220))
+* **tsc:** show every TypeScript error instead of collapsing by code ([67e8de8](https://github.com/alexandephilia/clov-ai/commit/67e8de8732363d111583e5b514d05e092355b97e))
+
+## [0.9.0](https://github.com/alexandephilia/clov-ai/compare/v0.8.1...v0.9.0) (2026-02-03)
 
 
 ### Features
 
-* add clov tree + fix clov ls + audit phase 1-2 ([278cc57](https://github.com/clov-ai/clov/commit/278cc5700bc39770841d157f9c53161f8d62df1e))
-* audit phase 3 + tracking validation + clov learn ([7975624](https://github.com/clov-ai/clov/commit/7975624d0a83c44dfeb073e17fd07dbc62dc8329))
-* **git:** add fallback passthrough for unsupported subcommands ([32bbd02](https://github.com/clov-ai/clov/commit/32bbd025345872e46f67e8c999ecc6f71891856b))
-* **grep:** add extra args passthrough (-i, -A/-B/-C, etc.) ([a240d1a](https://github.com/clov-ai/clov/commit/a240d1a1ee0d94c178d0c54b411eded6c7839599))
-* **pnpm:** add fallback passthrough for unsupported subcommands ([614ff5c](https://github.com/clov-ai/clov/commit/614ff5c13f526f537231aaa9fa098763822b4ee0))
-* **read:** add stdin support via "-" path ([060c38b](https://github.com/clov-ai/clov/commit/060c38b3c1ab29070c16c584ea29da3d5ca28f3d))
-* clov tree + fix clov ls + full audit (phase 1-2-3) ([cb83da1](https://github.com/clov-ai/clov/commit/cb83da104f7beba3035225858d7f6eb2979d950c))
+* add clov tree + fix clov ls + audit phase 1-2 ([278cc57](https://github.com/alexandephilia/clov-ai/commit/278cc5700bc39770841d157f9c53161f8d62df1e))
+* audit phase 3 + tracking validation + clov learn ([7975624](https://github.com/alexandephilia/clov-ai/commit/7975624d0a83c44dfeb073e17fd07dbc62dc8329))
+* **git:** add fallback passthrough for unsupported subcommands ([32bbd02](https://github.com/alexandephilia/clov-ai/commit/32bbd025345872e46f67e8c999ecc6f71891856b))
+* **grep:** add extra args passthrough (-i, -A/-B/-C, etc.) ([a240d1a](https://github.com/alexandephilia/clov-ai/commit/a240d1a1ee0d94c178d0c54b411eded6c7839599))
+* **pnpm:** add fallback passthrough for unsupported subcommands ([614ff5c](https://github.com/alexandephilia/clov-ai/commit/614ff5c13f526f537231aaa9fa098763822b4ee0))
+* **read:** add stdin support via "-" path ([060c38b](https://github.com/alexandephilia/clov-ai/commit/060c38b3c1ab29070c16c584ea29da3d5ca28f3d))
+* clov tree + fix clov ls + full audit (phase 1-2-3) ([cb83da1](https://github.com/alexandephilia/clov-ai/commit/cb83da104f7beba3035225858d7f6eb2979d950c))
 
 
 ### Bug Fixes
 
-* **docs:** escape HTML tags in rustdoc comments ([b13d92c](https://github.com/clov-ai/clov/commit/b13d92c9ea83e28e97847e0a6da696053364bbfc))
-* **find:** rewrite with ignore crate + fix json stdin + benchmark pipeline ([fcc1462](https://github.com/clov-ai/clov/commit/fcc14624f89a7aa9742de4e7bc7b126d6d030871))
-* **ls:** compact output (-72% tokens) + fix discover panic ([ea7cdb7](https://github.com/clov-ai/clov/commit/ea7cdb7a3b622f62e0a085144a637a22108ffdb7))
+* **docs:** escape HTML tags in rustdoc comments ([b13d92c](https://github.com/alexandephilia/clov-ai/commit/b13d92c9ea83e28e97847e0a6da696053364bbfc))
+* **find:** rewrite with ignore crate + fix json stdin + benchmark pipeline ([fcc1462](https://github.com/alexandephilia/clov-ai/commit/fcc14624f89a7aa9742de4e7bc7b126d6d030871))
+* **ls:** compact output (-72% tokens) + fix discover panic ([ea7cdb7](https://github.com/alexandephilia/clov-ai/commit/ea7cdb7a3b622f62e0a085144a637a22108ffdb7))
 
-## [0.8.1](https://github.com/clov-ai/clov/compare/v0.8.0...v0.8.1) (2026-02-02)
+## [0.8.1](https://github.com/alexandephilia/clov-ai/compare/v0.8.0...v0.8.1) (2026-02-02)
 
 
 ### Bug Fixes
 
-* allow git status to accept native flags ([a7ea143](https://github.com/clov-ai/clov/commit/a7ea1439fb99a9bd02292068625bed6237f6be0c))
-* allow git status to accept native flags ([a27bce8](https://github.com/clov-ai/clov/commit/a27bce82f09701cb9df2ed958f682ab5ac8f954e))
+* allow git status to accept native flags ([a7ea143](https://github.com/alexandephilia/clov-ai/commit/a7ea1439fb99a9bd02292068625bed6237f6be0c))
+* allow git status to accept native flags ([a27bce8](https://github.com/alexandephilia/clov-ai/commit/a27bce82f09701cb9df2ed958f682ab5ac8f954e))
 
-## [0.8.0](https://github.com/clov-ai/clov/compare/v0.7.1...v0.8.0) (2026-02-02)
+## [0.8.0](https://github.com/alexandephilia/clov-ai/compare/v0.7.1...v0.8.0) (2026-02-02)
 
 
 ### Features
 
-* add comprehensive security review workflow for PRs ([1ca6e81](https://github.com/clov-ai/clov/commit/1ca6e81bdf16a7eab503d52b342846c3519d89ff))
-* add comprehensive security review workflow for PRs ([66101eb](https://github.com/clov-ai/clov/commit/66101ebb65076359a1530d8f19e11a17c268bce2))
+* add comprehensive security review workflow for PRs ([1ca6e81](https://github.com/alexandephilia/clov-ai/commit/1ca6e81bdf16a7eab503d52b342846c3519d89ff))
+* add comprehensive security review workflow for PRs ([66101eb](https://github.com/alexandephilia/clov-ai/commit/66101ebb65076359a1530d8f19e11a17c268bce2))
 
 ## [0.7.1](https://github.com/pszymkowiak/clov/compare/v0.7.0...v0.7.1) (2026-02-02)
 
@@ -533,5 +533,5 @@ See upstream: https://github.com/pszymkowiak/clov
 
 ## Links
 
-- **Repository**: https://github.com/clov-ai/clov (maintained by pszymkowiak)
-- **Issues**: https://github.com/clov-ai/clov/issues
+- **Repository**: https://github.com/alexandephilia/clov-ai (maintained by pszymkowiak)
+- **Issues**: https://github.com/alexandephilia/clov-ai/issues

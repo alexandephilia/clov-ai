@@ -5,7 +5,7 @@
 **There are TWO completely different projects named "clov":**
 
 1. ✅ **Clov Token Omitter** (this project) - LLM token optimizer
-   - Repos: `clov-ai/clov`
+   - Repos: `alexandephilia/clov-ai`
    - Has `clov gain` command for token savings stats
 
 2. ❌ **Rust Type Kit** (reachingforthejack/clov) - DIFFERENT PROJECT
@@ -44,7 +44,7 @@ cargo uninstall clov
 ### Quick Install (Linux/macOS)
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/clov-ai/clov/master/install.sh | sh
+curl -fsSL https://raw.githubusercontent.com/alexandephilia/clov-ai/master/install.sh | sh
 ```
 
 After installation, **verify you have the correct clov**:
@@ -56,7 +56,7 @@ clov gain  # Must show token savings stats (not "command not found")
 
 ```bash
 # From clov-ai repository (NOT reachingforthejack!)
-cargo install --git https://github.com/clov-ai/clov
+cargo install --git https://github.com/alexandephilia/clov-ai
 
 # OR (if published and correct on crates.io)
 cargo install clov
@@ -179,7 +179,7 @@ clov init --show
 ### First-Time User (Recommended)
 ```bash
 # 1. Install CLOV
-cargo install --git https://github.com/clov-ai/clov
+cargo install --git https://github.com/alexandephilia/clov-ai
 clov gain  # Verify (must show token stats)
 
 # 2. Setup with prompts
@@ -369,11 +369,11 @@ cargo install --path . --force
 
 ## Support and Contributing
 
-- **Website**: https://www.clov-ai.app
-- **Contact**: contact@clov-ai.app
+- **Website**: https://github.com/alexandephilia/clov-ai
+- **Contact**: https://github.com/alexandephilia/clov-ai/issues
 - **Troubleshooting**: See [TROUBLESHOOTING.md](docs/TROUBLESHOOTING.md) for common issues
-- **GitHub issues**: https://github.com/clov-ai/clov/issues
-- **Pull Requests**: https://github.com/clov-ai/clov/pulls
+- **GitHub issues**: https://github.com/alexandephilia/clov-ai/issues
+- **Pull Requests**: https://github.com/alexandephilia/clov-ai/pulls
 
 ⚠️ **If you installed the wrong clov (Type Kit)**, see [TROUBLESHOOTING.md](docs/TROUBLESHOOTING.md#problem-clov-gain-command-not-found)
 

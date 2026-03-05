@@ -369,7 +369,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Install CLOV
-        run: cargo install --git https://github.com/clov-ai/clov
+        run: cargo install --git https://github.com/alexandephilia/clov-ai
 
       - name: Export weekly stats
         run: |
@@ -444,7 +444,7 @@ if __name__ == "__main__":
 ```rust
 // In your Cargo.toml
 // [dependencies]
-// clov = { git = "https://github.com/clov-ai/clov" }
+// clov = { git = "https://github.com/alexandephilia/clov-ai" }
 
 use clov::tracking::{Tracker, TimedExecution};
 use anyhow::Result;

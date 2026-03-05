@@ -187,7 +187,7 @@ gh release view v0.17.0
 ### 3. Installation Verification
 ```bash
 # Test installation from release
-curl -sSL https://github.com/clov-ai/clov/releases/download/v0.17.0/clov-macos-latest -o clov
+curl -sSL https://github.com/alexandephilia/clov-ai/releases/download/v0.17.0/clov-macos-latest -o clov
 chmod +x clov
 ./clov --version
 # Should show v0.17.0

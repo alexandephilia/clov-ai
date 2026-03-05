@@ -1,10 +1,10 @@
 #!/bin/sh
-# clov installer - https://github.com/clov-ai/clov
-# Usage: curl -fsSL https://raw.githubusercontent.com/clov-ai/clov/refs/heads/master/install.sh | sh
+# clov installer - https://github.com/alexandephilia/clov-ai
+# Usage: curl -fsSL https://raw.githubusercontent.com/alexandephilia/clov-ai/refs/heads/master/install.sh | sh
 
 set -e
 
-REPO="clov-ai/clov"
+REPO="alexandephilia/clov-ai"
 BINARY_NAME="clov"
 INSTALL_DIR="${CLOV_INSTALL_DIR:-$HOME/.local/bin}"
 

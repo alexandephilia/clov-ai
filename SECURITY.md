@@ -114,7 +114,7 @@ bash scripts/detect-dangerous-patterns.sh /tmp/pr.diff
 | `SystemTime::now() > ...` | Logic bombs | Delayed malicious behavior |
 | Base64/hex strings | Obfuscation | Hides malicious URLs/commands |
 
-See [Dangerous Patterns Reference](https://github.com/clov-ai/clov/wiki/Dangerous-Patterns) for exploitation examples.
+See [Dangerous Patterns Reference](https://github.com/alexandephilia/clov-ai/wiki/Dangerous-Patterns) for exploitation examples.
 
 ---
 
@@ -209,7 +209,7 @@ Critical vulnerabilities (remote code execution, data exfiltration) may be fast-
 ## Contact
 
 - **Security issues**: security@clov-ai.dev
-- **General questions**: https://github.com/clov-ai/clov/discussions
+- **General questions**: https://github.com/alexandephilia/clov-ai/discussions
 - **Maintainers**: @FlorianBruniaux (active fork maintainer)
 
 ---

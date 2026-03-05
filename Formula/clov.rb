@@ -5,30 +5,30 @@
 # To install: brew tap clov-ai/tap && brew install clov
 class Clov < Formula
   desc "High-performance CLI proxy to minimize LLM token consumption"
-  homepage "https://www.clov-ai.app"
+  homepage "https://github.com/alexandephilia/clov-ai"
   version "0.1.0"
   license "MIT"
 
   on_macos do
     on_intel do
-      url "https://github.com/clov-ai/clov/releases/download/v#{version}/clov-x86_64-apple-darwin.tar.gz"
+      url "https://github.com/alexandephilia/clov-ai/releases/download/v#{version}/clov-x86_64-apple-darwin.tar.gz"
       sha256 "PLACEHOLDER_SHA256_INTEL"
     end
 
     on_arm do
-      url "https://github.com/clov-ai/clov/releases/download/v#{version}/clov-aarch64-apple-darwin.tar.gz"
+      url "https://github.com/alexandephilia/clov-ai/releases/download/v#{version}/clov-aarch64-apple-darwin.tar.gz"
       sha256 "PLACEHOLDER_SHA256_ARM"
     end
   end
 
   on_linux do
     on_intel do
-      url "https://github.com/clov-ai/clov/releases/download/v#{version}/clov-x86_64-unknown-linux-gnu.tar.gz"
+      url "https://github.com/alexandephilia/clov-ai/releases/download/v#{version}/clov-x86_64-unknown-linux-gnu.tar.gz"
       sha256 "PLACEHOLDER_SHA256_LINUX_INTEL"
     end
 
     on_arm do
-      url "https://github.com/clov-ai/clov/releases/download/v#{version}/clov-aarch64-unknown-linux-gnu.tar.gz"
+      url "https://github.com/alexandephilia/clov-ai/releases/download/v#{version}/clov-aarch64-unknown-linux-gnu.tar.gz"
       sha256 "PLACEHOLDER_SHA256_LINUX_ARM"
     end
   end
