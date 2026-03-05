@@ -4,12 +4,11 @@
 
 **High-performance CLI proxy to minimize LLM token consumption.**
 
-![clov preview](preview.jpg)
+![clov preview](img_1.jpg)
 
 clov filters and compresses command outputs before they reach your LLM context, saving 60-90% of tokens on common operations.
 
-![clov preview 2](preview2.jpg)
-
+![clov preview 2](img_2.jpg)
 
 ## Token Savings (30-min Claude Code Session)
 
@@ -79,7 +78,6 @@ clov gain  # Must show token savings stats (not "command not found")
 cargo install --git https://github.com/alexandephilia/clov-ai
 
 ```
-
 
 ### Alternative: Pre-built Binaries
 
