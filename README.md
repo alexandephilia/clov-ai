@@ -4,6 +4,7 @@
 
 **High-performance CLI proxy to minimize LLM token consumption.**
 
+![clov preview](preview.jpg)
 
 clov filters and compresses command outputs before they reach your LLM context, saving 60-90% of tokens on common operations.
 
