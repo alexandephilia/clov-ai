@@ -6,7 +6,7 @@
 class Clov < Formula
   desc "High-performance CLI proxy to minimize LLM token consumption"
   homepage "https://github.com/alexandephilia/clov-ai"
-  version "0.26.5"
+  version "0.27.2"
   license "MIT"
 
   on_macos do

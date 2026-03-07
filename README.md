@@ -5,7 +5,7 @@
 </p>
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Version](https://img.shields.io/badge/version-0.26.5-blue.svg)](https://github.com/alexandephilia/clov-ai/releases/tag/v0.26.5)
+[![Version](https://img.shields.io/badge/version-0.27.2-blue.svg)](https://github.com/alexandephilia/clov-ai/releases/tag/v0.27.2)
 [![Built with Rust](https://img.shields.io/badge/built_with-Rust-orange?logo=rust&logoColor=white)](https://www.rust-lang.org/)
 [![Python](https://img.shields.io/badge/Python-supported-3776AB?logo=python&logoColor=white)](#python--go)
 [![Go](https://img.shields.io/badge/Go-supported-00ADD8?logo=go&logoColor=white)](#python--go)
@@ -208,6 +208,32 @@ clov gh pr list                  # compact PR table
 clov gh pr view 42               # PR details + check summary
 clov gh issue list               # compact issue table
 clov gh run list                 # workflow run status
+```
+
+### MCP Tools (Exa, etc.)
+
+Filter bloated MCP tool responses before they reach your LLM context. 85-95% token savings on web-heavy results:
+
+```bash
+clov mcp proxy <mcp-command>     # JSON-aware proxy with request ID tracking
+```
+
+**Exa Optimized**:
+
+- Specialized filters for `web_search_exa`, `crawling_exa`, and `get_code_context_exa`
+- Strips navigation, footers, and tracking params while preserving 100% signal
+- Parses internal JSON text results to avoid breaking protocol structure
+
+**Setup**:
+Update your `~/.claude/settings.json` to route MCP servers through clov:
+
+```json
+"mcpServers": {
+  "exa": {
+    "command": "clov",
+    "args": ["mcp", "proxy", "npx", "-y", "exa-mcp-server"]
+  }
+}
 ```
 
 ### JavaScript / TypeScript
