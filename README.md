@@ -783,10 +783,8 @@ Maintained by [@alexandephilia](https://github.com/alexandephilia) and Claude. S
 
 ---
 
-Built in Rust. Cuts the garbage so your model gets the signal.
-
-```
-  ·  c l o v  ·
-  ──────────────────────────
-  @alexandephilia  ×  claude
-```
+<p align="center">
+  <img src="https://skillicons.dev/icons?i=rust,python,go" height="24" />
+  <br/><br/>
+  <sub>maintained by <a href="https://github.com/alexandephilia">@alexandephilia</a> × claude</sub>
+</p>
