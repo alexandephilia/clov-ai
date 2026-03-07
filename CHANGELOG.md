@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.29.5](https://github.com/alexandephilia/clov-ai/compare/v0.29.4...v0.29.5) (2026-03-07)
+
+
+### Bug Fixes
+
+* add dynamic mcp filter controls ([3bb7942](https://github.com/alexandephilia/clov-ai/commit/3bb79423ac9c1063b11adb0ad2305f121d84b5f9))
+
 ## [0.29.4](https://github.com/alexandephilia/clov-ai/compare/v0.29.3...v0.29.4) (2026-03-07)
 
 
