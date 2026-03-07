@@ -9,7 +9,7 @@
 
 **A shell filter that keeps token costs sane.**
 
-![clov preview](img_1.jpg)
+![clov preview](clov_1.jpg)
 
 Your shell dumps thousands of tokens into Claude's context every session. Progress bars. ANSI codes. Timestamps. Verbose git output nobody asked for. clov intercepts that garbage before it reaches the model and hands back only what matters — hashes, failures, errors. One install. Every session.
 
@@ -17,25 +17,25 @@ Your shell dumps thousands of tokens into Claude's context every session. Progre
 
 ## Why
 
-![clov savings](img_2.jpg)
+![clov savings](clov_2.jpg)
 
 A medium session without clov burns around **150,000 tokens**. With clov: roughly **45,000**. That's a real number, not marketing.
 
-| Command | Raw tokens | With clov | Cut |
-|---|---|---|---|
-| `ls` / `tree` (×10) | 2,000 | 400 | 80% |
-| `cat` / file reads (×20) | 40,000 | 12,000 | 70% |
-| `grep` / `rg` (×8) | 16,000 | 3,200 | 80% |
-| `git status` (×10) | 3,000 | 600 | 80% |
-| `git diff` (×5) | 10,000 | 2,500 | 75% |
-| `git log` (×5) | 2,500 | 500 | 80% |
-| `git add/commit/push` (×8) | 1,600 | 120 | 92% |
-| `cargo test` / `npm test` (×5) | 25,000 | 2,500 | 90% |
-| `ruff check` (×3) | 3,000 | 600 | 80% |
-| `pytest` (×4) | 8,000 | 800 | 90% |
-| `go test` (×3) | 6,000 | 600 | 90% |
-| `docker ps` (×3) | 900 | 180 | 80% |
-| **Total** | **~118,000** | **~23,900** | **80%** |
+| Command                        | Raw tokens   | With clov   | Cut     |
+| ------------------------------ | ------------ | ----------- | ------- |
+| `ls` / `tree` (×10)            | 2,000        | 400         | 80%     |
+| `cat` / file reads (×20)       | 40,000       | 12,000      | 70%     |
+| `grep` / `rg` (×8)             | 16,000       | 3,200       | 80%     |
+| `git status` (×10)             | 3,000        | 600         | 80%     |
+| `git diff` (×5)                | 10,000       | 2,500       | 75%     |
+| `git log` (×5)                 | 2,500        | 500         | 80%     |
+| `git add/commit/push` (×8)     | 1,600        | 120         | 92%     |
+| `cargo test` / `npm test` (×5) | 25,000       | 2,500       | 90%     |
+| `ruff check` (×3)              | 3,000        | 600         | 80%     |
+| `pytest` (×4)                  | 8,000        | 800         | 90%     |
+| `go test` (×3)                 | 6,000        | 600         | 90%     |
+| `docker ps` (×3)               | 900          | 180         | 80%     |
+| **Total**                      | **~118,000** | **~23,900** | **80%** |
 
 > Based on medium TypeScript/Rust projects. Actual savings vary.
 
@@ -490,11 +490,11 @@ Add to `~/.claude/settings.json`:
 
 Prefer visibility over silent rewrites? The suggest hook detects clov-compatible commands and emits a system reminder instead of rewriting:
 
-| | Auto-Rewrite | Suggest |
-|---|---|---|
-| Strategy | Modifies command before execution | Emits reminder to Claude |
-| Coverage | 100% forced | ~70-85% (model-dependent) |
-| Use case | Production, guaranteed savings | Auditing, learning mode |
+|          | Auto-Rewrite                      | Suggest                   |
+| -------- | --------------------------------- | ------------------------- |
+| Strategy | Modifies command before execution | Emits reminder to Claude  |
+| Coverage | 100% forced                       | ~70-85% (model-dependent) |
+| Use case | Production, guaranteed savings    | Auditing, learning mode   |
 
 ```bash
 cp .claude/hooks/clov-suggest.sh ~/.claude/hooks/clov-suggest.sh
@@ -509,12 +509,12 @@ Register in settings.json the same way as the rewrite hook.
 
 ### Install Modes
 
-| Command | Scope | Hook | CLOV.md | Context tokens | Use when |
-|---|---|---|---|---|---|
-| `clov init -g` | Global | yes | yes (10 lines) | ~10 | Recommended |
-| `clov init -g --claude-md` | Global | no | no | ~2,000 | Legacy compat |
-| `clov init -g --hook-only` | Global | yes | no | 0 | Minimal |
-| `clov init` | Local | no | no | ~2,000 | Single project |
+| Command                    | Scope  | Hook | CLOV.md        | Context tokens | Use when       |
+| -------------------------- | ------ | ---- | -------------- | -------------- | -------------- |
+| `clov init -g`             | Global | yes  | yes (10 lines) | ~10            | Recommended    |
+| `clov init -g --claude-md` | Global | no   | no             | ~2,000         | Legacy compat  |
+| `clov init -g --hook-only` | Global | yes  | no             | 0              | Minimal        |
+| `clov init`                | Local  | no   | no             | ~2,000         | Single project |
 
 ### Database
 
@@ -555,6 +555,7 @@ max_file_size = 1048576  # 1MB
 ```
 
 Env overrides:
+
 - `CLOV_TEE=0` — disable entirely
 - `CLOV_TEE_DIR=/path` — custom output directory
 
