@@ -7,7 +7,7 @@
 
 ![clov preview](img_1.jpg)
 
-clov sits between your shell and your model. It intercepts command output, filters the noise, and hands back only what matters. Most operations see 60-90% fewer tokens.
+clov sits between your shell and your model. It intercepts command output, filters the noise, and hands back only what matters. Token reduction varies by command and project, but the difference is consistent enough to notice from day one.
 
 ## Token Savings (30-min Claude Code Session)
 
@@ -185,7 +185,6 @@ clov gain --all --format json    # JSON for APIs/dashboards
 clov gain --all --format csv     # CSV for Excel/analysis
 ```
 
-> API Documentation: For programmatic access to tracking data, see [docs/tracking.md](docs/tracking.md).
 
 ### Discover: Find Missed Savings
 
@@ -739,7 +738,6 @@ sudo dnf remove clov         # Fedora/RHEL
 
 ## Documentation
 
-- **[TROUBLESHOOTING.md](docs/TROUBLESHOOTING.md)**: Fix common issues (wrong clov installed, missing commands, PATH issues)
 - **[INSTALL.md](INSTALL.md)**: Detailed installation guide with verification steps
 - **[AUDIT_GUIDE.md](docs/AUDIT_GUIDE.md)**: Guide to token savings analytics, temporal breakdowns, and data export
 - **[CLAUDE.md](CLAUDE.md)**: Claude Code integration instructions and project context
@@ -804,7 +802,6 @@ nano ~/.claude/settings.json  # Remove clov hook entry
 cp ~/.claude/settings.json.bak ~/.claude/settings.json
 ```
 
-See **[TROUBLESHOOTING.md](docs/TROUBLESHOOTING.md)** for more.
 
 ## For Maintainers
 
