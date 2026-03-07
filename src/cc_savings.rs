@@ -1,4 +1,4 @@
-//! Claude Code Economics: Spending vs Savings Analysis
+//! Claude Code Savings: Spending vs Savings Analysis
 //!
 //! Combines ccusage (tokens spent) with clov tracking (tokens saved) to provide
 //! dual-metric economic impact reporting with blended and active cost-per-token.
@@ -25,7 +25,7 @@ const WEIGHT_CACHE_READ: f64 = 0.1; // Cache read = 0.1x input
 // ── Types ──
 
 #[derive(Debug, Serialize)]
-pub struct PeriodEconomics {
+pub struct PeriodSavings {
     pub label: String,
     // ccusage metrics (Option for graceful degradation)
     pub cc_cost: Option<f64>,
@@ -50,7 +50,7 @@ pub struct PeriodEconomics {
     pub savings_active: Option<f64>, // saved * active_cpt (OVERESTIMATES)
 }
 
-impl PeriodEconomics {
+impl PeriodSavings {
     fn new(label: &str) -> Self {
         Self {
             label: label.to_string(),
@@ -200,15 +200,15 @@ pub fn run(
 
 // ── Merge Logic ──
 
-fn merge_daily(cc: Option<Vec<CcusagePeriod>>, clov: Vec<DayStats>) -> Vec<PeriodEconomics> {
-    let mut map: HashMap<String, PeriodEconomics> = HashMap::new();
+fn merge_daily(cc: Option<Vec<CcusagePeriod>>, clov: Vec<DayStats>) -> Vec<PeriodSavings> {
+    let mut map: HashMap<String, PeriodSavings> = HashMap::new();
 
     // Insert ccusage data
     if let Some(cc_data) = cc {
         for entry in cc_data {
             let crate::ccusage::CcusagePeriod { key, metrics } = entry;
             map.entry(key)
-                .or_insert_with_key(|k| PeriodEconomics::new(k))
+                .or_insert_with_key(|k| PeriodSavings::new(k))
                 .set_ccusage(&metrics);
         }
     }
@@ -216,7 +216,7 @@ fn merge_daily(cc: Option<Vec<CcusagePeriod>>, clov: Vec<DayStats>) -> Vec<Perio
     // Merge clov data
     for entry in clov {
         map.entry(entry.date.clone())
-            .or_insert_with_key(|k| PeriodEconomics::new(k))
+            .or_insert_with_key(|k| PeriodSavings::new(k))
             .set_clov_from_day(&entry);
     }
 
@@ -230,15 +230,15 @@ fn merge_daily(cc: Option<Vec<CcusagePeriod>>, clov: Vec<DayStats>) -> Vec<Perio
     result
 }
 
-fn merge_weekly(cc: Option<Vec<CcusagePeriod>>, clov: Vec<WeekStats>) -> Vec<PeriodEconomics> {
-    let mut map: HashMap<String, PeriodEconomics> = HashMap::new();
+fn merge_weekly(cc: Option<Vec<CcusagePeriod>>, clov: Vec<WeekStats>) -> Vec<PeriodSavings> {
+    let mut map: HashMap<String, PeriodSavings> = HashMap::new();
 
     // Insert ccusage data (key = ISO Monday "2026-01-20")
     if let Some(cc_data) = cc {
         for entry in cc_data {
             let crate::ccusage::CcusagePeriod { key, metrics } = entry;
             map.entry(key)
-                .or_insert_with_key(|k| PeriodEconomics::new(k))
+                .or_insert_with_key(|k| PeriodSavings::new(k))
                 .set_ccusage(&metrics);
         }
     }
@@ -255,7 +255,7 @@ fn merge_weekly(cc: Option<Vec<CcusagePeriod>>, clov: Vec<WeekStats>) -> Vec<Per
         };
 
         map.entry(monday_key)
-            .or_insert_with_key(|key| PeriodEconomics::new(key))
+            .or_insert_with_key(|key| PeriodSavings::new(key))
             .set_clov_from_week(&entry);
     }
 
@@ -268,15 +268,15 @@ fn merge_weekly(cc: Option<Vec<CcusagePeriod>>, clov: Vec<WeekStats>) -> Vec<Per
     result
 }
 
-fn merge_monthly(cc: Option<Vec<CcusagePeriod>>, clov: Vec<MonthStats>) -> Vec<PeriodEconomics> {
-    let mut map: HashMap<String, PeriodEconomics> = HashMap::new();
+fn merge_monthly(cc: Option<Vec<CcusagePeriod>>, clov: Vec<MonthStats>) -> Vec<PeriodSavings> {
+    let mut map: HashMap<String, PeriodSavings> = HashMap::new();
 
     // Insert ccusage data
     if let Some(cc_data) = cc {
         for entry in cc_data {
             let crate::ccusage::CcusagePeriod { key, metrics } = entry;
             map.entry(key)
-                .or_insert_with_key(|k| PeriodEconomics::new(k))
+                .or_insert_with_key(|k| PeriodSavings::new(k))
                 .set_ccusage(&metrics);
         }
     }
@@ -284,7 +284,7 @@ fn merge_monthly(cc: Option<Vec<CcusagePeriod>>, clov: Vec<MonthStats>) -> Vec<P
     // Merge clov data
     for entry in clov {
         map.entry(entry.month.clone())
-            .or_insert_with_key(|k| PeriodEconomics::new(k))
+            .or_insert_with_key(|k| PeriodSavings::new(k))
             .set_clov_from_month(&entry);
     }
 
@@ -311,7 +311,7 @@ fn convert_saturday_to_monday(saturday: &str) -> Option<String> {
     Some(monday.format("%Y-%m-%d").to_string())
 }
 
-fn compute_totals(periods: &[PeriodEconomics]) -> Totals {
+fn compute_totals(periods: &[PeriodSavings]) -> Totals {
     let mut totals = Totals {
         cc_cost: 0.0,
         cc_total_tokens: 0,
@@ -399,6 +399,17 @@ fn compute_totals(periods: &[PeriodEconomics]) -> Totals {
 
 // ── Display ──
 
+/// Render a single box line with exact inner width, padded/trimmed as needed.
+/// Output: `  │<content padded to inner_width>│`
+fn box_line(content: &str, inner_width: usize) -> String {
+    let len = content.chars().count();
+    if len >= inner_width {
+        format!("  │{}│", content.chars().take(inner_width).collect::<String>())
+    } else {
+        format!("  │{}{}│", content, " ".repeat(inner_width - len))
+    }
+}
+
 fn display_text(
     tracker: &Tracker,
     daily: bool,
@@ -441,7 +452,7 @@ fn display_summary(tracker: &Tracker, verbose: u8) -> Result<()> {
 
     let totals = compute_totals(&periods);
 
-    println!("💰 Claude Code Economics");
+    println!("💰 Claude Code Savings");
     println!("════════════════════════════════════════════════════");
     println!();
 
@@ -475,6 +486,8 @@ fn display_summary(tracker: &Tracker, verbose: u8) -> Result<()> {
     );
     println!();
 
+    // Box inner width = 49 (matches the 49 dashes in ┌─...─┐)
+    const BOX_W: usize = 49;
     println!("  Estimated Savings:");
     println!("  ┌─────────────────────────────────────────────────┐");
 
@@ -485,18 +498,27 @@ fn display_summary(tracker: &Tracker, verbose: u8) -> Result<()> {
             0.0
         };
         println!(
-            "  │ Input token pricing:   {}  ({:.1}%)           │",
-            format_usd(weighted_savings).trim_end(),
-            weighted_pct
+            "{}",
+            box_line(
+                &format!(
+                    " Input token pricing:   {}  ({:.1}%)",
+                    format_usd(weighted_savings).trim_end(),
+                    weighted_pct
+                ),
+                BOX_W
+            )
         );
         if let Some(input_cpt) = totals.weighted_input_cpt {
             println!(
-                "  │ Derived input CPT:     {}               │",
-                format_cpt(input_cpt)
+                "{}",
+                box_line(
+                    &format!(" Derived input CPT:     {}", format_cpt(input_cpt)),
+                    BOX_W
+                )
             );
         }
     } else {
-        println!("  │ Input token pricing:   —                         │");
+        println!("{}", box_line(" Input token pricing:   —", BOX_W));
     }
 
     println!("  └─────────────────────────────────────────────────┘");
@@ -549,7 +571,7 @@ fn display_daily(tracker: &Tracker, verbose: u8) -> Result<()> {
         .context("Failed to load daily token savings from database")?;
     let periods = merge_daily(cc_daily, clov_daily);
 
-    println!("📅 Daily Economics");
+    println!("📅 Daily Savings");
     println!("════════════════════════════════════════════════════");
     print_period_table(&periods, verbose);
     Ok(())
@@ -563,7 +585,7 @@ fn display_weekly(tracker: &Tracker, verbose: u8) -> Result<()> {
         .context("Failed to load weekly token savings from database")?;
     let periods = merge_weekly(cc_weekly, clov_weekly);
 
-    println!("📅 Weekly Economics");
+    println!("📅 Weekly Savings");
     println!("════════════════════════════════════════════════════");
     print_period_table(&periods, verbose);
     Ok(())
@@ -577,13 +599,13 @@ fn display_monthly(tracker: &Tracker, verbose: u8) -> Result<()> {
         .context("Failed to load monthly token savings from database")?;
     let periods = merge_monthly(cc_monthly, clov_monthly);
 
-    println!("📅 Monthly Economics");
+    println!("📅 Monthly Savings");
     println!("════════════════════════════════════════════════════");
     print_period_table(&periods, verbose);
     Ok(())
 }
 
-fn print_period_table(periods: &[PeriodEconomics], verbose: u8) {
+fn print_period_table(periods: &[PeriodSavings], verbose: u8) {
     println!();
 
     if verbose > 0 {
@@ -671,9 +693,9 @@ fn export_json(
 ) -> Result<()> {
     #[derive(Serialize)]
     struct Export {
-        daily: Option<Vec<PeriodEconomics>>,
-        weekly: Option<Vec<PeriodEconomics>>,
-        monthly: Option<Vec<PeriodEconomics>>,
+        daily: Option<Vec<PeriodSavings>>,
+        weekly: Option<Vec<PeriodSavings>>,
+        monthly: Option<Vec<PeriodSavings>>,
         totals: Option<Totals>,
     }
 
@@ -770,7 +792,7 @@ fn export_csv(
     Ok(())
 }
 
-fn print_csv_row(p: &PeriodEconomics) {
+fn print_csv_row(p: &PeriodSavings) {
     let spent = p.cc_cost.map(|c| format!("{:.4}", c)).unwrap_or_default();
     let input_tokens = p.cc_input_tokens.map(|t| t.to_string()).unwrap_or_default();
     let output_tokens = p
@@ -844,7 +866,7 @@ mod tests {
 
     #[test]
     fn test_period_economics_new() {
-        let p = PeriodEconomics::new("2026-01");
+        let p = PeriodSavings::new("2026-01");
         assert_eq!(p.label, "2026-01");
         assert!(p.cc_cost.is_none());
         assert!(p.clov_commands.is_none());
@@ -852,13 +874,13 @@ mod tests {
 
     #[test]
     fn test_compute_dual_metrics_with_data() {
-        let mut p = PeriodEconomics {
+        let mut p = PeriodSavings {
             label: "2026-01".to_string(),
             cc_cost: Some(100.0),
             cc_total_tokens: Some(1_000_000),
             cc_active_tokens: Some(10_000),
             clov_saved_tokens: Some(5_000),
-            ..PeriodEconomics::new("2026-01")
+            ..PeriodSavings::new("2026-01")
         };
 
         p.compute_dual_metrics();
@@ -875,13 +897,13 @@ mod tests {
 
     #[test]
     fn test_compute_dual_metrics_zero_tokens() {
-        let mut p = PeriodEconomics {
+        let mut p = PeriodSavings {
             label: "2026-01".to_string(),
             cc_cost: Some(100.0),
             cc_total_tokens: Some(0),
             cc_active_tokens: Some(0),
             clov_saved_tokens: Some(5_000),
-            ..PeriodEconomics::new("2026-01")
+            ..PeriodSavings::new("2026-01")
         };
 
         p.compute_dual_metrics();
@@ -894,10 +916,10 @@ mod tests {
 
     #[test]
     fn test_compute_dual_metrics_no_ccusage_data() {
-        let mut p = PeriodEconomics {
+        let mut p = PeriodSavings {
             label: "2026-01".to_string(),
             clov_saved_tokens: Some(5_000),
-            ..PeriodEconomics::new("2026-01")
+            ..PeriodSavings::new("2026-01")
         };
 
         p.compute_dual_metrics();
@@ -1010,7 +1032,7 @@ mod tests {
 
     #[test]
     fn test_compute_weighted_input_cpt() {
-        let mut p = PeriodEconomics::new("2026-01");
+        let mut p = PeriodSavings::new("2026-01");
         p.cc_cost = Some(100.0);
         p.cc_input_tokens = Some(1000);
         p.cc_output_tokens = Some(500);
@@ -1035,7 +1057,7 @@ mod tests {
 
     #[test]
     fn test_compute_weighted_metrics_zero_tokens() {
-        let mut p = PeriodEconomics::new("2026-01");
+        let mut p = PeriodSavings::new("2026-01");
         p.cc_cost = Some(100.0);
         p.cc_input_tokens = Some(0);
         p.cc_output_tokens = Some(0);
@@ -1051,7 +1073,7 @@ mod tests {
 
     #[test]
     fn test_compute_weighted_metrics_no_cache() {
-        let mut p = PeriodEconomics::new("2026-01");
+        let mut p = PeriodSavings::new("2026-01");
         p.cc_cost = Some(60.0);
         p.cc_input_tokens = Some(1000);
         p.cc_output_tokens = Some(1000);
@@ -1076,7 +1098,7 @@ mod tests {
 
     #[test]
     fn test_set_ccusage_stores_per_type_tokens() {
-        let mut p = PeriodEconomics::new("2026-01");
+        let mut p = PeriodSavings::new("2026-01");
         let metrics = ccusage::CcusageMetrics {
             input_tokens: 1000,
             output_tokens: 500,
@@ -1099,7 +1121,7 @@ mod tests {
     #[test]
     fn test_compute_totals() {
         let periods = vec![
-            PeriodEconomics {
+            PeriodSavings {
                 label: "2026-01".to_string(),
                 cc_cost: Some(100.0),
                 cc_total_tokens: Some(1_000_000),
@@ -1118,7 +1140,7 @@ mod tests {
                 savings_blended: None,
                 savings_active: None,
             },
-            PeriodEconomics {
+            PeriodSavings {
                 label: "2026-02".to_string(),
                 cc_cost: Some(200.0),
                 cc_total_tokens: Some(2_000_000),

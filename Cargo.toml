@@ -1,6 +1,6 @@
 [package]
 name = "clov"
-version = "0.26.1"
+version = "0.26.2"
 edition = "2021"
 authors = ["alexandephilia"]
 description = "Clov Token Omitter - High-performance CLI proxy to minimize LLM token consumption"

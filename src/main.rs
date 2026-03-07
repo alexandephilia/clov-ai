@@ -1,6 +1,6 @@
 mod aws_cmd;
 mod cargo_cmd;
-mod cc_economics;
+mod cc_savings;
 mod ccusage;
 mod config;
 mod container;
@@ -390,8 +390,8 @@ enum Commands {
         failures: bool,
     },
 
-    /// Claude Code economics: spending (ccusage) vs savings (clov) analysis
-    CcEconomics {
+    /// Claude Code savings: spending (ccusage) vs savings (clov) analysis
+    CcSavings {
         /// Show detailed daily breakdown
         #[arg(short, long)]
         daily: bool,
@@ -980,7 +980,7 @@ const CLOV_META_COMMANDS: &[&str] = &[
     "config",
     "proxy",
     "hook-audit",
-    "cc-economics",
+    "cc-savings",
 ];
 
 fn run_fallback(parse_error: clap::Error) -> Result<()> {
@@ -1465,14 +1465,14 @@ fn main() -> Result<()> {
             )?;
         }
 
-        Commands::CcEconomics {
+        Commands::CcSavings {
             daily,
             weekly,
             monthly,
             all,
             format,
         } => {
-            cc_economics::run(daily, weekly, monthly, all, &format, cli.verbose)?;
+            cc_savings::run(daily, weekly, monthly, all, &format, cli.verbose)?;
         }
 
         Commands::Config { create } => {
@@ -2048,7 +2048,7 @@ mod tests {
             vec!["clov", "config"],
             vec!["clov", "proxy", "echo", "hi"],
             vec!["clov", "hook-audit"],
-            vec!["clov", "cc-economics"],
+            vec!["clov", "cc-savings"],
         ];
         for args in &meta_cmds_that_parse {
             let result = Cli::try_parse_from(args.iter());
