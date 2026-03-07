@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.29.1](https://github.com/alexandephilia/clov-ai/compare/v0.29.0...v0.29.1) (2026-03-08)
+
+### Features
+
+* harden MCP proxy framing and structured response filtering ([edf0999](https://github.com/alexandephilia/clov-ai/commit/edf0999))
+
 ## [0.29.0](https://github.com/alexandephilia/clov-ai/compare/v0.28.0...v0.29.0) (2026-03-07)
 
 
