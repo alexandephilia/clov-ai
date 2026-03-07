@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.29.0](https://github.com/alexandephilia/clov-ai/compare/v0.28.0...v0.29.0) (2026-03-07)
+
+
+### Features
+
+* optimize release workflow with pre-built packaging tools ([611fd80](https://github.com/alexandephilia/clov-ai/commit/611fd80c505614afc9d9a0fe8d2c0d6011b2dabf))
+
 ## [0.28.0](https://github.com/alexandephilia/clov-ai/compare/v0.27.2...v0.28.0) (2026-03-07)
 
 
