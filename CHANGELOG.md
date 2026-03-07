@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.28.0](https://github.com/alexandephilia/clov-ai/compare/v0.27.2...v0.28.0) (2026-03-07)
+
+
+### Features
+
+* implement Universal MCP filtering and generalized documentation (v0.27.7) ([d010ba4](https://github.com/alexandephilia/clov-ai/commit/d010ba491dcf2dee813dbdebb79c7957e8746065))
+
 ## [0.27.7](https://github.com/alexandephilia/clov-ai/compare/v0.27.2...v0.27.7) (2026-03-08)
 
 ### Features
