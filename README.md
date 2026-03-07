@@ -5,7 +5,7 @@
 </p>
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Version](https://img.shields.io/badge/version-0.29.4-blue.svg)](https://github.com/alexandephilia/clov-ai/releases/tag/v0.29.4)
+[![Version](https://img.shields.io/badge/version-0.29.1-blue.svg)](https://github.com/alexandephilia/clov-ai/releases/tag/v0.29.1)
 [![Claude Code](https://img.shields.io/badge/Claude_Code-integrated-7B2D8B?logo=anthropic&logoColor=white)](https://claude.ai/code)
 
 MCP (Model Context Protocol) servers are brilliant, but their outputs are an uncontrolled firehose of context-destroying noise. When your AI agent pulls web search results or database dumps, it swallows navigation chrome, tracking parameters, and megabytes of unstructured JSON.
