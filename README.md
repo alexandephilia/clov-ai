@@ -1,12 +1,13 @@
-# clov - Clov Token Omitter
+# clov — Token Omitter for LLM Workflows
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Version](https://img.shields.io/badge/version-0.25.0-blue.svg)](https://github.com/alexandephilia/clov-ai/releases/tag/v0.25.0)
 
-**High-performance CLI proxy to minimize LLM token consumption.**
+**A high-performance CLI proxy that eliminates token waste before it reaches your LLM context.**
 
 ![clov preview](img_1.jpg)
 
-clov filters and compresses command outputs before they reach your LLM context, saving 60-90% of tokens on common operations.
+clov intercepts command output, applies intelligent filtering and compression, and delivers only what your model actually needs — cutting 60–90% of tokens on everyday development operations.
 
 ## Token Savings (30-min Claude Code Session)
 
@@ -35,17 +36,17 @@ With clov: **~45,000 tokens** → **70% reduction**
 
 ## Installation
 
-### ⚠️ Pre-Installation Check (REQUIRED)
+### ⚠️ Pre-Installation Check
 
-**ALWAYS verify if clov is already installed before installing:**
+Before proceeding, confirm whether clov is already present on your system:
 
 ```bash
 clov --version        # Check if installed
-clov gain             # Verify it's the Token Omitter
-which clov            # Check installation path
+clov gain             # Confirm it is the Token Omitter
+which clov            # Inspect the installation path
 ```
 
-If already installed and `clov gain` works, **DO NOT reinstall**. Skip to Quick Start.
+If clov is already installed and `clov gain` responds correctly, skip installation and proceed to [Quick Start](#quick-start).
 
 ### Homebrew (macOS/Linux)
 
@@ -90,24 +91,24 @@ Download from [clov-ai/releases](https://github.com/alexandephilia/clov-ai/relea
 ## Quick Start
 
 ```bash
-# 1. Verify installation
-clov gain  # Must show token stats, not "command not found"
+# 1. Verify the installation
+clov gain  # Must display token stats — not "command not found"
 
-# 2. Initialize for Claude Code (RECOMMENDED: hook-first mode)
+# 2. Initialize for Claude Code (recommended: hook-first mode)
 clov init --global
-# → Installs hook + creates slim CLOV.md (10 lines, 99.5% token savings)
-# → Follow printed instructions to add hook to ~/.claude/settings.json
+# → Installs the rewrite hook + creates a slim CLOV.md (10 lines, 99.5% token savings)
+# → Follow the printed instructions to register the hook in ~/.claude/settings.json
 
-# 3. Test it works
-clov git status  # Should show ultra-compact output
-clov init --show # Verify hook is installed and executable
+# 3. Confirm everything is working
+clov git status   # Should produce ultra-compact output
+clov init --show  # Verify the hook is installed and executable
 
 # Alternative modes:
 # clov init --global --claude-md  # Legacy: full injection (137 lines)
 # clov init                       # Local project only (./CLAUDE.md)
 ```
 
-**New in v0.9.5**: Hook-first installation eliminates ~2000 tokens from Claude's context while maintaining full CLOV functionality through transparent command rewriting.
+**New in v0.25.0**: Hook-first installation removes ~2,000 tokens from Claude's context while preserving full clov functionality through transparent command rewriting.
 
 ## Global Flags
 
@@ -189,11 +190,11 @@ clov gain --all --format csv     # CSV export for Excel/analysis
 
 ### Discover — Find Missed Savings
 
-Scans your Claude Code session history to find commands where clov would have saved tokens. Use it to:
+Scans your Claude Code session history to surface commands where clov would have reduced token usage. Use it to:
 
-- **Measure what you're missing** — see exactly how many tokens you could save
-- **Identify habits** — find which commands you keep running without clov
-- **Spot new opportunities** — see unhandled commands that could become clov features
+- **Quantify what you're leaving behind** — see precisely how many tokens go to waste
+- **Surface ingrained habits** — discover which commands you routinely run without clov
+- **Identify new opportunities** — find unhandled commands that could become clov features
 
 ```bash
 clov discover                    # Current project, last 30 days
@@ -206,28 +207,33 @@ clov discover --format json      # Machine-readable output
 Example output:
 
 ```
-CLOV Discover -- Savings Opportunities
-====================================================
-Scanned: 142 sessions (last 30 days), 1786 Bash commands
-Already using CLOV: 108 commands (6%)
-
-MISSED SAVINGS -- Commands CLOV already handles
-----------------------------------------------------
-Command              Count    CLOV Equivalent        Est. Savings
-git log                434    clov git               ~55.9K tokens
-cargo test             203    clov cargo             ~49.9K tokens
-ls -la                 107    clov ls                ~11.8K tokens
-gh pr                   80    clov gh                ~10.4K tokens
-----------------------------------------------------
-Total: 986 commands -> ~143.9K tokens saveable
-
-TOP UNHANDLED COMMANDS -- open an issue?
-----------------------------------------------------
-Command              Count    Example
-git checkout            84    git checkout feature/my-branch
-cargo run               32    cargo run -- gain --help
-----------------------------------------------------
--> github.com/alexandephilia/clov-ai/issues
+╔══════════════════════════════════════════════════════════╗
+║        clov discover — Savings Opportunities             ║
+╠══════════════════════════════════════════════════════════╣
+║  Scanned : 142 sessions · last 30 days                  ║
+║  Commands: 1,786 Bash invocations                       ║
+║  Via clov: 108  (6%)                                    ║
+╠══════════════════════════════════════════════════════════╣
+║  MISSED SAVINGS — commands clov already handles          ║
+╠══════════════════════════════════════════════════════════╣
+║  Command        Count   clov Equivalent    Est. Savings  ║
+║  ────────────────────────────────────────────────────── ║
+║  git log          434   clov git           ~55.9K tokens ║
+║  cargo test       203   clov cargo         ~49.9K tokens ║
+║  ls -la           107   clov ls            ~11.8K tokens ║
+║  gh pr             80   clov gh            ~10.4K tokens ║
+║  ────────────────────────────────────────────────────── ║
+║  Total: 986 commands  →  ~143.9K tokens recoverable      ║
+╠══════════════════════════════════════════════════════════╣
+║  TOP UNHANDLED — worth opening an issue?                 ║
+╠══════════════════════════════════════════════════════════╣
+║  Command        Count   Example                          ║
+║  ────────────────────────────────────────────────────── ║
+║  git checkout      84   git checkout feature/my-branch  ║
+║  cargo run         32   cargo run -- gain --help         ║
+║  ────────────────────────────────────────────────────── ║
+║  → github.com/alexandephilia/clov-ai/issues             ║
+╚══════════════════════════════════════════════════════════╝
 ```
 
 ### Containers
@@ -327,34 +333,42 @@ FAILED: 2/15 tests
 ## How It Works
 
 ```
-  Without clov:
-
-  ┌──────────┐  git status     ┌──────────┐  git status  ┌──────────┐
-  │  Claude  │ ─────────────── │  shell   │ ──────────── │   git    │
-  │   LLM    │                 │          │              │  (CLI)   │
-  └──────────┘                 └──────────┘              └──────────┘
-        ▲                                                      │
-        │              ~2,000 tokens (raw output)              │
-        └──────────────────────────────────────────────────────┘
-
-  With clov:
-
-  ┌──────────┐  git status     ┌──────────┐  git status  ┌──────────┐
-  │  Claude  │ ─────────────── │   CLOV    │ ──────────── │   git    │
-  │   LLM    │                 │  (proxy) │              │  (CLI)   │
-  └──────────┘                 └──────────┘              └──────────┘
-        ▲                           │  ~2,000 tokens raw       │
-        │                           └──────────────────────────┘
-        │  ~200 tokens (filtered)   filter · group · dedup · truncate
-        └───────────────────────────────────────────────────────
+  ╔══════════════════════════════════════════════════════════════════════╗
+  ║  WITHOUT clov                                                        ║
+  ╠══════════════════════════════════════════════════════════════════════╣
+  ║                                                                      ║
+  ║  ┌────────────┐  git status  ┌──────────┐  git status  ┌─────────┐  ║
+  ║  │ Claude LLM │ ───────────► │  Shell   │ ───────────► │   git   │  ║
+  ║  └────────────┘              └──────────┘              └─────────┘  ║
+  ║        ▲                                                     │       ║
+  ║        │           ~2,000 tokens  (raw, unfiltered)          │       ║
+  ║        └─────────────────────────────────────────────────────┘       ║
+  ║                                                                      ║
+  ╠══════════════════════════════════════════════════════════════════════╣
+  ║  WITH clov                                                           ║
+  ╠══════════════════════════════════════════════════════════════════════╣
+  ║                                                                      ║
+  ║  ┌────────────┐  git status  ┌──────────┐  git status  ┌─────────┐  ║
+  ║  │ Claude LLM │ ───────────► │   clov   │ ───────────► │   git   │  ║
+  ║  └────────────┘              │  (proxy) │              └─────────┘  ║
+  ║        ▲                     └──────────┘                   │       ║
+  ║        │                          │   ~2,000 tokens raw ◄───┘       ║
+  ║        │                          ▼                                  ║
+  ║        │              ┌───────────────────────────────┐              ║
+  ║        │              │ filter · group · dedup · trim │              ║
+  ║        │              └───────────────────────────────┘              ║
+  ║        │    ~200 tokens  (distilled, signal-only)                    ║
+  ║        └─────────────────────────────────────────────────────────────║
+  ║                                                                      ║
+  ╚══════════════════════════════════════════════════════════════════════╝
 ```
 
-Four strategies applied per command type:
+Four reduction strategies applied per command type:
 
-1. **Smart Filtering**: Removes noise (comments, whitespace, boilerplate)
-2. **Grouping**: Aggregates similar items (files by directory, errors by type)
-3. **Truncation**: Keeps relevant context, cuts redundancy
-4. **Deduplication**: Collapses repeated log lines with counts
+1. **Smart Filtering** — strips noise: comments, blank lines, ANSI codes, boilerplate
+2. **Grouping** — aggregates related items: errors by type, files by directory
+3. **Truncation** — retains meaningful context, discards redundant repetition
+4. **Deduplication** — collapses repeated log lines into single entries with counts
 
 ## Configuration
 
@@ -398,10 +412,10 @@ clov init -g --uninstall     # Remove all CLOV artifacts
 ```
 
 **What is settings.json?**
-Claude Code configuration file that registers the CLOV hook. The hook transparently rewrites commands (e.g., `git status` → `clov git status`) before execution. Without this registration, Claude won't use the hook.
+Claude Code's configuration file, used to register hooks. The hook transparently rewrites commands (e.g., `git status` → `clov git status`) before execution. Without this registration, Claude ignores the hook entirely.
 
-**Backup Behavior**:
-CLOV creates `~/.claude/settings.json.bak` before making changes. If something breaks, restore with:
+**Backup behavior**:
+clov creates `~/.claude/settings.json.bak` before making any changes. To revert:
 
 ```bash
 cp ~/.claude/settings.json.bak ~/.claude/settings.json
@@ -409,31 +423,32 @@ cp ~/.claude/settings.json.bak ~/.claude/settings.json
 
 **Migration**: If you previously used `clov init -g` with the old system (137-line injection), simply re-run `clov init -g` to automatically migrate to the new hook-first approach.
 
-example of 3 days session:
+**Example — 3-day session (`clov gain --all`):**
 
-```bash
-📊 CLOV Token Savings
-════════════════════════════════════════
-
-Total commands:    133
-Input tokens:      30.5K
-Output tokens:     10.7K
-Tokens saved:      25.3K (83.0%)
-
-By Command:
-────────────────────────────────────────
-Command               Count      Saved     Avg%
-clov git status           41      17.4K    82.9%
-clov git push             54       3.4K    91.6%
-clov grep                 15       3.2K    26.5%
-clov ls                   23       1.4K    37.2%
-
-Daily Savings (last 30 days):
-────────────────────────────────────────
-01-23 │███████████████████                      6.4K
-01-24 │██████████████████                       5.9K
-01-25 │                                         18
-01-26 │████████████████████████████████████████ 13.0K
+```
+╔══════════════════════════════════════════════════════╗
+║              📊  clov gain — Token Savings           ║
+╠══════════════════════════════════════════════════════╣
+║  Total commands  :   133                             ║
+║  Input tokens    :  30.5K                            ║
+║  Output tokens   :  10.7K                            ║
+║  Tokens saved    :  25.3K  (83.0%)                   ║
+╠══════════════════════════════════════════════════════╣
+║  By Command                                          ║
+║  ────────────────────────────────────────────────── ║
+║  Command               Count    Saved     Avg%       ║
+║  clov git status          41    17.4K    82.9%       ║
+║  clov git push            54     3.4K    91.6%       ║
+║  clov grep                15     3.2K    26.5%       ║
+║  clov ls                  23     1.4K    37.2%       ║
+╠══════════════════════════════════════════════════════╣
+║  Daily Savings (last 30 days)                        ║
+║  ────────────────────────────────────────────────── ║
+║  01-23 │███████████████████              6.4K        ║
+║  01-24 │██████████████████               5.9K        ║
+║  01-25 │                                   18        ║
+║  01-26 │████████████████████████████████ 13.0K       ║
+╚══════════════════════════════════════════════════════╝
 ```
 
 ### Custom Database Path
@@ -496,41 +511,44 @@ The most effective way to use clov is with the **auto-rewrite hook** for Claude 
 
 ### What Are Hooks?
 
-**For Beginners**:
-Claude Code hooks are scripts that run before/after Claude executes commands. CLOV uses a **PreToolUse** hook that intercepts Bash commands and rewrites them (e.g., `git status` → `clov git status`) before execution. This is **transparent** - Claude never sees the rewrite, it just gets optimized output.
+**For newcomers**: Claude Code hooks are scripts that execute before or after Claude runs a command. clov registers a **PreToolUse** hook that intercepts Bash commands and silently rewrites them (e.g., `git status` → `clov git status`) before the shell sees them. The substitution is completely transparent — Claude simply receives optimized output.
 
-**Why settings.json?**
-Claude Code reads `~/.claude/settings.json` to find registered hooks. Without this file, Claude doesn't know the CLOV hook exists. Think of it as the hook registry.
+**Why settings.json?** Claude Code reads `~/.claude/settings.json` to discover registered hooks. Without this entry, Claude has no awareness of the clov hook. Think of it as the hook registry.
 
-**Is it safe?**
-Yes. CLOV creates a backup (`settings.json.bak`) before changes. The hook is read-only (it only modifies command strings, never deletes files or accesses secrets). Review the hook script at `~/.claude/hooks/clov-rewrite.sh` anytime.
+**Is it safe?** Yes. clov creates a backup (`settings.json.bak`) before any modification. The hook is read-only — it only transforms command strings; it never deletes files or touches secrets. You can inspect the hook script at `~/.claude/hooks/clov-rewrite.sh` at any time.
 
 ### How It Works
 
 The hook runs as a Claude Code [PreToolUse hook](https://docs.anthropic.com/en/docs/claude-code/hooks). When Claude Code is about to execute a Bash command like `git status`, the hook rewrites it to `clov git status` before the command reaches the shell. Claude Code never sees the rewrite — it's transparent.
 
 ```
-  Claude Code types:  git status
-                           │
-                    ┌──────▼──────────────────────┐
-                    │  ~/.claude/settings.json     │
-                    │  PreToolUse hook registered  │
-                    └──────┬──────────────────────┘
-                           │
-                    ┌──────▼──────────────────────┐
-                    │  clov-rewrite.sh              │
-                    │  "git status"                │
-                    │    →  "clov git status"       │  transparent rewrite
-                    └──────┬──────────────────────┘
-                           │
-                    ┌──────▼──────────────────────┐
-                    │  CLOV (Rust binary)           │
-                    │  executes real git status    │
-                    │  filters output              │
-                    └──────┬──────────────────────┘
-                           │
-  Claude receives:  "3 modified, 1 untracked ✓"
-                    ↑ not 50 lines of raw git output
+  ┌──────────────────────────────────────────────────────┐
+  │  Claude Code issues:  git status                     │
+  └───────────────────────────┬──────────────────────────┘
+                              │
+              ┌───────────────▼───────────────────┐
+              │      ~/.claude/settings.json       │
+              │    PreToolUse hook registered      │
+              └───────────────┬───────────────────┘
+                              │
+              ┌───────────────▼───────────────────┐
+              │         clov-rewrite.sh            │
+              │                                    │
+              │   "git status"                     │
+              │        ──────────────────────►     │
+              │   "clov git status"                │  ← silent rewrite
+              └───────────────┬───────────────────┘
+                              │
+              ┌───────────────▼───────────────────┐
+              │         clov  (Rust binary)        │
+              │  · runs the real git status        │
+              │  · filters and compresses output   │
+              └───────────────┬───────────────────┘
+                              │
+  ┌───────────────────────────▼──────────────────────────┐
+  │  Claude receives:  "3 modified, 1 untracked ✓"       │
+  │                    ↑ not 50 lines of raw git output  │
+  └──────────────────────────────────────────────────────┘
 ```
 
 ### Quick Install (Automated)
@@ -687,7 +705,7 @@ chmod +x ~/.claude/hooks/clov-suggest.sh
 }
 ```
 
-The suggest hook detects the same commands as the rewrite hook but outputs a `systemMessage` instead of `updatedInput`, informing Claude Code that an clov alternative exists.
+The suggest hook detects the same commands as the rewrite hook but outputs a `systemMessage` instead of `updatedInput`, informing Claude Code that a clov alternative is available.
 
 ## Uninstalling CLOV
 
@@ -872,5 +890,4 @@ Contributions welcome! Please open an issue or PR on GitHub.
 
 ## Contact
 
-- Issues: https://github.com/alexandephilia/clov-ai/issues
 - Issues: https://github.com/alexandephilia/clov-ai/issues
