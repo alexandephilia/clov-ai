@@ -105,7 +105,7 @@ jobs:
         uses: dtolnay/rust-toolchain@stable
 
       - name: Install cargo-deb
-        uses: taiki-e/install-action@cargo-deb
+        run: cargo install cargo-deb --locked
 
       - name: Build DEB
         run: cargo deb
@@ -133,7 +133,7 @@ jobs:
           sudo apt-get install -y rpm
 
       - name: Install cargo-generate-rpm
-        uses: taiki-e/install-action@cargo-generate-rpm
+        run: cargo install cargo-generate-rpm --locked
 
       - name: Build release
         run: cargo build --release
@@ -179,10 +179,10 @@ jobs:
         run: |
           cd release
           for f in *.deb; do
-            [ -f "$f" ] && cp "$f" "clov_amd64.deb"
+            [ -f "$f" ] && cp "$f" "clov_amd64.deb" || true
           done
           for f in *.rpm; do
-            [ -f "$f" ] && cp "$f" "clov.x86_64.rpm"
+            [ -f "$f" ] && cp "$f" "clov.x86_64.rpm" || true
           done
 
       - name: Create checksums
