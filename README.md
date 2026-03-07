@@ -1,7 +1,7 @@
-# CLOV - Context Optimizer for MCP & Dev Tooling
+# CLOV - Context Limiter & Output Vetter
 
 <p align="center">
-  <img src="assets/clov_mascot.png" width="400" alt="clov mascot">
+  <img src="assets/clov.png" width="400" alt="clov mascot">
 </p>
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
