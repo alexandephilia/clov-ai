@@ -64,6 +64,9 @@ _(Pre-compiled binaries for all architectures are available in standard releases
 
 To armor your MCP servers, wrap their invocation command with the `clov mcp proxy` bridge. `clov` operates as a transparent JSON-RPC layer, handling MCP stdio framing (`Content-Length` and newline-delimited payloads) and compacting both text and structured tool results on the wire.
 
+![clov mcp preview](clov_0.jpg)
+
+
 Configuration example for your AI agent (e.g., `~/.claude/settings.json`):
 
 ```json
