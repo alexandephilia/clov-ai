@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.27.0](https://github.com/alexandephilia/clov-ai/compare/v0.26.4...v0.27.0) (2026-03-07)
+
+
+### Features
+
+* implement MCP proxy and Exa-specific filters (v0.26.5) ([13de67e](https://github.com/alexandephilia/clov-ai/commit/13de67ed8f7606c449734a9bb64fbd9d99b7ff52))
+
 ## [0.26.4](https://github.com/alexandephilia/clov-ai/compare/v0.26.3...v0.26.4) (2026-03-07)
 
 
