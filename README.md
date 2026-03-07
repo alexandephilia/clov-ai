@@ -779,13 +779,14 @@ MIT License - see [LICENSE](LICENSE) for details.
 
 ## Contributing
 
-Open an issue or PR on GitHub: https://github.com/alexandephilia/clov-ai/issues
-
-If something is broken, open an issue and say so clearly. If you built a filter, open a damn PR. Don't sit on it.
+Maintained by [@alexandephilia](https://github.com/alexandephilia) and Claude. Something's broken? Open a damn issue and say so clearly. That's it.
 
 ---
 
-This project is a hard fork. Built in Rust. Cuts the garbage so your model gets the signal.
+Built in Rust. Cuts the garbage so your model gets the signal.
 
-Maintained by [@alexandephilia](https://github.com/alexandephilia) and Claude.
-PRs open. Bug reports mandatory. Whining without a repro gets closed.
+```
+  ·  c l o v  ·
+  ──────────────────────────
+  @alexandephilia  ×  claude
+```
