@@ -5,7 +5,7 @@
 </p>
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Version](https://img.shields.io/badge/version-0.29.1-blue.svg)](https://github.com/alexandephilia/clov-ai/releases/tag/v0.29.1)
+[![Version](https://img.shields.io/badge/version-0.29.5-blue.svg)](https://github.com/alexandephilia/clov-ai/releases/tag/v0.29.5)
 [![Claude Code](https://img.shields.io/badge/Claude_Code-integrated-7B2D8B?logo=anthropic&logoColor=white)](https://claude.ai/code)
 
 MCP (Model Context Protocol) servers are brilliant, but their outputs are an uncontrolled firehose of context-destroying noise. When your AI agent pulls web search results or database dumps, it swallows navigation chrome, tracking parameters, and megabytes of unstructured JSON.
@@ -64,23 +64,53 @@ _(Pre-compiled binaries for all architectures are available in standard releases
 
 To armor your MCP servers, wrap their invocation command with the `clov mcp proxy` bridge. `clov` operates as a transparent JSON-RPC layer, handling MCP stdio framing (`Content-Length` and newline-delimited payloads) and compacting both text and structured tool results on the wire.
 
-![clov mcp preview](clov_0.jpg)
+![clov mcp preview](clov_5.jpg)
 
+> **Note**: Tested with Exa MCP search/crawl flows. Defaults remain conservative, but response budgets and truncation limits are now adjustable per proxy invocation.
 
 Configuration example for your AI agent (e.g., `~/.claude/settings.json`):
 
 ```json
 "mcpServers": {
   "web-search-engine": {
-    "command": "clov",
-    "args": ["mcp", "proxy", "npx", "-y", "target-mcp-server"]
+    "command": "/opt/homebrew/bin/clov",
+    "args": [
+      "mcp",
+      "proxy",
+      "--max-tokens", "4096",
+      "--max-array-items", "6",
+      "--max-object-keys", "16",
+      "npx", "-y", "target-mcp-server"
+    ]
   },
   "sql-connector": {
-    "command": "clov",
-    "args": ["mcp", "proxy", "python", "-m", "db_mcp"]
+    "command": "/opt/homebrew/bin/clov",
+    "args": [
+      "mcp",
+      "proxy",
+      "--max-tokens", "6000",
+      "--max-array-items", "10",
+      "python", "-m", "db_mcp"
+    ]
   }
 }
 ```
+
+Dynamic knobs available on `clov mcp proxy`:
+
+- `--max-tokens <N>`: target token budget before truncation
+- `--max-array-items <N>`: keep more or fewer rows before inserting summaries
+- `--max-object-keys <N>`: retain more or fewer keys on wide objects
+- `--preserve-code <true|false>`: keep code-like payloads intact or force prose-style cleanup
+- `--aggressive-chrome-strip <true|false>`: enable or relax nav/footer/ad stripping
+
+The same settings can also be supplied through environment variables for MCP hosts that prefer env-driven config:
+
+- `CLOV_MCP_MAX_TOKENS`
+- `CLOV_MCP_MAX_ARRAY_ITEMS`
+- `CLOV_MCP_MAX_OBJECT_KEYS`
+- `CLOV_MCP_PRESERVE_CODE`
+- `CLOV_MCP_AGGRESSIVE_CHROME_STRIP`
 
 ### The Universal AI Logic:
 

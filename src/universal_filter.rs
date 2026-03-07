@@ -121,6 +121,14 @@ fn detect_content_type(map: &Map<String, Value>) -> ContentType {
         return ContentType::WebSearch;
     }
 
+    if (map.contains_key("url") || map.contains_key("title"))
+        && text_like_keys()
+            .iter()
+            .any(|key| map.get(*key).and_then(Value::as_str).is_some())
+    {
+        return ContentType::WebSearch;
+    }
+
     if data_like_keys().iter().any(|key| map.contains_key(*key)) {
         return ContentType::StructuredData;
     }
@@ -165,6 +173,13 @@ fn apply_search_filters(map: &mut Map<String, Value>, context: &FilterContext) {
                             "score",
                         ],
                     );
+
+                    for text_key in ["text", "snippet", "summary", "content", "highlights"] {
+                        if let Some(Value::String(text)) = obj.get_mut(text_key) {
+                            *text =
+                                filter_text_for_key(text, context, text_key, &ContentType::WebSearch);
+                        }
+                    }
                 }
                 filter_json_value(item, context);
             }
@@ -343,7 +358,25 @@ fn filter_text_for_key(
     key: &str,
     content_type: &ContentType,
 ) -> String {
-    if *content_type == ContentType::Code || (context.preserve_code && looks_like_code(text)) {
+    if *content_type == ContentType::WebSearch
+        && matches!(key, "text" | "snippet" | "summary" | "content" | "highlights")
+    {
+        let cleaned = if context.aggressive_chrome_strip {
+            strip_universal_chrome(text)
+        } else {
+            text.to_string()
+        };
+        let normalized = normalize_escaped_line_breaks(&cleaned);
+        let article = cleanup_article_text(&normalized);
+        let article_budget = context.max_tokens.max(3000);
+        return filter_by_token_budget(&article, article_budget);
+    }
+
+    if *content_type == ContentType::Code
+        || (context.preserve_code
+            && *content_type != ContentType::WebSearch
+            && looks_like_primary_code_blob(text))
+    {
         return filter_code_content(text, context);
     }
 
@@ -582,6 +615,16 @@ fn looks_like_article(text: &str) -> bool {
             || looks_like_markdown_table_row(trimmed)
             || trimmed.ends_with('\\')
     }) || text.contains("\\n");
+    let escaped_article_shape = text.contains("\\n")
+        && (text.contains("> ")
+            || text.contains("# ")
+            || text.contains("## ")
+            || text.contains("| --- |")
+            || text.contains("```"));
+
+    if escaped_article_shape {
+        return true;
+    }
 
     sentence_markers >= 3 && (substantial_lines >= 4 || markdown_signals)
 }
@@ -930,5 +973,47 @@ mod tests {
         assert!(!output.contains("```"));
         assert!(!output.contains("CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS"));
         assert!(!output.contains("\\n"));
+    }
+
+    #[test]
+    fn treats_crawl_result_rows_as_web_articles_not_code() {
+        let raw_text = concat!(
+            "> Fetch the complete documentation index at: https://code.claude.com/docs/llms.txt\\n",
+            "> ## Documentation Index\\n\\n",
+            "# Orchestrate teams of Claude Code sessions\\n\\n",
+            "| | Subagents | Agent teams |\\n",
+            "| --- | --- | --- |\\n",
+            "| Context | Own context window | Fully independent |\\n\\n",
+            "```json\\n",
+            "{\\n",
+            "  \\\"env\\\": {\\n",
+            "    \\\"CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS\\\": \\\"1\\\"\\n",
+            "  }\\n",
+            "}\\n",
+            "```\\n\\n",
+            "This paragraph should remain readable after cleanup.\\n"
+        );
+
+        let mut value = json!({
+            "results": [
+                {
+                    "title": "Orchestrate teams of Claude Code sessions - Claude Code Docs",
+                    "url": "https://code.claude.com/docs/en/agent-teams",
+                    "text": raw_text
+                }
+            ]
+        });
+
+        filter_json_value(&mut value, &FilterContext::default());
+
+        let text = value["results"][0]["text"].as_str().unwrap();
+        assert!(text.contains("Orchestrate teams of Claude Code sessions"));
+        assert!(text.contains("This paragraph should remain readable after cleanup."));
+        assert!(!text.contains("Fetch the complete documentation index"));
+        assert!(!text.contains("Documentation Index"));
+        assert!(!text.contains("##"));
+        assert!(!text.contains("| --- |"));
+        assert!(!text.contains("```"));
+        assert!(!text.contains("CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS"));
     }
 }

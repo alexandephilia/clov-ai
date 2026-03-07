@@ -36,6 +36,7 @@ pub fn run_proxy(
     server_args: &[String],
     no_filter: bool,
     verbose: u8,
+    filter_context: crate::universal_filter::FilterContext,
 ) -> Result<()> {
     if verbose > 0 {
         eprintln!(
@@ -79,7 +80,14 @@ pub fn run_proxy(
     let stdout = io::stdout();
     let reader = BufReader::new(child_stdout);
     let writer = io::BufWriter::new(stdout.lock());
-    let result = proxy_server_to_client(reader, writer, &pending_requests, no_filter, verbose);
+    let result = proxy_server_to_client(
+        reader,
+        writer,
+        &pending_requests,
+        no_filter,
+        verbose,
+        filter_context,
+    );
 
     let _ = child.wait();
     let _ = stdin_thread.join();
@@ -111,11 +119,12 @@ fn proxy_server_to_client<R: BufRead, W: Write>(
     pending_requests: &Arc<Mutex<HashMap<Value, String>>>,
     no_filter: bool,
     verbose: u8,
+    filter_context: crate::universal_filter::FilterContext,
 ) -> Result<()> {
     while let Some(mut message) = read_mcp_message(&mut reader)? {
         if !no_filter {
             if let Ok(msg) = serde_json::from_str::<Value>(&message.payload) {
-                let filtered = filter_tool_response(msg, pending_requests, verbose);
+                let filtered = filter_tool_response(msg, pending_requests, verbose, &filter_context);
                 message.payload = serde_json::to_string(&filtered).unwrap_or(message.payload);
             }
         }
@@ -242,6 +251,7 @@ fn filter_tool_response(
     mut msg: Value,
     pending: &Arc<Mutex<HashMap<Value, String>>>,
     verbose: u8,
+    context: &crate::universal_filter::FilterContext,
 ) -> Value {
     if !is_tool_call_response(&msg) {
         return msg;
@@ -269,7 +279,6 @@ fn filter_tool_response(
         eprintln!("[clov-mcp] Filtering response for tool: {}", tool_name);
     }
 
-    let context = crate::universal_filter::FilterContext::default();
     let mut total_input = 0usize;
     let mut total_output = 0usize;
     let mut tracking_input = String::new();
@@ -282,7 +291,7 @@ fn filter_tool_response(
                     tracking_input.push_str(&serialize_value(item));
                     tracking_input.push('\n');
                     total_input += estimate_value_size(item);
-                    filter_content_item(item, &context);
+                    filter_content_item(item, context);
                     total_output += estimate_value_size(item);
                     tracking_output.push_str(&serialize_value(item));
                     tracking_output.push('\n');
@@ -294,7 +303,7 @@ fn filter_tool_response(
             tracking_input.push_str(&serialize_value(structured));
             tracking_input.push('\n');
             total_input += estimate_value_size(structured);
-            crate::universal_filter::filter_json_value(structured, &context);
+            crate::universal_filter::filter_json_value(structured, context);
             total_output += estimate_value_size(structured);
             tracking_output.push_str(&serialize_value(structured));
             tracking_output.push('\n');
@@ -304,7 +313,7 @@ fn filter_tool_response(
             tracking_input.push_str(&serialize_value(data));
             tracking_input.push('\n');
             total_input += estimate_value_size(data);
-            crate::universal_filter::filter_json_value(data, &context);
+            crate::universal_filter::filter_json_value(data, context);
             total_output += estimate_value_size(data);
             tracking_output.push_str(&serialize_value(data));
             tracking_output.push('\n');
@@ -378,6 +387,10 @@ mod tests {
     use serde_json::json;
     use std::io::Cursor;
 
+    fn test_context() -> crate::universal_filter::FilterContext {
+        crate::universal_filter::FilterContext::default()
+    }
+
     #[test]
     fn parses_newline_delimited_message() {
         let mut reader = Cursor::new(b"{\"jsonrpc\":\"2.0\"}\n".to_vec());
@@ -443,7 +456,7 @@ mod tests {
             }
         });
 
-        let filtered = filter_tool_response(message, &pending, 0);
+        let filtered = filter_tool_response(message, &pending, 0, &test_context());
         let text = filtered["result"]["content"][0]["text"].as_str().unwrap();
         assert!(text.contains("Useful body text"));
         assert!(!text.contains("Privacy"));
@@ -503,7 +516,7 @@ mod tests {
             }
         });
 
-        let filtered = filter_tool_response(message, &pending, 0);
+        let filtered = filter_tool_response(message, &pending, 0, &test_context());
         let text = filtered["result"]["content"][0]["text"].as_str().unwrap();
 
         assert!(
@@ -553,7 +566,7 @@ mod tests {
             }
         });
 
-        let filtered = filter_tool_response(message, &pending, 0);
+        let filtered = filter_tool_response(message, &pending, 0, &test_context());
         let text = filtered["result"]["content"][0]["text"].as_str().unwrap();
 
         assert!(text.contains("Orchestrate teams of Claude Code sessions"));
@@ -569,5 +582,58 @@ mod tests {
         assert!(!text.contains("```"));
         assert!(!text.contains("claude --teammate-mode in-process"));
         assert!(!text.contains("\\n"));
+    }
+
+    #[test]
+    fn honors_custom_filter_context_limits() {
+        let pending = Arc::new(Mutex::new(HashMap::new()));
+        pending
+            .lock()
+            .unwrap()
+            .insert(Value::from(13), "web_search".to_string());
+
+        let message = json!({
+            "jsonrpc": "2.0",
+            "id": 13,
+            "result": {
+                "structuredContent": {
+                    "rows": [
+                        {"id": 1, "name": "alpha", "extra": "x"},
+                        {"id": 2, "name": "beta", "extra": "y"},
+                        {"id": 3, "name": "gamma", "extra": "z"},
+                        {"id": 4, "name": "delta", "extra": "q"}
+                    ]
+                }
+            }
+        });
+
+        let default_filtered = filter_tool_response(message.clone(), &pending, 0, &test_context());
+        pending
+            .lock()
+            .unwrap()
+            .insert(Value::from(13), "web_search".to_string());
+
+        let constrained = crate::universal_filter::FilterContext {
+            max_tokens: 2000,
+            preserve_code: true,
+            aggressive_chrome_strip: true,
+            max_array_items: 2,
+            max_object_keys: 12,
+        };
+        let constrained_filtered = filter_tool_response(message, &pending, 0, &constrained);
+
+        let default_rows = default_filtered["result"]["structuredContent"]["rows"]
+            .as_array()
+            .unwrap();
+        let constrained_rows = constrained_filtered["result"]["structuredContent"]["rows"]
+            .as_array()
+            .unwrap();
+
+        assert_eq!(default_rows.len(), 4);
+        assert_eq!(constrained_rows.len(), 3);
+        assert!(constrained_rows.last().unwrap()["_clov_summary"]
+            .as_str()
+            .unwrap()
+            .contains("truncated"));
     }
 }

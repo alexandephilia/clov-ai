@@ -632,6 +632,21 @@ enum Commands {
 enum McpAction {
     /// Proxy an MCP server with response filtering
     Proxy {
+        /// Maximum token budget per filtered MCP response
+        #[arg(long)]
+        max_tokens: Option<usize>,
+        /// Maximum array items to retain before summarizing
+        #[arg(long)]
+        max_array_items: Option<usize>,
+        /// Maximum object keys to retain before trimming
+        #[arg(long)]
+        max_object_keys: Option<usize>,
+        /// Preserve code-heavy responses verbatim instead of treating them like prose
+        #[arg(long, default_value_t = true, action = clap::ArgAction::Set)]
+        preserve_code: bool,
+        /// Strip navigation/footer chrome from long-form text
+        #[arg(long, default_value_t = true, action = clap::ArgAction::Set)]
+        aggressive_chrome_strip: bool,
         /// Server command to proxy (e.g., "npx")
         command: String,
         /// Server arguments
@@ -1054,6 +1069,21 @@ fn run_fallback(parse_error: clap::Error) -> Result<()> {
     }
 
     Ok(())
+}
+
+fn read_env_usize(key: &str) -> Option<usize> {
+    std::env::var(key)
+        .ok()
+        .and_then(|value| value.trim().parse::<usize>().ok())
+}
+
+fn read_env_bool(key: &str) -> Option<bool> {
+    let value = std::env::var(key).ok()?;
+    match value.trim().to_ascii_lowercase().as_str() {
+        "1" | "true" | "yes" | "on" => Some(true),
+        "0" | "false" | "no" | "off" => Some(false),
+        _ => None,
+    }
 }
 
 fn main() -> Result<()> {
@@ -1784,11 +1814,31 @@ fn main() -> Result<()> {
 
         Commands::Mcp { action } => match action {
             McpAction::Proxy {
+                max_tokens,
+                max_array_items,
+                max_object_keys,
+                preserve_code,
+                aggressive_chrome_strip,
                 command,
                 args,
                 no_filter,
             } => {
-                mcp_proxy::run_proxy(&command, &args, no_filter, cli.verbose)?;
+                let default_context = universal_filter::FilterContext::default();
+                let filter_context = universal_filter::FilterContext {
+                    max_tokens: max_tokens
+                        .or_else(|| read_env_usize("CLOV_MCP_MAX_TOKENS"))
+                        .unwrap_or(default_context.max_tokens),
+                    preserve_code: read_env_bool("CLOV_MCP_PRESERVE_CODE").unwrap_or(preserve_code),
+                    aggressive_chrome_strip: read_env_bool("CLOV_MCP_AGGRESSIVE_CHROME_STRIP")
+                        .unwrap_or(aggressive_chrome_strip),
+                    max_array_items: max_array_items
+                        .or_else(|| read_env_usize("CLOV_MCP_MAX_ARRAY_ITEMS"))
+                        .unwrap_or(default_context.max_array_items),
+                    max_object_keys: max_object_keys
+                        .or_else(|| read_env_usize("CLOV_MCP_MAX_OBJECT_KEYS"))
+                        .unwrap_or(default_context.max_object_keys),
+                };
+                mcp_proxy::run_proxy(&command, &args, no_filter, cli.verbose, filter_context)?;
             }
         },
 
@@ -2050,6 +2100,54 @@ mod tests {
                 Commands::Gain { failures, .. } => assert!(failures),
                 _ => panic!("Expected Gain command"),
             }
+        }
+    }
+
+    #[test]
+    fn test_mcp_proxy_filter_flags_parse() {
+        let cli = Cli::try_parse_from([
+            "clov",
+            "mcp",
+            "proxy",
+            "--max-tokens",
+            "4096",
+            "--max-array-items",
+            "4",
+            "--max-object-keys",
+            "6",
+            "--preserve-code",
+            "false",
+            "--aggressive-chrome-strip",
+            "false",
+            "npx",
+            "-y",
+            "mcp-remote",
+        ])
+        .unwrap();
+
+        match cli.command {
+            Commands::Mcp {
+                action:
+                    McpAction::Proxy {
+                        max_tokens,
+                        max_array_items,
+                        max_object_keys,
+                        preserve_code,
+                        aggressive_chrome_strip,
+                        command,
+                        args,
+                        ..
+                    },
+            } => {
+                assert_eq!(max_tokens, Some(4096));
+                assert_eq!(max_array_items, Some(4));
+                assert_eq!(max_object_keys, Some(6));
+                assert!(!preserve_code);
+                assert!(!aggressive_chrome_strip);
+                assert_eq!(command, "npx");
+                assert_eq!(args, vec!["-y", "mcp-remote"]);
+            }
+            _ => panic!("Expected MCP proxy command"),
         }
     }
 
