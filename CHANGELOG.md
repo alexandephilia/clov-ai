@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.29.3](https://github.com/alexandephilia/clov-ai/compare/v0.29.2...v0.29.3) (2026-03-08)
+
+### Bug Fixes
+
+* strip top-level search provider noise keys (requestTags, costDollars, effectiveFilters, statuses, searchTime, requestId) from MCP web search responses — exa was leaking ~400 tokens of internal metadata per call
+
 ## [0.29.2](https://github.com/alexandephilia/clov-ai/compare/v0.29.1...v0.29.2) (2026-03-08)
 
 ### Bug Fixes

@@ -145,11 +145,28 @@ fn detect_content_type(map: &Map<String, Value>) -> ContentType {
 }
 
 fn apply_search_filters(map: &mut Map<String, Value>, context: &FilterContext) {
+    // Strip top-level noise keys injected by search providers (exa, serper, etc.)
+    for key in search_noise_keys() {
+        map.remove(*key);
+    }
+
     for key in search_like_keys() {
         if let Some(Value::Array(items)) = map.get_mut(*key) {
             for item in items.iter_mut().take(context.max_array_items) {
                 if let Value::Object(obj) = item {
-                    retain_priority_keys(obj, &["title", "url", "text", "snippet", "summary", "content"]);
+                    retain_priority_keys(
+                        obj,
+                        &[
+                            "title",
+                            "url",
+                            "text",
+                            "snippet",
+                            "summary",
+                            "content",
+                            "highlights",
+                            "score",
+                        ],
+                    );
                 }
                 filter_json_value(item, context);
             }
@@ -352,7 +369,9 @@ fn filter_text_content(text: &str, context: &FilterContext) -> String {
 
 fn filter_code_content(text: &str, context: &FilterContext) -> String {
     let normalized = collapse_whitespace_preserving_indentation(text);
-    let limit = context.max_tokens.min(adaptive_truncation_limit(&normalized).max(1200));
+    let limit = context
+        .max_tokens
+        .min(adaptive_truncation_limit(&normalized).max(1200));
     filter_by_token_budget(&normalized, limit)
 }
 
@@ -398,10 +417,14 @@ pub fn strip_universal_chrome(text: &str) -> String {
 fn is_navigation_chrome(line: &str) -> bool {
     lazy_static! {
         static ref NAV: Vec<Regex> = vec![
-            Regex::new(r"(?i)^\s*(skip to (main |)content|menu|navigation|breadcrumb|sidebar)\s*$").unwrap(),
+            Regex::new(r"(?i)^\s*(skip to (main |)content|menu|navigation|breadcrumb|sidebar)\s*$")
+                .unwrap(),
             Regex::new(r"(?i)^\s*(sign in|log in|register|subscribe|newsletter)\s*$").unwrap(),
             Regex::new(r"(?i)^\s*\[?(home|about|contact|blog|faq|help|support)\]?\s*$").unwrap(),
-            Regex::new(r"(?i)^\s*(previous|next|related (posts|articles)|you (may|might) also like)\s*$").unwrap(),
+            Regex::new(
+                r"(?i)^\s*(previous|next|related (posts|articles)|you (may|might) also like)\s*$"
+            )
+            .unwrap(),
         ];
     }
     NAV.iter().any(|p| p.is_match(line.trim()))
@@ -420,9 +443,8 @@ fn is_footer_garbage(line: &str) -> bool {
 
 fn is_advertisement(line: &str) -> bool {
     lazy_static! {
-        static ref ADS: Vec<Regex> = vec![
-            Regex::new(r"(?i)^\s*(advertisement|sponsored|promoted|ad)\s*$").unwrap(),
-        ];
+        static ref ADS: Vec<Regex> =
+            vec![Regex::new(r"(?i)^\s*(advertisement|sponsored|promoted|ad)\s*$").unwrap(),];
     }
     ADS.iter().any(|p| p.is_match(line.trim()))
 }
@@ -556,19 +578,32 @@ fn search_like_keys() -> &'static [&'static str] {
     &["results", "items", "documents", "matches"]
 }
 
+fn search_noise_keys() -> &'static [&'static str] {
+    &[
+        // exa-specific internal metadata
+        "requestTags",
+        "effectiveFilters",
+        "requestId",
+        "costDollars",
+        "searchTime",
+        "requestTime",
+        "processingTime",
+        // generic search provider noise
+        "statuses",
+        "debugInfo",
+        "_metadata",
+        "rateLimit",
+        "credits",
+    ]
+}
+
 fn data_like_keys() -> &'static [&'static str] {
     &["data", "rows", "records", "nodes", "entries", "documents"]
 }
 
 fn text_like_keys() -> &'static [&'static str] {
     &[
-        "text",
-        "content",
-        "summary",
-        "snippet",
-        "body",
-        "html",
-        "source",
+        "text", "content", "summary", "snippet", "body", "html", "source",
     ]
 }
 
