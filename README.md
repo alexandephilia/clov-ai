@@ -3,11 +3,11 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Version](https://img.shields.io/badge/version-0.25.0-blue.svg)](https://github.com/alexandephilia/clov-ai/releases/tag/v0.25.0)
 
-**A high-performance CLI proxy that cuts token waste before it hits your LLM context.**
+**A CLI proxy that stops your shell from dumping crap into your LLM context.**
 
 ![clov preview](img_1.jpg)
 
-clov sits between your shell and your model. It intercepts command output, filters the noise, and hands back only what matters. Token reduction varies by command and project, but the difference is consistent enough to notice from day one.
+clov sits between your shell and your model. It intercepts command output, cuts the noise, and hands back only what actually matters. Token reduction varies by command and project, but you will notice the difference pretty damn fast.
 
 ## Token Savings (30-min Claude Code Session)
 
@@ -38,7 +38,7 @@ With clov: **~45,000 tokens** -> **70% reduction**
 
 ### Pre-Installation Check
 
-Check if clov is already on your system before doing anything:
+Check if clov is already on your system before doing anything. Seriously, do this first:
 
 ```bash
 clov --version        # Check if installed
@@ -449,7 +449,7 @@ Priority: `CLOV_DB_PATH` env var > `config.toml` > default location.
 
 ### Tee: Full Output Recovery
 
-When clov filters a command, the LLM loses the raw failure details and may re-run the same command multiple times. The tee feature saves the unfiltered output to a file so the agent can read it directly instead of re-executing.
+When clov filters a command, the LLM loses the raw failure details and ends up re-running the same damn command two or three times trying to figure out what went wrong. The tee feature saves the unfiltered output to a file so the agent reads it directly instead of wasting more tokens on a re-run.
 
 On failure, clov writes full output to `~/.local/share/clov/tee/` and prints a one-line hint:
 
@@ -482,7 +482,7 @@ max_file_size = 1048576 # 1MB per file max
 
 ## Auto-Rewrite Hook (Recommended)
 
-The best way to use clov is the auto-rewrite hook for Claude Code. CLAUDE.md instructions get ignored by subagents. The hook does not. It intercepts Bash commands and rewrites them to their clov equivalents before the shell sees them.
+The best way to use clov is the auto-rewrite hook for Claude Code. CLAUDE.md instructions get ignored by subagents all the time. The hook does not get ignored. It intercepts Bash commands and rewrites them to their clov equivalents before the shell ever sees them.
 
 **Result**: 100% clov adoption across all conversations and subagents, zero token overhead in Claude's context.
 
@@ -630,7 +630,7 @@ Commands already using `clov`, heredocs, and anything unrecognized pass through 
 
 ### Suggest Hook (Non-Intrusive Alternative)
 
-If you want Claude Code to suggest clov rather than silently rewriting commands, use the suggest hook instead. It emits a system reminder when clov-compatible commands are detected, without touching the command itself.
+If you want Claude Code to suggest clov rather than silently rewriting commands, use the suggest hook instead. It emits a system reminder when clov-compatible commands are detected and does not touch the command itself. Useful if you actually want visibility, otherwise just use the rewrite hook and stop overthinking it.
 
 **Comparison:**
 
@@ -644,10 +644,9 @@ If you want Claude Code to suggest clov rather than silently rewriting commands,
 
 When to use suggest instead of rewrite:
 
-- You want to audit which commands Claude chooses to run
-- You are learning clov and want to see what the rewrite logic does
-- You prefer Claude to make explicit decisions rather than silent ones
-- You need exact command execution for debugging
+- You want to audit which commands Claude actually runs
+- You are learning clov and want to see what gets rewritten and why
+- You need exact command execution for debugging and the rewrite is getting in the way
 
 **Setup:**
 
@@ -789,6 +788,8 @@ MIT License - see [LICENSE](LICENSE) for details.
 
 Open an issue or PR on GitHub: https://github.com/alexandephilia/clov-ai/issues
 
+If something is broken, say so. If you have a filter idea, open a PR. Don't be shy about it.
+
 ---
 
-This is a hard fork. Maintained by [@alexandephilia](https://github.com/alexandephilia) and Claude.
+Hard fork. Maintained by [@alexandephilia](https://github.com/alexandephilia) and Claude.
