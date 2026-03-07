@@ -4,10 +4,11 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-**clov (Clov Token Omitter)** v0.25.0 is a high-performance CLI proxy that minimizes LLM token consumption by filtering and compressing command outputs. It achieves 60-90% token savings on common development operations through smart filtering, grouping, truncation, and deduplication.
+**clov (Clov Token Omitter)** v0.26.5 is a high-performance CLI proxy that minimizes LLM token consumption by filtering and compressing command outputs. It achieves 60-90% token savings on common development operations through smart filtering, grouping, truncation, and deduplication.
 
 This is a fork with critical fixes for git argument parsing and modern JavaScript stack support (pnpm, vitest, Next.js, TypeScript, Playwright, Prisma).
 
+**NEW (v0.26.4)**: MCP Proxy Support. Integrated JSON-RPC stdio proxy for filtering bloated MCP tool responses (Exa, etc.) with 85-95% token savings.
 
 ## Development Commands
 
@@ -155,36 +156,22 @@ main.rs:Commands enum
   → Result<()> propagates errors
 ```
 
-### Proxy Mode
-
-**Purpose**: Execute commands without filtering but track usage for metrics.
-
-**Usage**: `clov proxy <command> [args...]`
-
-**Benefits**:
-
-- **Bypass CLOV filtering**: Workaround bugs or get full unfiltered output
-- **Track usage metrics**: Measure which commands Claude uses most (visible in `clov gain --history`)
-- **Guaranteed compatibility**: Always works even if CLOV doesn't implement the command
-- **Prototyping**: Test new commands before implementing optimized filtering
-
-**Examples**:
-
-```bash
-# Full git log output (no truncation)
-clov proxy git log --oneline -20
-
-# Raw npm output (no filtering)
-clov proxy npm install express
-
-# Any command works
-clov proxy curl https://api.example.com/data
-
-# Tracking shows 0% savings (expected)
-clov gain --history | grep proxy
-```
-
 **Tracking**: All proxy commands appear in `clov gain --history` with 0% savings (input = output) but preserve usage statistics.
+
+### MCP Proxy Mode
+
+**Purpose**: Filter and optimize MCP tool responses (specifically Exa) before they reach the LLM context.
+
+**Usage**: Router your MCP server via clov in `settings.json`:
+`clov mcp proxy <real-mcp-command> [args...]`
+
+**Features**:
+
+- **JSON-Aware**: Parses internal result text to strip web chrome without breaking JSON structure.
+- **Request ID Tracking**: Correctly associates asynchronous tool responses with their original requests.
+- **Exa Optimized**: Specialized filters for `web_search_exa`, `crawling_exa`, and `get_code_context_exa`.
+
+**Savings**: 85-95% reduction on web-heavy tool results.
 
 ### Critical Implementation Details
 
@@ -235,6 +222,8 @@ clov gain --history | grep proxy
 | golangci_cmd.rs   | golangci-lint                | JSON parsing, group by rule (85% reduction)                    |
 | tee.rs            | Full output recovery         | Save raw output to file on failure, print hint for LLM re-read |
 | utils.rs          | Shared utilities             | Package manager detection, common formatting                   |
+| mcp_proxy.rs      | MCP Tool Proxy               | JSON-RPC stdio proxy with request ID tracking                  |
+| mcp_filters.rs    | MCP Response Filters         | Exa-specific web chrome stripping (85-95% reduction)           |
 | discover/         | Claude Code history analysis | Scan JSONL sessions, classify commands, report missed savings  |
 
 ## Performance Constraints

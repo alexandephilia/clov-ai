@@ -1,7 +1,11 @@
 # clov
 
+<p align="center">
+  <img src="assets/clov_mascot.png" width="400" alt="clov mascot">
+</p>
+
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Version](https://img.shields.io/badge/version-0.25.0-blue.svg)](https://github.com/alexandephilia/clov-ai/releases/tag/v0.25.0)
+[![Version](https://img.shields.io/badge/version-0.26.5-blue.svg)](https://github.com/alexandephilia/clov-ai/releases/tag/v0.26.5)
 [![Built with Rust](https://img.shields.io/badge/built_with-Rust-orange?logo=rust&logoColor=white)](https://www.rust-lang.org/)
 [![Python](https://img.shields.io/badge/Python-supported-3776AB?logo=python&logoColor=white)](#python--go)
 [![Go](https://img.shields.io/badge/Go-supported-00ADD8?logo=go&logoColor=white)](#python--go)

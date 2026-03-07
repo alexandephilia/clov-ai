@@ -7,6 +7,7 @@
 **How**: Smart filtering (strips ANSI/progress bars), grouping (errors by file), truncation, deduplication
 
 **Example transformation**:
+
 ```
 Raw git status:        ~300 tokens → "On branch main\nYour branch is up to date...\n\nChanges not staged..."
 Filtered (clov):       ~60 tokens  → "3 modified, 1 untracked ✓"
@@ -37,6 +38,7 @@ You see:        Filtered output
 ```
 
 **Supported commands** (auto-rewritten):
+
 - `git`, `gh`, `gt` (Graphite)
 - `cargo`, `go`, `npm`, `pnpm`, `pip`
 - `tsc`, `eslint`, `prettier`, `next`, `vitest`, `playwright`, `prisma`
@@ -53,10 +55,31 @@ clov proxy git log --oneline -20   # Bypass filtering, still track metrics
 ```
 
 **When to use**:
+
 - Debugging CLOV filter behavior
 - Suspect filtering hides needed info
 - Compare filtered vs raw output
 - Workaround for filter bugs
+
+### 4. MCP Tools → Route via `clov mcp proxy`
+
+For MCP servers like Exa, route the entire server through CLOV in your Claude Code `settings.json`.
+
+```json
+{
+  "mcpServers": {
+    "exa": {
+      "command": "clov",
+      "args": ["mcp", "proxy", "npx", "-y", "exa-mcp-server"],
+      "env": { "EXA_API_KEY": "..." }
+    }
+  }
+}
+```
+
+**Supported MCP Filters**:
+
+- `exa` (web_search, crawling) → Strips nav chrome, cookie notices, footers. 85-95% savings.
 
 ## Hook Mechanism
 
@@ -69,6 +92,7 @@ Claude → "git status" → hook intercepts → "clov git status" → filtered (
 ```
 
 **Key properties**:
+
 - Runs at shell level (before execution)
 - Transparent to user (no manual prefixing)
 - Minimal overhead (<1ms startup time)
@@ -88,21 +112,23 @@ clov init --show       # Verify hook registered in settings.json
 
 ## Token Savings (Real Data)
 
-| Command Type      | Savings | Strategy                          |
-|-------------------|---------|-----------------------------------|
-| Git operations    | 70-85%  | Compact diffs, stat summaries     |
-| Test runners      | 90-99%  | Failures only, grouped            |
-| Linters           | 80-85%  | Group by rule/file                |
-| Package managers  | 70-90%  | Compact dependency trees          |
-| Build tools       | 85-90%  | Errors/warnings only              |
+| Command Type     | Savings | Strategy                        |
+| ---------------- | ------- | ------------------------------- |
+| Git operations   | 70-85%  | Compact diffs, stat summaries   |
+| Test runners     | 90-99%  | Failures only, grouped          |
+| Linters          | 80-85%  | Group by rule/file              |
+| Package managers | 70-90%  | Compact dependency trees        |
+| Build tools      | 85-90%  | Errors/warnings only            |
+| MCP Tool Results | 85-95%  | JSON-aware web chrome stripping |
 
-**Overall**: 60-90% reduction across all dev operations.
+**Overall**: 60-95% reduction across all dev operations and tool use.
 
 **Note**: Percentages vary by output size. Small outputs show lower % but still reduce absolute tokens.
 
 ## Fallback Behavior
 
 CLOV never breaks your workflow:
+
 - **Unrecognized command**: Passes through unchanged
 - **Filter fails**: Executes raw command, logs error
 - **Exit codes**: Always preserved (CI/CD compatible)

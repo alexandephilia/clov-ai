@@ -6,18 +6,18 @@
 class Clov < Formula
   desc "High-performance CLI proxy to minimize LLM token consumption"
   homepage "https://github.com/alexandephilia/clov-ai"
-  version "0.25.1"
+  version "0.26.5"
   license "MIT"
 
   on_macos do
     on_intel do
       url "https://github.com/alexandephilia/clov-ai/releases/download/v#{version}/clov-x86_64-apple-darwin.tar.gz"
-      sha256 "PLACEHOLDER_SHA256_INTEL"
+      sha256 "PLACEHOLDER_SHA256_MAC_INTEL"
     end
 
     on_arm do
       url "https://github.com/alexandephilia/clov-ai/releases/download/v#{version}/clov-aarch64-apple-darwin.tar.gz"
-      sha256 "85123bd917596a55a97166a29001ac48801bbcd818aa87573eaa9ae1e7b575bb"
+      sha256 "PLACEHOLDER_SHA256_MAC_ARM"
     end
   end
 

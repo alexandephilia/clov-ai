@@ -29,6 +29,8 @@ mod lint_cmd;
 mod local_llm;
 mod log_cmd;
 mod ls;
+mod mcp_filters;
+mod mcp_proxy;
 mod mypy_cmd;
 mod next_cmd;
 mod npm_cmd;
@@ -617,6 +619,27 @@ enum Commands {
     Rewrite {
         /// Raw command to rewrite (e.g. "git status", "cargo test && git push")
         cmd: String,
+    },
+
+    /// MCP proxy with token-optimized response filtering
+    Mcp {
+        #[command(subcommand)]
+        action: McpAction,
+    },
+}
+
+#[derive(Subcommand)]
+enum McpAction {
+    /// Proxy an MCP server with response filtering
+    Proxy {
+        /// Server command to proxy (e.g., "npx")
+        command: String,
+        /// Server arguments
+        #[arg(trailing_var_arg = true, allow_hyphen_values = true)]
+        args: Vec<String>,
+        /// Disable filtering (pure passthrough for debugging)
+        #[arg(long)]
+        no_filter: bool,
     },
 }
 
@@ -1758,6 +1781,16 @@ fn main() -> Result<()> {
         Commands::Rewrite { cmd } => {
             rewrite_cmd::run(&cmd)?;
         }
+
+        Commands::Mcp { action } => match action {
+            McpAction::Proxy {
+                command,
+                args,
+                no_filter,
+            } => {
+                mcp_proxy::run_proxy(&command, &args, no_filter, cli.verbose)?;
+            }
+        },
 
         Commands::Proxy { args } => {
             use std::process::Command;

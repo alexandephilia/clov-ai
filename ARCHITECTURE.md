@@ -53,15 +53,15 @@ $ 3 commits      ←─  Terminal      ←─   Format      ←─   Compact Sta
 
 ### Key Components
 
-| Component | Location | Responsibility |
-|-----------|----------|----------------|
-| **CLI Parser** | main.rs | Clap-based argument parsing, global flags |
-| **Command Router** | main.rs | Dispatch to specialized modules |
-| **Module Layer** | src/*_cmd.rs, src/git.rs, etc. | Command execution + filtering |
-| **Shared Utils** | utils.rs | Package manager detection, text processing |
-| **Filter Engine** | filter.rs | Language-aware code filtering |
-| **Tracking** | tracking.rs | SQLite-based token metrics |
-| **Config** | config.rs, init.rs | User preferences, LLM integration |
+| Component          | Location                         | Responsibility                             |
+| ------------------ | -------------------------------- | ------------------------------------------ |
+| **CLI Parser**     | main.rs                          | Clap-based argument parsing, global flags  |
+| **Command Router** | main.rs                          | Dispatch to specialized modules            |
+| **Module Layer**   | src/\*\_cmd.rs, src/git.rs, etc. | Command execution + filtering              |
+| **Shared Utils**   | utils.rs                         | Package manager detection, text processing |
+| **Filter Engine**  | filter.rs                        | Language-aware code filtering              |
+| **Tracking**       | tracking.rs                      | SQLite-based token metrics                 |
+| **Config**         | config.rs, init.rs               | User preferences, LLM integration          |
 
 ### Design Principles
 
@@ -105,6 +105,38 @@ Files:
   ~/.claude/hooks/clov-rewrite.sh  ← thin delegator (calls `clov rewrite`, ~50 lines)
   ~/.claude/settings.json         ← hook registry (PreToolUse registration)
   ~/.claude/CLOV.md                ← minimal context hint (10 lines)
+
+### MCP Proxy Architecture (v0.26.4+)
+
+For tool-level optimization, clov acts as a JSON-RPC proxy for MCP servers.
+
+```
+
+┌────────────────────────────────────────────────────────────────────────┐
+│ MCP Proxy Data Flow │
+└────────────────────────────────────────────────────────────────────────┘
+
+Claude Code (Client) clov (Proxy) MCP Server (Child)
+│ │ │
+│ tools/call (id: 123) │ │
+│ ──────────────────────────►│ Forward to server │
+│ │ ───────────────────────►│
+│ │ Track: 123 -> Exa │ Execution
+│ │ │ ───────────┐
+│ │ │ │
+│ │ Response (id: 123) │ │
+│ │◄────────────────────────│ ◄──────────┘
+│ │ │
+│ │ JSON-Aware Filtering │
+│ │ • Parse results.text │
+│ │ • Strip nav chrome │
+│ │ • Truncate to limit │
+│ │ │
+│ Filtered Response ◄──────│ │
+│ (90% smaller) │ │
+
+```
+
 ```
 
 Two hook strategies:
@@ -521,6 +553,7 @@ pip_cmd.rs        JSON PARSING          JSON API          70-85%
 
 **No Package Manager Detection**
 Unlike JS/TS modules, Python commands don't auto-detect poetry/pipenv/pip because:
+
 - `pip` is universally available (system Python)
 - `uv` detection is explicit (binary presence check)
 - Poetry/pipenv aren't execution wrappers (they manage virtualenvs differently)
@@ -548,7 +581,15 @@ go_cmd.rs         SUB-ENUM ROUTER       Mixed formats     75-90%
 
     → Line-by-line JSON parse (handles interleaved package events)
     → Aggregate: "2 packages, 3 failures (pkg1::TestAuth, ...)"
+    → Filtered: 20 chars (96% reduction)
 
+13. JSON-AWARE TOOL FILTERING
+    ┌──────────────┐
+    │ Tool JSON    │  →  Parse internal text  →  Strip chrome      85-95%
+    │ {results:[]} │      Preserve structure     Limit content
+    └──────────────┘
+
+    Used by: mcp_filters (Exa web search, crawling)
   go build: TEXT FILTERING
     Errors only (compiler diagnostics)
     → Strip warnings, show errors with file:line
@@ -596,11 +637,13 @@ pub fn run(command: &GoCommand, verbose: u8) -> Result<()> {
 ```
 
 **Why Sub-Enum?**
+
 - `go test/build/vet` are semantically related (core Go toolchain)
 - Mirrors existing git/cargo patterns (consistency)
 - Natural CLI: `clov go test` not `clov gotest`
 
 **Why golangci-lint Standalone?**
+
 - Third-party tool (not core Go toolchain)
 - Different output format (JSON API vs text)
 - Distinct use case (comprehensive linting vs single-tool diagnostics)
@@ -761,6 +804,7 @@ Affects: lint, tsc, next, prettier, playwright, prisma, vitest, pnpm
 ```
 
 **Why This Matters**:
+
 - **CWD Preservation**: pnpm/yarn exec preserve working directory correctly
 - **Monorepo Support**: Works in nested package.json structures
 - **No Global Installs**: Uses project-local dependencies only
@@ -1411,6 +1455,7 @@ Update CLAUDE.md:
 ### New Commands
 
 **clov mycmd** - Description of what it does
+
 - Strategy: [stats/grouping/filtering/etc.]
 - Savings: X-Y%
 - Used by: [workflow description]
@@ -1474,15 +1519,15 @@ When implementing a new command, consider:
 
 ## Glossary
 
-| Term | Definition |
-|------|------------|
-| **Token** | Unit of text processed by LLMs (~4 characters on average) |
-| **Filtering** | Reducing output size while preserving essential information |
-| **Proxy Pattern** | clov sits between user and tool, transforming output |
-| **Exit Code Preservation** | Passing through tool's exit code for CI/CD reliability |
-| **Package Manager Detection** | Identifying pnpm/yarn/npm to execute JS/TS tools correctly |
-| **Verbosity Levels** | `-v/-vv/-vvv` for progressively more debug output |
-| **Ultra-Compact** | `-u` flag for maximum compression (ASCII icons, inline format) |
+| Term                          | Definition                                                     |
+| ----------------------------- | -------------------------------------------------------------- |
+| **Token**                     | Unit of text processed by LLMs (~4 characters on average)      |
+| **Filtering**                 | Reducing output size while preserving essential information    |
+| **Proxy Pattern**             | clov sits between user and tool, transforming output           |
+| **Exit Code Preservation**    | Passing through tool's exit code for CI/CD reliability         |
+| **Package Manager Detection** | Identifying pnpm/yarn/npm to execute JS/TS tools correctly     |
+| **Verbosity Levels**          | `-v/-vv/-vvv` for progressively more debug output              |
+| **Ultra-Compact**             | `-u` flag for maximum compression (ASCII icons, inline format) |
 
 ---
 
