@@ -164,8 +164,15 @@ fn list_prs(args: &[String], _verbose: u8, ultra_compact: bool) -> Result<()> {
     if !output.status.success() {
         let stderr = String::from_utf8_lossy(&output.stderr).to_string();
         timer.track("gh pr list", "clov gh pr list", &stderr, &stderr);
-        eprintln!("{}", stderr.trim());
-        std::process::exit(output.status.code().unwrap_or(1));
+        let msg = if stderr.contains("not a git repository") {
+            "Not a git repository\n"
+        } else if stderr.contains("no pull requests match") {
+            "No pull requests found\n"
+        } else {
+            &stderr
+        };
+        print!("{}", msg);
+        return Ok(());
     }
 
     let json: Value =
@@ -723,8 +730,13 @@ fn list_runs(args: &[String], _verbose: u8, ultra_compact: bool) -> Result<()> {
     if !output.status.success() {
         let stderr = String::from_utf8_lossy(&output.stderr).to_string();
         timer.track("gh run list", "clov gh run list", &stderr, &stderr);
-        eprintln!("{}", stderr.trim());
-        std::process::exit(output.status.code().unwrap_or(1));
+        let msg = if stderr.contains("not a git repository") {
+            "Not a git repository\n"
+        } else {
+            &stderr
+        };
+        print!("{}", msg);
+        return Ok(());
     }
 
     let json: Value =

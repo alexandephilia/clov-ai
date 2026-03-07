@@ -1,4 +1,13 @@
-# clov
+```text
+       ██████╗ ██╗      ██████╗ ██╗   ██╗
+      ██╔════╝ ██║     ██╔═══██╗██║   ██║
+      ██║      ██║     ██║   ██║██║   ██║
+      ██║      ██║     ██║   ██║╚██╗ ██╔╝
+      ╚██████╗ ███████╗╚██████╔╝ ╚████╔╝
+       ╚═════╝ ╚══════╝ ╚═════╝   ╚═══╝
+```
+
+**The Context Optimizer for MCP Servers & AI Development.**
 
 <p align="center">
   <img src="assets/clov_mascot.png" width="400" alt="clov mascot">
@@ -6,165 +15,151 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Version](https://img.shields.io/badge/version-0.27.7-blue.svg)](https://github.com/alexandephilia/clov-ai/releases/tag/v0.27.7)
-[![Built with Rust](https://img.shields.io/badge/built_with-Rust-orange?logo=rust&logoColor=white)](https://www.rust-lang.org/)
 [![Claude Code](https://img.shields.io/badge/Claude_Code-integrated-7B2D8B?logo=anthropic&logoColor=white)](https://claude.ai/code)
 
-**The Universal Context Optimizer for MCP Servers and AI Coders.**
+MCP (Model Context Protocol) servers are brilliant, but their outputs are an uncontrolled firehose of context-destroying noise. When your AI agent pulls web search results or database dumps, it swallows navigation chrome, tracking parameters, and megabytes of unstructured JSON.
 
 ![clov preview](clov_1.jpg)
 
-Model Context Protocol (MCP) servers are powerful, but they are incredibly noisy. When your AI agent uses an MCP search tool or database connector, the server often returns massive JSON blobs full of website navigation chrome, tracking parameters, and raw, untruncated arrays.
+`clov` is the apex predator for context bloat. It is a highly specialized, structure-aware JSON-RPC proxy built _specifically_ to intercept and compress MCP responses before they annihilate your LLM's context window.
 
-`clov` is a structure-aware proxy built specifically to intercept and compress MCP tool responses _before_ they flood your LLM's context window. As a secondary feature, it also aggressively filters standard CLI development commands (git, npm, cargo, etc.).
+As a secondary capability, `clov` intercepts raw terminal streams (git, cargo, npm, etc.), mercilessly executing ANSI codes and redundant progress bars.
 
-By deploying `clov` between your AI agent and its tools, you can slash token consumption by **60-95%** without sacrificing the critical data your model needs to solve complex problems. Stop burning your API budget on boilerplate.
+Deploy `clov` between your AI agent and the world. Reclaim up to **95%** of your context window. Stop paying hyperscalers for garbage tokens.
 
 ---
 
-## The Cost of Context Bloat
+## The Economics of Context
 
 ![clov savings](clov_2.jpg)
 
-When an AI agent performs a deep research task using an MCP server, a single tool response can easily exceed 50,000 tokens.
+When an AI coder hits an MCP search tool, a single raw response easily spikes over 50,000 tokens. `clov` intercepts, analyzes the structure, and prunes it intelligently.
 
-With `clov`'s Universal MCP Filtering, these blobs are intelligently pruned:
+| Tactical Target                       | Raw Tokens | Filtered via `clov` | Annihilated % |
+| ------------------------------------- | ---------- | ------------------- | ------------- |
+| **MCP Web Search / Scraping**         | ~65,000    | ~4,500              | **93%**       |
+| **MCP Database Connectors**           | ~40,000    | ~5,000              | **87%**       |
+| **CLI: Test Suites (`cargo test`)**   | ~25,000    | ~2,500              | **90%**       |
+| **CLI: Source Control (`git diff`)**  | ~13,000    | ~3,100              | **76%**       |
+| **CLI: Deep Linters (`tsc`, `ruff`)** | ~15,000    | ~3,000              | **80%**       |
 
-| Operation                           | Raw Tokens | With clov | Cut     |
-| ----------------------------------- | ---------- | --------- | ------- |
-| **MCP Web Search Results**          | 65,000     | 4,500     | **93%** |
-| **MCP Structured Data Retrieval**   | 40,000     | 5,000     | **87%** |
-| **CLI: Test Suites (`cargo test`)** | 25,000     | 2,500     | **90%** |
-| **CLI: Git Status / Diffs**         | 13,000     | 3,100     | **75%** |
-| **CLI: Linters (`eslint`, `tsc`)**  | 15,000     | 3,000     | **80%** |
-
-_Based on real-world AI coding sessions using standard MCP architectures and medium-sized codebases._
+_Measured during live AI coding sessions on massive monolithic architectures._
 
 ---
 
-## 🚀 Quick Install
+## Deployment
+
+Zero friction. Complete control.
 
 ```bash
-# Homebrew (macOS/Linux)
+# MacOS / Linux (Homebrew)
 brew tap alexandephilia/clov
 brew install clov
 
-# Cargo
+# Rust Toolchain (Cargo)
 cargo install --git https://github.com/alexandephilia/clov-ai
 
-# Direct bash installer
+# Direct Injection (Curl)
 curl -fsSL https://raw.githubusercontent.com/alexandephilia/clov-ai/refs/heads/main/install.sh | sh
 ```
 
-_(Check releases for pre-built Windows, macOS, and Linux binaries)._
+_(Pre-compiled binaries for all architectures are available in standard releases)._
 
 ---
 
-## 🔌 Universal MCP Integration
+## MCP Universal Filtering
 
-To optimize your MCP servers, simply wrap their execution command with `clov mcp proxy`. `clov` acts as a transparent JSON-RPC layer, analyzing the responses structurally.
+To armor your MCP servers, simply wrap their invocation command with the `clov mcp proxy` bridge. `clov` operates as a transparent JSON-RPC layer, analyzing the structural payload on the wire.
 
-Configure your AI agent (e.g., in `~/.claude/settings.json` for Claude Code):
+Configuration example for your AI agent (e.g., `~/.claude/settings.json`):
 
 ```json
 "mcpServers": {
-  "generic-search": {
+  "web-search-engine": {
     "command": "clov",
-    "args": ["mcp", "proxy", "npx", "-y", "some-mcp-server"]
+    "args": ["mcp", "proxy", "npx", "-y", "target-mcp-server"]
   },
-  "database-connector": {
+  "sql-connector": {
     "command": "clov",
     "args": ["mcp", "proxy", "python", "-m", "db_mcp"]
   }
 }
 ```
 
-### How the Universal Filter Works:
+### The Universal AI Logic:
 
-1. **Content Detection**: Automatically identifies if a response contains Web Search data, Raw Code, Structured JSON arrays, or Plain Text.
-2. **Chrome Stripping**: Heuristically removes website navigation headers, footers, ad blocks, and tracking URLs from search results across _all_ providers.
-3. **Adaptive Truncation**: Scales truncation limits dynamically based on the information density of the internal text.
+1. **Dynamic Content Classification**: Sequences the data to identify Web DOM, Raw Source Code, Structured Data Arrays, or NLP Text.
+2. **Aggressive Chrome Stripping**: Slices out website headers, footers, ad-tags, and tracking analytics precisely and universally.
+3. **Density-Aware Truncation**: Intelligently auto-scales data limits based purely on the information density of the internal sequences.
 
 ---
 
-## 💻 CLI Proxy Integration
+## Standalone CLI Intervention
 
-In addition to orchestrating MCP servers, `clov` optimizes standard shell commands. If you use Claude Code, `clov` can inject an auto-rewrite hook to automatically filter terminal output without modifying your prompt.
+`clov` doesn't just proxy MCPs. It dominates the terminal. For AI coders like Claude Code, `clov` can inject a global auto-rewrite hook to govern terminal output automatically.
 
 ```bash
-# Register the auto-rewrite hook globally
+# Establish global terminal intercept hooks
 clov init --global
 ```
 
-By installing the hook, your AI agent can issue commands like `git log`, `npm test`, or `cargo clippy`, and `clov` will silently intercept them, stripping ANSI codes, progress bars, and successful test output, returning only the errors and summaries to the model.
+When your AI executes `git log`, `npm test`, or `cargo clippy`, `clov` intercepts the invocation transparently, executing the process, tearing out the ANSI codes, deleting the progress bars, and feeding only pure signal back to the LLM.
 
-### Supported CLI Toolchains
+### Covered Toolchains:
 
-- **Git & GitHub CLI**: Condensed statuses, diffs, PR listings.
-- **JavaScript / TypeScript**: `npm`, `pnpm`, `eslint`, `tsc`, `Next.js`, `vitest`, `playwright`, `prisma`.
-- **Rust**: `cargo test`, `cargo build`, `cargo clippy`.
-- **Python**: `pytest`, `ruff`, `mypy`, `pip`.
-- **Go**: `go test`, `go build`, `golangci-lint`.
-- **Infra**: `docker`, `kubectl`, `aws sts`.
+- **Version Control**: Condenses `git` statuses, tightens PR views (`gh`).
+- **Web Stacks**: Mutes `npm`, `pnpm`, `eslint`, `tsc`, `Next.js`, `vitest`.
+- **Systems**: Crushes `cargo test`, `cargo build`, `cargo clippy`.
+- **Pythonic**: Condenses `pytest`, `ruff`, `mypy`, `pip`.
+- **Go**: Strips `go test`, `go build`, `golangci-lint`.
+- **DevOps**: Minimizes `docker`, `kubectl` output.
 
-_Any unrecognized command simply passes through unchanged._
+_If `clov` doesn't recognize a command, it bypasses filtering automatically._
 
 ---
 
-## 📊 Analytics & Tracking
+## Local Telemetry
 
-Curious how many tokens you've saved? `clov` tracks your session economics locally.
+`clov` tracks your token economy rigorously. No cloud pings. No data theft. 100% local SQLite metrics.
 
 ```bash
-clov gain             # Summary of total tokens saved
-clov gain --graph     # Visual savings chart over 30 days
-clov gain --all       # Daily, weekly, and monthly breakdowns
-```
-
-**Example output:**
-
-```
-╔══════════════════════════════════════════════════════╗
-║          CLOV Token Savings (Global Scope)           ║
-╠══════════════════════════════════════════════════════╣
-║  Total commands  :   133                             ║
-║  Input tokens    :  30.5K                            ║
-║  Output tokens   :  10.7K                            ║
-║  Tokens saved    :  25.3K  (83.0%)                   ║
-╚══════════════════════════════════════════════════════╝
+clov gain             # Lifetime efficiency readouts
+clov gain --graph     # 30-day visual velocity charting
+clov gain --all       # Granular temporal exports
 ```
 
 ---
 
-## Configuration & Advanced Usage
+## Deep Configuration
 
-`clov` works perfectly out of the box, but you can configure tracking databases and output telemetry via environment variables or `~/.config/clov/config.toml`.
+`clov` requires no configuration, but command-line veterans can manipulate the tracking database and telemetry environments via `~/.config/clov/config.toml`.
 
 ```bash
-clov config --create    # Generate default config
-clov verify             # Check hook integrity
-clov discover           # Scan AI conversation history for missed savings
+clov config --create    # Scaffold custom parameters
+clov verify             # Validate hook integrity hashes
+clov discover           # Scan AI logs for missed optimization vectors
 ```
 
-### Unfiltered Recovery (Tee Mode)
+### Full-Fidelity Output Recovery (Tee Mode)
 
-If `clov` aggressively filters a test failure and the LLM needs more detail, `clov` saves the pristine output to a temporary log file. The LLM is provided a one-line path to the full log, meaning it can read the raw data if absolutely necessary, entirely circumventing the "silent failure" problem in AI coding.
+If `clov` aggressively intercepts a test failure and the AI actually needs the unadulterated noise to debug, `clov` writes the raw bypass data to a temporary file. A minimal pointer line is provided, allowing the AI to read the full context if—and only if—it is absolutely required.
 
 ---
 
-## Documentation
+## Technical Index
 
-- [ARCHITECTURE.md](ARCHITECTURE.md) — The Universal Filter architecture and JSON-RPC proxy mechanics.
-- [CLAUDE.md](CLAUDE.md) — Agentic guidance for Claude Code.
-- [docs/AUDIT_GUIDE.md](docs/AUDIT_GUIDE.md) — Generating token economy exports and CSV analytics.
+- [ARCHITECTURE.md](ARCHITECTURE.md) — Universal Filter system design and JSON-RPC proxy internals.
+- [CLAUDE.md](CLAUDE.md) — Behavioral guidelines for AI operation.
+- [docs/AUDIT_GUIDE.md](docs/AUDIT_GUIDE.md) — Advanced economic charting and localized analytics APIs.
 
 ---
 
 ## License
 
-MIT — see [LICENSE](LICENSE).
+MIT License — see [LICENSE](LICENSE).
 
 <p align="center">
   <img src="https://skillicons.dev/icons?i=rust,python,go" height="24" />
   <br/><br/>
-  <sub>maintained by <a href="https://github.com/alexandephilia">@alexandephilia</a> × claude</sub>
+  <sub>Authored by <a href="https://github.com/alexandephilia">@alexandephilia</a> × claude</sub>
 </p>
