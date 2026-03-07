@@ -1,6 +1,6 @@
 # CLOV - Context Limiter & Output Vetter
 
-_Documentation structure inspired by [rtk-ai/rtk](https://github.com/rtk-ai/rtk/)._
+_CLOV includes work derived from [rtk-ai/rtk](https://github.com/rtk-ai/rtk/) and carries forward RTK attribution and license notices in this repository._
 
 <p align="center">
   <img src="assets/clov.png" width="400" alt="clov mascot">
@@ -187,10 +187,12 @@ If `clov` aggressively intercepts a test failure and the AI actually needs the u
 
 MIT License — see [LICENSE](LICENSE).
 
+Third-party attribution and bundled license text for RTK are included in [LICENSES/RTK-MIT-LICENSE](LICENSES/RTK-MIT-LICENSE).
+
 <p align="center">
   <img src="https://skillicons.dev/icons?i=rust,python,go" height="24" />
   <br/><br/>
   <sub>Authored by <a href="https://github.com/alexandephilia">@alexandephilia</a> × claude</sub>
   <br/>
-  <sub>README attribution: inspired by <a href="https://github.com/rtk-ai/rtk/">rtk-ai/rtk</a></sub>
+  <sub>Includes derivative work and attribution for <a href="https://github.com/rtk-ai/rtk/">rtk-ai/rtk</a> under MIT; see <code>LICENSES/RTK-MIT-LICENSE</code></sub>
 </p>
