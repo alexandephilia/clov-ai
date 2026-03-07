@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.29.3](https://github.com/alexandephilia/clov-ai/compare/v0.29.2...v0.29.3) (2026-03-07)
+
+
+### Bug Fixes
+
+* strip search provider noise keys from MCP web search responses ([d307a92](https://github.com/alexandephilia/clov-ai/commit/d307a92edbf8191d1c50dbd1e77dc2f501cf5853))
+
 ## [0.29.3](https://github.com/alexandephilia/clov-ai/compare/v0.29.2...v0.29.3) (2026-03-08)
 
 ### Bug Fixes
