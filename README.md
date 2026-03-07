@@ -13,7 +13,7 @@
 
 clov sits between your shell and your model. It intercepts command output, strips the noise, and returns only what matters: commit hashes, test failures, build errors. Not the 200 lines of progress bars and timestamps nobody asked for. The difference shows up fast.
 
-## Token Savings (30-min Claude Code Session, Yes It's Real)
+## Token Savings (Yes, It's Real)
 
 ![clov preview 2](img_2.jpg)
 
@@ -40,9 +40,9 @@ With clov: **~45,000 tokens** -> **70% reduction**
 
 > Numbers are estimates based on medium-sized TypeScript/Rust projects. Your results may vary, but raw output is a genuine waste and you know it.
 
-## Installation (Don't Skip Steps)
+## Installation (Read This First)
 
-### Pre-Installation Check (Do This First, Damn It)
+### Pre-Installation Check (Do This First)
 
 Don't waste an hour reinstalling something that is already there. Check if clov is on your system before doing anything:
 
@@ -79,7 +79,7 @@ After installing, verify it works:
 clov gain  # Must show token savings stats, not "command not found"
 ```
 
-### Manual Installation (The Slow Way)
+### Manual Installation (Slow Path)
 
 ```bash
 cargo install --git https://github.com/alexandephilia/clov-ai
@@ -135,7 +135,7 @@ clov find "*.rs" .               # Compact find results
 clov grep "pattern" .            # Grouped search results
 ```
 
-### Git (No More Wall of Text)
+### Git (No Wall of Text)
 
 ```bash
 clov git status                  # Compact status
@@ -192,7 +192,7 @@ clov gain --all --format csv     # CSV for Excel/analysis
 ```
 
 
-### Discover: See What You've Been Wasting
+### Discover (Your Wasted Tokens)
 
 Scans your Claude Code session history and shows exactly where you pissed tokens away. Useful when you want to know how bad the damage actually is before you pretend you were being efficient:
 
@@ -286,7 +286,7 @@ clov golangci-lint run            # JSON grouped by rule (85% reduction)
 
 ## Examples
 
-### Before and After (The Difference Is Embarrassing)
+### Before and After (Embarrassing)
 
 **Directory listing:**
 
@@ -334,7 +334,7 @@ FAILED: 2/15 tests
   ✗ test_overflow: panic at src/utils.rs:18
 ```
 
-## How It Works (Not Magic, Just Filtering)
+## How It Works (Just Filtering)
 
 ```
 without clov
@@ -355,7 +355,7 @@ Four strategies that handle the bulk of the crap your shell spews at the model:
 
 ## Configuration
 
-### Installation Modes (Pick One and Stop Second-Guessing)
+### Installation Modes (Pick One)
 
 Four modes. Pick the one that fits and stop overthinking it:
 
@@ -436,7 +436,7 @@ cp ~/.claude/settings.json.bak ~/.claude/settings.json  # Restore the damn backu
 ╚══════════════════════════════════════════════════════╝
 ```
 
-### Custom Database Path (If the Default Pisses You Off)
+### Custom Database Path (Override It)
 
 By default, clov stores tracking data in `~/.local/share/clov/history.db`. If that location doesn't work for your setup, override it and move on:
 
@@ -455,7 +455,7 @@ database_path = "/path/to/custom.db"
 
 Priority: `CLOV_DB_PATH` env var > `config.toml` > default location.
 
-### Tee: Full Output Recovery (Stops the Re-Run Hell)
+### Tee (Full Output Recovery)
 
 When clov filters a command, raw failure details disappear and the LLM re-runs the same damn command three times trying to figure out what broke. The tee feature saves unfiltered output to a file so the agent reads it directly instead of wasting more tokens on a retry loop.
 
@@ -536,7 +536,7 @@ The hook runs as a Claude Code [PreToolUse hook](https://docs.anthropic.com/en/d
   └──────────────────────────────────────────────────────┘
 ```
 
-### Quick Install (Automated, Just Run It)
+### Quick Install (Just Run It)
 
 ```bash
 clov init -g
@@ -560,7 +560,7 @@ clov init -g --no-patch      # Skip patching, print manual JSON snippet
 
 **Restart required**: After installation, restart Claude Code, then test with `git status`. If you skip the restart, don't complain when it doesn't work.
 
-### Manual Install (If Automatic Patching Broke Something)
+### Manual Install (If It Broke)
 
 If automatic patching fails or you just don't trust it and want to do it yourself:
 
@@ -686,7 +686,7 @@ Add to `~/.claude/settings.json`:
 
 The suggest hook detects the same commands as the rewrite hook but outputs a `systemMessage` instead of `updatedInput`, so Claude receives a hint rather than a rewritten command.
 
-## Uninstalling clov (Fine, Your Loss)
+## Uninstall (Your Loss)
 
 Want out? Here is how to do it cleanly without leaving junk all over your system:
 
@@ -754,7 +754,7 @@ ls -la ~/.claude/settings.json
 chmod 644 ~/.claude/settings.json
 ```
 
-### Hook Not Working After Install (Did You Restart?)
+### Hook Not Working (Did You Restart?)
 
 **Problem**: Commands are not going through clov after `clov init -g`. Nine times out of ten this is because Claude Code was not restarted.
 
@@ -771,7 +771,7 @@ cat ~/.claude/settings.json | grep clov-rewrite
 git status  # Should use clov automatically now
 ```
 
-### Uninstall Left Some Crap Behind
+### Uninstall (Leftover Crap)
 
 **Problem**: clov traces remain after `clov init -g --uninstall`
 
