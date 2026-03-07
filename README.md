@@ -1,6 +1,7 @@
 # clov — Token Omitter for LLM Workflows
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Version](https://img.shields.io/badge/version-0.25.0-blue.svg)](https://github.com/alexandephilia/clov-ai/releases/tag/v0.25.0)
 
 **A high-performance CLI proxy that eliminates token waste before it reaches your LLM context.**
 
@@ -107,7 +108,7 @@ clov init --show  # Verify the hook is installed and executable
 # clov init                       # Local project only (./CLAUDE.md)
 ```
 
-**New in v0.9.5**: Hook-first installation removes ~2,000 tokens from Claude's context while preserving full clov functionality through transparent command rewriting.
+**New in v0.25.0**: Hook-first installation removes ~2,000 tokens from Claude's context while preserving full clov functionality through transparent command rewriting.
 
 ## Global Flags
 
