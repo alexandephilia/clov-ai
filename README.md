@@ -32,13 +32,13 @@ With clov: **~45,000 tokens** -> **70% reduction**
 | `docker ps`               | 3x        | 900          | 180         | -80%     |
 | **Total**                 |           | **~118,000** | **~23,900** | **-80%** |
 
-> Numbers are estimates based on medium-sized TypeScript/Rust projects. Results vary.
+> Numbers are estimates based on medium-sized TypeScript/Rust projects. Your results may vary, but raw output is a genuine waste and you know it.
 
 ## Installation
 
 ### Pre-Installation Check
 
-Check if clov is already on your system before doing anything. Seriously, do this first:
+Don't skip this and then waste an hour reinstalling something that was already there. Check if clov is already on your system first:
 
 ```bash
 clov --version        # Check if installed
@@ -46,7 +46,7 @@ clov gain             # Confirm it is the Token Omitter
 which clov            # Check installation path
 ```
 
-If `clov gain` works, skip ahead to [Quick Start](#quick-start).
+If `clov gain` works, you are done here. Skip ahead to [Quick Start](#quick-start).
 
 ### Homebrew (macOS/Linux)
 
@@ -61,7 +61,7 @@ brew install clov
 curl -fsSL https://raw.githubusercontent.com/alexandephilia/clov-ai/refs/heads/main/install.sh | sh
 ```
 
-> clov installs to `~/.local/bin` by default. If that is not in your PATH:
+> clov installs to `~/.local/bin` by default. If that is not in your PATH, fix it or nothing will work:
 >
 > ```bash
 > echo 'export PATH="$HOME/.local/bin:$PATH"' >> ~/.bashrc  # or ~/.zshrc
@@ -107,7 +107,7 @@ clov init --show  # Verify the hook is installed and executable
 # clov init                       # Local project only (./CLAUDE.md)
 ```
 
-**v0.25.0**: Hook-first install removes ~2,000 tokens from Claude's context while keeping full clov functionality through command rewriting.
+**v0.25.0**: Hook-first install cuts ~2,000 tokens of crap out of Claude's context while keeping full clov functionality through command rewriting.
 
 ## Global Flags
 
@@ -188,11 +188,11 @@ clov gain --all --format csv     # CSV for Excel/analysis
 
 ### Discover: Find Missed Savings
 
-Scans your Claude Code session history and shows where clov would have saved tokens. Useful for:
+Scans your Claude Code session history and shows exactly where you left tokens on the table. Useful if you want to know how bad the damage actually is:
 
-- Seeing exactly how many tokens you left on the table
-- Finding which commands you keep running without clov
-- Spotting unhandled commands worth turning into clov features
+- Seeing how many damn tokens got wasted while clov wasn't running
+- Finding which commands you keep running raw when you shouldn't be
+- Spotting unhandled commands worth turning into clov features or opening an issue for
 
 ```bash
 clov discover                    # Current project, last 30 days
@@ -340,11 +340,11 @@ with clov
                ~200 tokens
 ```
 
-Four reduction strategies applied per command type:
+Four reduction strategies, because raw output is genuinely useless noise most of the time:
 
-1. **Smart Filtering**: strips noise, comments, blank lines, ANSI codes, boilerplate
+1. **Smart Filtering**: strips comments, blank lines, ANSI codes, and all the boilerplate nobody asked for
 2. **Grouping**: aggregates related items, errors by type, files by directory
-3. **Truncation**: keeps the relevant context, cuts the repetition
+3. **Truncation**: keeps the context that matters, cuts the repetition that doesn't
 4. **Deduplication**: collapses repeated log lines into single entries with counts
 
 ## Configuration
@@ -389,16 +389,16 @@ clov init -g --uninstall     # Remove all clov artifacts
 ```
 
 **What is settings.json?**
-Claude Code's configuration file. It registers the clov hook, which rewrites commands like `git status` to `clov git status` before execution. Without this registration, Claude ignores the hook.
+Claude Code's configuration file. It registers the clov hook, which rewrites commands like `git status` to `clov git status` before execution. Without this registration, the hook does absolutely nothing.
 
 **Backup behavior:**
-clov creates `~/.claude/settings.json.bak` before making changes. To revert:
+clov creates `~/.claude/settings.json.bak` before touching anything. If something goes wrong:
 
 ```bash
 cp ~/.claude/settings.json.bak ~/.claude/settings.json
 ```
 
-**Migration**: If you used `clov init -g` with the old 137-line injection, just re-run `clov init -g` to migrate to the hook-first approach.
+**Migration**: If you used `clov init -g` with the old 137-line injection, just re-run `clov init -g`. It will sort itself out without breaking anything.
 
 **Example: 3-day session (`clov gain --all`):**
 
@@ -430,7 +430,7 @@ cp ~/.claude/settings.json.bak ~/.claude/settings.json
 
 ### Custom Database Path
 
-By default, clov stores tracking data in `~/.local/share/clov/history.db`. To override:
+By default, clov stores tracking data in `~/.local/share/clov/history.db`. If that location doesn't work for you, override it:
 
 **Environment variable (highest priority):**
 
@@ -482,17 +482,17 @@ max_file_size = 1048576 # 1MB per file max
 
 ## Auto-Rewrite Hook (Recommended)
 
-The best way to use clov is the auto-rewrite hook for Claude Code. CLAUDE.md instructions get ignored by subagents all the time. The hook does not get ignored. It intercepts Bash commands and rewrites them to their clov equivalents before the shell ever sees them.
+The best way to use clov is the auto-rewrite hook for Claude Code. CLAUDE.md instructions get ignored by subagents all the damn time. The hook does not get ignored. It intercepts Bash commands and rewrites them before the shell ever sees them.
 
-**Result**: 100% clov adoption across all conversations and subagents, zero token overhead in Claude's context.
+**Result**: 100% clov coverage across all conversations and subagents, zero token overhead in Claude's context.
 
 ### What Are Hooks?
 
-Claude Code hooks are scripts that run before or after Claude executes a command. clov registers a **PreToolUse** hook that intercepts Bash commands and rewrites them silently, e.g. `git status` becomes `clov git status` before execution. Claude only receives the filtered output.
+Claude Code hooks are scripts that run before or after Claude executes a command. clov registers a **PreToolUse** hook that intercepts Bash commands and rewrites them silently, e.g. `git status` becomes `clov git status` before execution. Claude only sees the filtered output, never the raw garbage.
 
-**Why settings.json?** Claude Code reads `~/.claude/settings.json` to find registered hooks. Without that entry, it does not know the hook exists.
+**Why settings.json?** Claude Code reads `~/.claude/settings.json` to find registered hooks. Without that entry, it does not know the hook exists and you get nothing.
 
-**Is it safe?** Yes. clov creates a backup before any change. The hook only modifies command strings. It does not delete files or access secrets. You can read the hook at `~/.claude/hooks/clov-rewrite.sh` any time.
+**Is it safe?** Yes. clov creates a backup before touching anything. The hook only modifies command strings. It does not delete files or access secrets. If you don't trust it, read the damn hook yourself at `~/.claude/hooks/clov-rewrite.sh`.
 
 ### How It Works
 
@@ -554,7 +554,7 @@ clov init -g --no-patch      # Skip patching, print manual JSON snippet
 
 ### Manual Install (Fallback)
 
-If automatic patching fails or you want direct control:
+If automatic patching fails or you just don't trust it and want to do it yourself:
 
 ```bash
 # 1. Install hook and CLOV.md
@@ -598,7 +598,7 @@ Add this entry to the `PreToolUse` array in `~/.claude/settings.json`:
 
 ### Per-Project Install
 
-The hook lives at `.claude/hooks/clov-rewrite.sh` in this repository. To use it in another project, copy the hook and add the same settings.json entry with a relative path or a project-level `.claude/settings.json`.
+The hook lives at `.claude/hooks/clov-rewrite.sh` in this repo. To use it in another project, copy the hook and register it in settings.json. It is not complicated.
 
 ### Commands Rewritten
 
@@ -626,11 +626,11 @@ curl        -> clov curl
 pnpm        -> clov pnpm ...
 ```
 
-Commands already using `clov`, heredocs, and anything unrecognized pass through unchanged.
+Commands already using `clov`, heredocs, and anything unrecognized pass through unchanged. No surprises.
 
 ### Suggest Hook (Non-Intrusive Alternative)
 
-If you want Claude Code to suggest clov rather than silently rewriting commands, use the suggest hook instead. It emits a system reminder when clov-compatible commands are detected and does not touch the command itself. Useful if you actually want visibility, otherwise just use the rewrite hook and stop overthinking it.
+If you would rather have Claude Code suggest clov than silently rewrite commands, use the suggest hook instead. It prints a reminder when clov-compatible commands are detected and leaves the command alone. Useful for auditing, though if you actually want savings just use the rewrite hook and stop overthinking it.
 
 **Comparison:**
 
@@ -644,9 +644,9 @@ If you want Claude Code to suggest clov rather than silently rewriting commands,
 
 When to use suggest instead of rewrite:
 
-- You want to audit which commands Claude actually runs
-- You are learning clov and want to see what gets rewritten and why
-- You need exact command execution for debugging and the rewrite is getting in the way
+- You want to see which commands Claude actually runs raw
+- You are learning clov and want visibility into what gets rewritten
+- The rewrite is getting in the way of debugging and you need the original command
 
 **Setup:**
 
@@ -679,6 +679,8 @@ Add to `~/.claude/settings.json`:
 The suggest hook detects the same commands as the rewrite hook but outputs a `systemMessage` instead of `updatedInput`, so Claude receives a hint rather than a rewritten command.
 
 ## Uninstalling clov
+
+If you want out, fine. Here's how to do it cleanly:
 
 **Complete removal (global):**
 
@@ -723,6 +725,8 @@ sudo dnf remove clov         # Fedora/RHEL
 
 ## Troubleshooting
 
+Most of these come down to bad JSON, a missing PATH, or forgetting to restart. Fix the obvious thing first before assuming clov is broken.
+
 ### settings.json Patching Failed
 
 **Problem**: `clov init -g` fails to patch settings.json
@@ -744,7 +748,7 @@ chmod 644 ~/.claude/settings.json
 
 ### Hook Not Working After Install
 
-**Problem**: Commands are not going through clov after `clov init -g`
+**Problem**: Commands are not going through clov after `clov init -g`. Nine times out of ten this is because Claude Code was not restarted.
 
 ```bash
 # Verify hook is registered
@@ -788,7 +792,7 @@ MIT License - see [LICENSE](LICENSE) for details.
 
 Open an issue or PR on GitHub: https://github.com/alexandephilia/clov-ai/issues
 
-If something is broken, say so. If you have a filter idea, open a PR. Don't be shy about it.
+If something is broken, open an issue and say so clearly. If you built a filter, open a damn PR. Don't sit on it.
 
 ---
 
