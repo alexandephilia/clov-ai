@@ -10,6 +10,8 @@ _CLOV includes work derived from [RTK](https://github.com/rtk-ai/rtk/), extended
 [![Version](https://img.shields.io/badge/version-0.29.5-blue.svg)](https://github.com/alexandephilia/clov-ai/releases/tag/v0.29.5)
 [![Claude Code](https://img.shields.io/badge/Claude_Code-integrated-7B2D8B?logo=anthropic&logoColor=white)](https://claude.ai/code)
 
+Install via Homebrew: [`brew tap alexandephilia/clov && brew install clov`](https://github.com/alexandephilia/homebrew-clov)
+
 MCP (Model Context Protocol) servers are brilliant, but their outputs are an uncontrolled firehose of context-destroying noise. When your AI agent pulls web search results or database dumps, it swallows navigation chrome, tracking parameters, and megabytes of unstructured JSON.
 
 ![clov preview](clov_1.jpg)
