@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.29.4](https://github.com/alexandephilia/clov-ai/compare/v0.29.3...v0.29.4) (2026-03-07)
+
+
+### Bug Fixes
+
+* clean exa quoted article artifacts ([672a140](https://github.com/alexandephilia/clov-ai/commit/672a140261530d114b8fd16fa9d5282f359de4ef))
+
 ## [0.29.3](https://github.com/alexandephilia/clov-ai/compare/v0.29.2...v0.29.3) (2026-03-07)
 
 
