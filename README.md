@@ -337,13 +337,10 @@ FAILED: 2/15 tests
 ## How It Works (Just Filtering)
 
 ```
-without clov
-  Claude  <──────────────────────────  git  (2,000 tokens raw)
+without clov:  Claude <──────── git  (~2,000 tokens)
 
-with clov
-  Claude  <──  clov  ──>  git
-               filter
-               ~200 tokens
+with clov:     Claude <── clov <── git  (~200 tokens)
+                          filter
 ```
 
 Four strategies that handle the bulk of the crap your shell spews at the model:
@@ -507,33 +504,17 @@ Claude Code hooks are scripts that run before or after Claude executes a command
 The hook runs as a Claude Code [PreToolUse hook](https://docs.anthropic.com/en/docs/claude-code/hooks). When Claude is about to run `git status`, the hook rewrites it to `clov git status` before it reaches the shell.
 
 ```
-  ┌──────────────────────────────────────────────────────┐
-  │  Claude Code issues:  git status                     │
-  └───────────────────────────┬──────────────────────────┘
-                              │
-              ┌───────────────▼───────────────────┐
-              │      ~/.claude/settings.json       │
-              │    PreToolUse hook registered      │
-              └───────────────┬───────────────────┘
-                              │
-              ┌───────────────▼───────────────────┐
-              │         clov-rewrite.sh            │
-              │                                    │
-              │   "git status"                     │
-              │        ──────────────────────►     │
-              │   "clov git status"                │  <- silent rewrite
-              └───────────────┬───────────────────┘
-                              │
-              ┌───────────────▼───────────────────┐
-              │         clov  (Rust binary)        │
-              │  · runs the real git status        │
-              │  · filters and compresses output   │
-              └───────────────┬───────────────────┘
-                              │
-  ┌───────────────────────────▼──────────────────────────┐
-  │  Claude receives:  "3 modified, 1 untracked ✓"       │
-  │                    not 50 lines of raw git output     │
-  └──────────────────────────────────────────────────────┘
+Claude: "git status"
+    |
+    v
+clov-rewrite.sh  ->  "clov git status"  (silent)
+    |
+    v
+clov (Rust)
+  runs git, filters output
+    |
+    v
+Claude gets: "3 modified, 1 untracked ✓"
 ```
 
 ### Quick Install (Just Run It)
