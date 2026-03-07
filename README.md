@@ -802,72 +802,14 @@ nano ~/.claude/settings.json  # Remove clov hook entry
 cp ~/.claude/settings.json.bak ~/.claude/settings.json
 ```
 
-
-## For Maintainers
-
-### Security Review Workflow
-
-clov runs a 3-layer security review on external PRs.
-
-**Layer 1: Automated GitHub Action**
-
-Every PR triggers `.github/workflows/security-check.yml`:
-
-- Cargo audit: CVE detection in dependencies
-- Critical files alert: flags modifications to high-risk files (runner.rs, tracking.rs, Cargo.toml, workflows)
-- Dangerous pattern scanning: shell injection, network operations, unsafe code, panic risks
-- Dependency auditing: supply chain verification for new crates
-- Clippy security lints: enforces Rust safety best practices
-
-Results appear in the PR's GitHub Actions summary.
-
-**Layer 2: Claude Code Skill**
-
-Maintainers with [Claude Code](https://claude.ai/code) can run:
-
-```bash
-/clov-pr-security <PR_NUMBER>
-```
-
-The skill performs:
-
-- Critical files analysis: detects modifications to shell execution, validation, or CI/CD files
-- Dangerous pattern detection: identifies shell injection, environment manipulation, exfiltration vectors
-- Supply chain audit: verifies new dependencies on crates.io (downloads, maintainer, license)
-- Semantic analysis: checks intent vs reality, logic bombs, code quality red flags
-- Structured report: produces security assessment with risk level and verdict
-
-**Skill installation (maintainers only):**
-
-```bash
-cp -r ~/.claude/skills/clov-pr-security ~/.claude/skills/
-```
-
-The skill includes:
-
-- `SKILL.md`: workflow automation and usage guide
-- `critical-files.md`: clov-specific file risk tiers with attack scenarios
-- `dangerous-patterns.md`: regex patterns with exploitation examples
-- `checklist.md`: manual review template
-
-**Layer 3: Manual Review**
-
-For PRs that touch critical files or add dependencies:
-
-- 2 maintainers required for Cargo.toml, workflows, or Tier 1 files
-- Isolated testing recommended for high-risk changes
-
 ## License
 
 MIT License - see [LICENSE](LICENSE) for details.
 
 ## Contributing
 
-Open an issue or PR on GitHub.
+Open an issue or PR on GitHub: https://github.com/alexandephilia/clov-ai/issues
 
-External contributors: your PR goes through automated security review. This protects clov's shell execution capabilities against injection attacks and supply chain vulnerabilities.
+---
 
-## Contact
-
-- Issues: https://github.com/alexandephilia/clov-ai/issues
-- Email: 4lexander31@gmail.com
+This is a hard fork. Maintained by [@alexandephilia](https://github.com/alexandephilia) and Claude.
