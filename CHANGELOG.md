@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.29.2](https://github.com/alexandephilia/clov-ai/compare/v0.29.1...v0.29.2) (2026-03-08)
+
+### Bug Fixes
+
+* fix CI release workflow — DEB/RPM non-blocking, bash glob crash on missing packages, cargo install replaces broken taiki-e action tags
+
 ## [0.29.1](https://github.com/alexandephilia/clov-ai/compare/v0.29.0...v0.29.1) (2026-03-08)
 
 ### Features
