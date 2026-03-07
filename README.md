@@ -1,6 +1,6 @@
 # CLOV - Context Limiter & Output Vetter
 
-_CLOV includes work derived from [rtk-ai/rtk](https://github.com/rtk-ai/rtk/) and carries forward RTK attribution and license notices in this repository._
+_CLOV includes work derived from [rtk-ai/rtk](https://github.com/rtk-ai/rtk/), extended with a Rust implementation, MCP proxy support, structured-response filtering, dynamic truncation controls, and local telemetry._
 
 <p align="center">
   <img src="assets/clov.png" width="400" alt="clov mascot">
