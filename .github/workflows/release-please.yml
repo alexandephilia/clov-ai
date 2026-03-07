@@ -20,7 +20,7 @@ jobs:
         id: release
         with:
           release-type: rust
-          package-name: clov
+          config-file: release-please-config.json
 
   build-release:
     name: Build and upload release assets
