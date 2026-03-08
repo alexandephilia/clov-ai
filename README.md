@@ -1,14 +1,17 @@
-# CLOV - Context Limiter & Output Vetter
+# CLOV - Context Limiter & Output Vetter ![Stars](https://img.shields.io/github/stars/alexandephilia/clov-ai)
 
 _CLOV includes work derived from [RTK](https://github.com/rtk-ai/rtk/), extended with a Rust implementation, deeper MCP proxy support, structured-response filtering, dynamic truncation controls, and a more local-first workflow with filtering and telemetry handled on-device._
 
-<p align="center">
+<p align="left">
   <img src="assets/clov.png" width="400" alt="clov mascot">
 </p>
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Version](https://img.shields.io/badge/version-0.35.0-blue.svg)](https://github.com/alexandephilia/clov-ai/releases/tag/v0.35.0)
-[![Claude Code](https://img.shields.io/badge/Claude_Code-integrated-7B2D8B?logo=anthropic&logoColor=white)](https://claude.ai/code)
+[![Claude](https://img.shields.io/badge/Claude_Code_Plugin-D97757?logo=claude&logoColor=fff)](#)
+[![Claude Code](https://img.shields.io/badge/CLI_Compatible-c15f3c?logo=anthropic&logoColor=&labelColor=c15f3c)](https://claude.ai/code)
+[![Ghostty](https://custom-icon-badges.demolab.com/badge/Made_With_Ghostty-0000ff?logo=ghostty_term)](#)
+</br>
+[![License: MIT](https://img.shields.io/badge/License-MIT-red.svg)](https://opensource.org/licenses/MIT)
+[![Version](https://img.shields.io/badge/version-0.35.0-green.svg)](https://github.com/alexandephilia/clov-ai/releases/tag/v0.35.0)
 
 <p align="center">
   <strong>Quick install</strong><br/>
@@ -207,6 +210,30 @@ If `clov` aggressively intercepts a test failure and the AI actually needs the u
 - [docs/AUDIT_GUIDE.md](docs/AUDIT_GUIDE.md) — Advanced economic charting and localized analytics APIs.
 
 ---
+
+# Repo Maintainers
+
+<table>
+  <tr>
+    <td align="center" valign="top">
+      <a href="https://github.com/alexandephilia">
+        <img src="https://avatars.githubusercontent.com/u/43126944?v=4" width="100px;" height="100px;" style="border-radius: 30%;" alt=""/><br />
+        <sub><b>Alexandephilia</b></sub>
+      </a><br />
+      <sub>Vibing</sub>
+    </td>
+    <td align="center" valign="top">
+      <img src="https://matthiasroder.com/content/images/2026/01/Claude.png" width="100px;" height="100px;" style="border-radius: 30%;" alt=""/><br />
+      <sub><b>Claude</b></sub><br />
+      <sub>Implementation</sub>
+    </td>
+    <td align="center" valign="top">
+      <img src="https://raw.githubusercontent.com/lobehub/lobe-icons/refs/heads/master/packages/static-png/dark/codex-color.png" width="100px;" height="100px;" style="border-radius: 30%;" alt=""/><br />
+      <sub><b>Codex</b></sub><br />
+      <sub>Planning</sub>
+    </td>
+  </tr>
+</table>
 
 ## Acknowledgments
 
