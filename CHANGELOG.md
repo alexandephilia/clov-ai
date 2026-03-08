@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.30.0](https://github.com/alexandephilia/clov-ai/compare/v0.29.5...v0.30.0) (2026-03-08)
+
+
+### Features
+
+* **config:** add MCP presets and persistent defaults ([2891b96](https://github.com/alexandephilia/clov-ai/commit/2891b96569603037ce05897704486df452d998f6))
+* **tokenizer:** add profile-aware MCP token budgeting ([a8f77ac](https://github.com/alexandephilia/clov-ai/commit/a8f77ac9f8846c607ac2af6139cadc596af1e850))
+* **tracking:** add MCP parse metadata and fallback telemetry ([64a648e](https://github.com/alexandephilia/clov-ai/commit/64a648ec9d87cc57c4a75e1cfcd590ea362cd7ab))
+
 ## [0.29.5](https://github.com/alexandephilia/clov-ai/compare/v0.29.4...v0.29.5) (2026-03-07)
 
 
