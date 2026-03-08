@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.34.3](https://github.com/alexandephilia/clov-ai/compare/v0.34.2...v0.34.3) (2026-03-08)
+
+
+### Bug Fixes
+
+* **pulse:** replace misaligned 3-column grid with individual box-drawn cards ([436273e](https://github.com/alexandephilia/clov-ai/commit/436273e6b39fea411904712a45a5e55ba4388464))
+
 ## [0.34.2](https://github.com/alexandephilia/clov-ai/compare/v0.34.1...v0.34.2) (2026-03-08)
 
 
