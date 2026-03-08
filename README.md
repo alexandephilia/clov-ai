@@ -67,13 +67,17 @@ _(Pre-compiled binaries for all architectures are available in standard releases
 
 ## MCP Universal Filtering
 
-To armor your MCP servers, wrap their invocation command with the `clov bridge proxy` bridge. `clov` operates as a transparent JSON-RPC layer, handling MCP stdio framing (`Content-Length` and newline-delimited payloads) and compacting both text and structured tool results on the wire.
-
 ![clov mcp preview](clov_5.jpg)
 
-> **Note**: Tested with Exa MCP search/crawl flows. Defaults remain conservative, but response budgets and truncation limits are now adjustable per proxy invocation.
+To armor your MCP servers, wrap their invocation command with the `clov bridge proxy` bridge. `clov` operates as a transparent JSON-RPC layer, handling MCP stdio framing (`Content-Length` and newline-delimited payloads) and compacting both text and structured tool results on the wire.
 
-Configuration example for your AI agent (e.g., `~/.claude/settings.json`):
+![clov mcp proxy example](assets/clov_9.jpg)
+
+> **Note**: This is a real-world example of `clov` intercepting and filtering Exa search results during an AI coding session.
+
+---
+
+Configuration example for your AI agent (e.g., `~/.mcp.json`):
 
 ```json
 "mcpServers": {
@@ -177,8 +181,6 @@ clov pulse             # Lifetime efficiency readouts
 clov pulse --graph     # 30-day visual velocity charting
 clov pulse --all       # Granular temporal exports
 ```
-
-![clov pulse proof](assets/clov_9.jpg)
 
 ---
 
