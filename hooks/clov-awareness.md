@@ -104,7 +104,7 @@ Claude → "git status" → hook intercepts → "clov git status" → filtered (
 ## Installation Check
 
 ```bash
-clov --version         # Should show: clov 0.34.4+
+clov --version         # Should show: clov 0.35.0+
 clov pulse             # Should print stats table (not "command not found")
 which clov             # Verify binary path
 clov hook --show       # Verify hook registered in settings.json

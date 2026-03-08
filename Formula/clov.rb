@@ -10,8 +10,8 @@ class Clov < Formula
 
   # The main repo creates a unified tarball via GitHub release
   # We use a dummy URL for the core formula since the CLI downloads the platform specific binaries
-  url "https://github.com/alexandephilia/clov-ai/archive/refs/tags/v0.34.4.tar.gz"
-  version "0.34.4"
+  url "https://github.com/alexandephilia/clov-ai/archive/refs/tags/v0.35.0.tar.gz"
+  version "0.35.0"
 
   depends_on "rust" => :build
 
