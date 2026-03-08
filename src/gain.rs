@@ -104,57 +104,8 @@ pub fn run(
         println!();
 
         if !summary.by_command.is_empty() {
-            // added: styled section header
-            println!("{}", styled("By Command", true));
-
-            // added: dynamic column widths for clean alignment
-            let cmd_width = 24usize;
-            let impact_width = 10usize;
-            let count_width = summary
-                .by_command
-                .iter()
-                .map(|(_, count, _, _, _)| count.to_string().len())
-                .max()
-                .unwrap_or(5)
-                .max(5);
-            let saved_width = summary
-                .by_command
-                .iter()
-                .map(|(_, _, saved, _, _)| format_tokens(*saved).len())
-                .max()
-                .unwrap_or(5)
-                .max(5);
-            let time_width = summary
-                .by_command
-                .iter()
-                .map(|(_, _, _, _, avg_time)| format_duration(*avg_time).len())
-                .max()
-                .unwrap_or(6)
-                .max(6);
-
-            let table_width = 3
-                + 2
-                + cmd_width
-                + 2
-                + count_width
-                + 2
-                + saved_width
-                + 2
-                + 6
-                + 2
-                + time_width
-                + 2
-                + impact_width;
-            println!("{}", "─".repeat(table_width));
-            println!(
-                "{:>3}  {:<cmd_width$}  {:>count_width$}  {:>saved_width$}  {:>6}  {:>time_width$}  {:<impact_width$}",
-                "#", "Command", "Count", "Saved", "Avg%", "Time", "Impact",
-                cmd_width = cmd_width, count_width = count_width,
-                saved_width = saved_width, time_width = time_width,
-                impact_width = impact_width
-            );
-            println!("{}", "─".repeat(table_width));
-
+            println!("{}", styled("Top Command Blocks", true));
+            println!("────────────────────────────────────────────────────────────");
             let max_saved = summary
                 .by_command
                 .iter()
@@ -163,28 +114,22 @@ pub fn run(
                 .unwrap_or(1);
 
             for (idx, (cmd, count, saved, pct, avg_time)) in summary.by_command.iter().enumerate() {
-                let row_idx = format!("{:>2}.", idx + 1);
-                let cmd_cell = style_command_cell(&truncate_for_column(cmd, cmd_width)); // added: colored command
-                let count_cell = format!("{:>count_width$}", count, count_width = count_width);
-                let saved_cell = format!(
-                    "{:>saved_width$}",
-                    format_tokens(*saved),
-                    saved_width = saved_width
-                );
-                let pct_plain = format!("{:>6}", format!("{pct:.1}%"));
-                let pct_cell = colorize_pct_cell(*pct, &pct_plain); // added: color-coded percentage
-                let time_cell = format!(
-                    "{:>time_width$}",
-                    format_duration(*avg_time),
-                    time_width = time_width
-                );
-                let impact = mini_bar(*saved, max_saved, impact_width); // added: impact bar
-                println!(
-                    "{}  {}  {}  {}  {}  {}  {}",
-                    row_idx, cmd_cell, count_cell, saved_cell, pct_cell, time_cell, impact
-                );
+                let share_pct = if summary.total_saved > 0 {
+                    (*saved as f64 / summary.total_saved as f64) * 100.0
+                } else {
+                    0.0
+                };
+                let block = TacticalBlock {
+                    rank: idx + 1,
+                    cmd: normalize_display_command(cmd),
+                    count: *count,
+                    saved: *saved,
+                    pct: *pct,
+                    avg_time: *avg_time,
+                    share_pct,
+                };
+                print_tactical_block(&block, max_saved);
             }
-            println!("{}", "─".repeat(table_width));
             println!();
         }
 
@@ -292,71 +237,51 @@ fn print_kpi(label: &str, value: String) {
     println!("{:<18} {}", format!("{label}:"), value);
 }
 
-/// Colorize percentage based on savings tier (TTY-aware). // added
-fn colorize_pct_cell(pct: f64, padded: &str) -> String {
-    if !std::io::stdout().is_terminal() {
-        return padded.to_string();
-    }
-    if pct >= 70.0 {
-        padded.green().bold().to_string()
-    } else if pct >= 40.0 {
-        padded.yellow().bold().to_string()
-    } else {
-        padded.red().bold().to_string()
-    }
-}
-
-/// Truncate text to fit column width with ellipsis. // added
-fn truncate_for_column(text: &str, width: usize) -> String {
-    if width == 0 {
-        return String::new();
-    }
-    let char_count = text.chars().count();
-    if char_count <= width {
-        return format!("{:<width$}", text, width = width);
-    }
-    if width <= 3 {
-        return text.chars().take(width).collect();
-    }
-    let mut out: String = text.chars().take(width - 3).collect();
-    out.push_str("...");
-    out
-}
-
-/// Style command names with cyan+bold (TTY-aware). // added
-fn style_command_cell(cmd: &str) -> String {
-    if !std::io::stdout().is_terminal() {
-        return cmd.to_string();
-    }
-    cmd.bright_cyan().bold().to_string()
-}
-
-/// Render a proportional bar chart segment (TTY-aware). // added
-fn mini_bar(value: usize, max: usize, width: usize) -> String {
+/// Render a heat-strip impact bar. // added
+fn heat_strip(value: usize, max: usize, width: usize) -> String {
     if max == 0 || width == 0 {
         return String::new();
     }
     let filled = ((value as f64 / max as f64) * width as f64).round() as usize;
     let filled = filled.min(width);
-    let bar = (0..width)
-        .map(|i| if i < filled { "▰" } else { "▱" })
-        .collect::<Vec<_>>()
-        .join(" ");
-    if std::io::stdout().is_terminal() {
-        bar.cyan().to_string()
-    } else {
-        bar
+    let strong = ((filled as f64) * 0.4).ceil() as usize;
+    let medium = ((filled as f64) * 0.35).ceil() as usize;
+    let mut chars = Vec::with_capacity(width);
+    for i in 0..width {
+        let ch = if i < strong {
+            '█'
+        } else if i < strong + medium {
+            '▓'
+        } else if i < filled {
+            '▒'
+        } else {
+            '░'
+        };
+        chars.push(ch);
     }
+
+    let bar: String = chars.into_iter().collect();
+    if !std::io::stdout().is_terminal() {
+        return bar;
+    }
+
+    let mut out = String::new();
+    for ch in bar.chars() {
+        let styled = match ch {
+            '█' => "█".bright_cyan().bold().to_string(),
+            '▓' => "▓".cyan().bold().to_string(),
+            '▒' => "▒".yellow().to_string(),
+            _ => "░".bright_black().to_string(),
+        };
+        out.push_str(&styled);
+    }
+    out
 }
 
 /// Print an efficiency meter with colored progress bar (TTY-aware). // added
 fn print_efficiency_meter(pct: f64) {
     let width = 24usize;
-    let filled = (((pct / 100.0) * width as f64).round() as usize).min(width);
-    let meter = (0..width)
-        .map(|i| if i < filled { "▰" } else { "▱" })
-        .collect::<Vec<_>>()
-        .join(" ");
+    let meter = heat_strip((pct * 100.0) as usize, 10_000, width);
     if std::io::stdout().is_terminal() {
         let pct_str = format!("{pct:.1}%");
         let colored_pct = if pct >= 70.0 {
@@ -370,6 +295,94 @@ fn print_efficiency_meter(pct: f64) {
     } else {
         println!("Efficiency meter: {} {:.1}%", meter, pct);
     }
+}
+
+struct TacticalBlock {
+    rank: usize,
+    cmd: String,
+    count: usize,
+    saved: usize,
+    pct: f64,
+    avg_time: u64,
+    share_pct: f64,
+}
+
+/// Print a tactical block for a single command. // added
+fn print_tactical_block(block: &TacticalBlock, max_saved: usize) {
+    let title = format!("┌─ {:02} / {} ", block.rank, block.cmd);
+    let line_width = 60usize;
+    let title_chars = title.chars().count();
+    let tail_len = line_width.saturating_sub(title_chars + 1);
+    let tail = "─".repeat(tail_len);
+    let title_line = format!("{title}{tail}┐");
+
+    let left_1 = format!("calls {:>9}", block.count);
+    let right_1 = format!("saved {:>10}", format_tokens(block.saved));
+    let left_2 = format!("avg cut {:>7}", format!("{:.1}%", block.pct));
+    let right_2 = format!("avg time {:>7}", format_duration(block.avg_time));
+    let left_3 = format!("rank {:>11}", format!("#{}", block.rank));
+    let right_3 = format!("savings share {:>5}", format!("{:.1}%", block.share_pct));
+    let impact = heat_strip(block.saved, max_saved, 12);
+
+    println!("{}", style_block_border(&title_line));
+    println!(
+        "{}",
+        style_block_row(&format!("│ {:<22} {:<25} │", left_1, right_1))
+    );
+    println!(
+        "{}",
+        style_block_row(&format!("│ {:<22} {:<25} │", left_2, right_2))
+    );
+    println!(
+        "{}",
+        style_block_row(&format!("│ {:<22} {:<25} │", left_3, right_3))
+    );
+    println!("{}", style_block_row(&format!("│ impact {:<48} │", impact)));
+    println!(
+        "{}",
+        style_block_border("└──────────────────────────────────────────────────────────┘")
+    );
+}
+
+fn normalize_display_command(cmd: &str) -> String {
+    cmd.replace("clov find", "clov scan")
+        .replace("clov grep", "clov search")
+        .replace("clov read", "clov view")
+        .replace("clov ls", "clov files")
+        .replace("clov tree", "clov map")
+        .replace("clov diff", "clov patch")
+        .replace("clov log", "clov logs")
+        .replace("clov json", "clov schema")
+        .replace("clov deps", "clov graph")
+        .replace("clov env", "clov vars")
+        .replace("clov summary", "clov digest")
+        .replace("clov wget", "clov fetch")
+        .replace("clov wc", "clov count")
+        .replace("clov test", "clov check")
+        .replace("clov err", "clov fail")
+        .replace("clov gain", "clov pulse")
+        .replace("clov config", "clov settings")
+        .replace("clov discover", "clov inspect")
+        .replace("clov learn", "clov adapt")
+        .replace("clov proxy", "clov passthrough")
+        .replace("clov verify", "clov doctor")
+        .replace("clov hook-audit", "clov audit-hooks")
+        .replace("clov rewrite", "clov route")
+        .replace("clov mcp", "clov bridge")
+}
+
+fn style_block_border(line: &str) -> String {
+    if !std::io::stdout().is_terminal() {
+        return line.to_string();
+    }
+    line.bright_black().to_string()
+}
+
+fn style_block_row(line: &str) -> String {
+    if !std::io::stdout().is_terminal() {
+        return line.to_string();
+    }
+    line.to_string()
 }
 
 /// Resolve project scope from --project flag. // added
