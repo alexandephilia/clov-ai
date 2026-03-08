@@ -12,6 +12,10 @@ _`CLOV` includes work derived from [RTK](https://github.com/rtk-ai/rtk/), extend
 </p>
 
 <p align="left">
+  <img src="https://readme-typing-svg.herokuapp.com?font=JetBrains+Mono&weight=600&size=25&duration=2000&pause=1000&color=FFFF&Left=true&vLeft=true&width=500&lines=Less+Bloated.+Save+Smarter.;CLI Commands+%26+MCPs Support" alt="Typing SVG" />
+</p>
+
+<p align="left">
   <strong>Quick install</strong><br/>
   <code>brew tap alexandephilia/clov && brew install clov</code>
 </p>
@@ -81,6 +85,12 @@ To armor your MCP servers, wrap their invocation command with the `clov bridge p
 ![clov mcp proxy example](assets/clov_9.jpg)
 
 > **Note**: This is a real-world example of `clov` intercepting and filtering Exa search results during an AI coding session.
+
+| Before 😩         | After 😎        |
+| ----------------- | --------------- |
+| ~271K Tokens~     | ~143.5K Tokens  |
+| Context Pollution | Clean Filtering |
+| Bloated           | 78.8% Reduction |
 
 ---
 
@@ -238,6 +248,10 @@ If `clov` aggressively intercepts a test failure and the AI actually needs the u
     </td>
   </tr>
 </table>
+
+## Star History
+
+[![Star History Chart](https://api.star-history.com/svg?repos=alexandephilia/clov-ai&type=Date)](https://star-history.com/#alexandephilia/clov-ai)
 
 ## Acknowledgments
 
