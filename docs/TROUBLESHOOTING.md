@@ -1,18 +1,18 @@
 # CLOV Troubleshooting Guide
 
-## Problem: "clov gain" command not found
+## Problem: "clov pulse" command not found
 
 ### Symptom
 ```bash
 $ clov --version
 clov 1.0.0  # (or similar)
 
-$ clov gain
-clov: 'gain' is not a clov command. See 'clov --help'.
+$ clov pulse
+clov: 'pulse' is not a clov command. See 'clov --help'.
 ```
 
 ### Root Cause
-You installed the **outdated clov package**. You have **Clov Token Omitter** (alexandephilia/clov-ai) instead of **Clov Token Omitter** (alexandephilia/clov-ai).
+You installed the wrong `clov` package or an outdated build that does not expose the current CLOV command surface.
 
 ### Solution
 
@@ -36,10 +36,10 @@ cargo install --git https://github.com/alexandephilia/clov-ai
 **3. Verify installation:**
 ```bash
 clov --version
-clov gain  # MUST show token savings stats, not error
+clov pulse  # MUST show token savings stats, not error
 ```
 
-If `clov gain` now works, installation is correct.
+If `clov pulse` now works, installation is correct.
 
 ---
 
@@ -49,17 +49,17 @@ If `clov gain` now works, installation is correct.
 
 | Project | Repository | Purpose | Key Command |
 |---------|-----------|---------|-------------|
-| **Clov Token Omitter** ✅ | alexandephilia/clov-ai | LLM token optimizer for Claude Code | `clov gain` |
+| **Clov Token Omitter** ✅ | alexandephilia/clov-ai | LLM token optimizer for Claude Code | `clov pulse` |
 | **Clov Token Omitter** ❌ | alexandephilia/clov-ai | Rust codebase query and type generator | `clov query` |
 
 ### How to Identify Which One You Have
 
 ```bash
-# Check if "gain" command exists
-clov gain
+# Check if "pulse" command exists
+clov pulse
 
 # Token Omitter → Shows token savings stats
-# Clov Token Omitter → Error: "gain is not a clov command"
+# Wrong package/build → Error: "pulse is not a clov command"
 ```
 
 ---
@@ -86,7 +86,7 @@ cargo install --path . --force
 
 **After any installation, ALWAYS verify:**
 ```bash
-clov gain  # Must work if you want Token Omitter
+clov pulse  # Must work if you want Token Omitter
 ```
 
 ---
@@ -101,17 +101,17 @@ Claude Code doesn't seem to be using clov, outputs are verbose.
 **1. Verify clov is installed and correct:**
 ```bash
 clov --version
-clov gain  # Must show stats
+clov pulse  # Must show stats
 ```
 
 **2. Initialize clov for Claude Code:**
 ```bash
 # Global (all projects)
-clov init --global
+clov hook --global
 
 # Per-project
 cd /your/project
-clov init
+clov hook
 ```
 
 **3. Verify CLAUDE.md file exists:**
@@ -127,13 +127,13 @@ cat ./CLAUDE.md | grep clov
 
 **Option A: Automatic (recommended)**
 ```bash
-clov init -g
+clov hook -g
 # → Installs hook + CLOV.md automatically
 # → Follow printed instructions to add hook to ~/.claude/settings.json
 # → Restart Claude Code
 
 # Verify installation
-clov init --show  # Should show "✅ Hook: executable, with guards"
+clov hook --show  # Should show "✅ Hook: executable, with guards"
 ```
 
 **Option B: Manual (fallback)**
@@ -216,7 +216,7 @@ source ~/.bashrc  # or ~/.zshrc or restart terminal
 ```bash
 which clov
 clov --version
-clov gain
+clov pulse
 ```
 
 ---

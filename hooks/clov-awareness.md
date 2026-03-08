@@ -20,11 +20,11 @@ Filtered (clov):       ~60 tokens  → "3 modified, 1 untracked ✓"
 These analyze CLOV's own behavior. Hook doesn't rewrite them.
 
 ```bash
-clov gain              # Token savings analytics
-clov gain --history    # Per-command breakdown
-clov cc-savings        # Claude spend vs CLOV savings
-clov discover          # Find missed optimization opportunities
-clov proxy <cmd>       # Bypass filtering (debugging/full output)
+clov pulse             # Token savings analytics
+clov pulse --history   # Per-command breakdown
+clov spend             # Claude spend vs CLOV savings
+clov inspect           # Find missed optimization opportunities
+clov passthrough <cmd> # Bypass filtering (debugging/full output)
 ```
 
 ### 2. Dev Commands → Let Hook Auto-Rewrite
@@ -44,14 +44,14 @@ You see:        Filtered output
 - `tsc`, `eslint`, `prettier`, `next`, `vitest`, `playwright`, `prisma`
 - `ruff`, `pytest`, `mypy`, `golangci-lint`
 - `docker`, `kubectl`, `curl`
-- `cat` → `clov read`, `grep`/`rg` → `clov grep`, `ls` → `clov ls`
+- `cat` → `clov view`, `grep`/`rg` → `clov search`, `ls` → `clov files`
 
 **Coverage**: 100% (works across all subagents, doesn't rely on CLAUDE.md being read)
 
-### 3. Need Full Output? → Use `clov proxy`
+### 3. Need Full Output? → Use `clov passthrough`
 
 ```bash
-clov proxy git log --oneline -20   # Bypass filtering, still track metrics
+clov passthrough git log --oneline -20   # Bypass filtering, still track metrics
 ```
 
 **When to use**:
@@ -61,7 +61,7 @@ clov proxy git log --oneline -20   # Bypass filtering, still track metrics
 - Compare filtered vs raw output
 - Workaround for filter bugs
 
-### 4. MCP Tools → Route via `clov mcp proxy`
+### 4. MCP Tools → Route via `clov bridge proxy`
 
 For MCP servers like Exa or Brave, route the entire server through CLOV in your Claude Code `settings.json`.
 
@@ -70,7 +70,7 @@ For MCP servers like Exa or Brave, route the entire server through CLOV in your 
   "mcpServers": {
     "exa": {
       "command": "clov",
-      "args": ["mcp", "proxy", "npx", "-y", "exa-mcp-server"],
+      "args": ["bridge", "proxy", "npx", "-y", "exa-mcp-server"],
       "env": { "EXA_API_KEY": "..." }
     }
   }
@@ -105,9 +105,9 @@ Claude → "git status" → hook intercepts → "clov git status" → filtered (
 
 ```bash
 clov --version         # Should show: clov 0.26.2+
-clov gain              # Should print stats table (not "command not found")
+clov pulse             # Should print stats table (not "command not found")
 which clov             # Verify binary path
-clov init --show       # Verify hook registered in settings.json
+clov hook --show       # Verify hook registered in settings.json
 ```
 
 **If any fail**: CLOV not installed or not in PATH.

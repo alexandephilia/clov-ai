@@ -40,7 +40,7 @@ SQLite database (~/.local/share/clov/tracking.db)
   ↓
 Aggregation APIs (get_summary, get_all_days, etc.)
   ↓
-CLI output (clov gain) or JSON/CSV export
+CLI output (`clov pulse`) or JSON/CSV export
 ```
 
 ### Storage Location
@@ -74,7 +74,7 @@ impl Tracker {
     pub fn record(
         &self,
         original_cmd: &str,      // Standard command (e.g., "ls -la")
-        clov_cmd: &str,            // CLOV command (e.g., "clov ls")
+        clov_cmd: &str,            // CLOV command (e.g., "clov files")
         input_tokens: usize,      // Estimated input tokens
         output_tokens: usize,     // Actual output tokens
         exec_time_ms: u64,        // Execution time in milliseconds
@@ -234,7 +234,7 @@ fn main() -> anyhow::Result<()> {
     let output = execute_clov_command()?;
 
     // Track execution
-    timer.track("ls -la", "clov ls", &input, &output);
+    timer.track("ls -la", "clov files", &input, &output);
 
     Ok(())
 }
@@ -373,7 +373,7 @@ jobs:
 
       - name: Export weekly stats
         run: |
-          clov gain --weekly --format json > clov-weekly.json
+          clov pulse --weekly --format json > clov-weekly.json
           cat clov-weekly.json
 
       - name: Upload artifact
@@ -490,12 +490,21 @@ CREATE TABLE commands (
     id INTEGER PRIMARY KEY,
     timestamp TEXT NOT NULL,           -- RFC3339 UTC timestamp
     original_cmd TEXT NOT NULL,        -- Original command (e.g., "ls -la")
-    clov_cmd TEXT NOT NULL,             -- CLOV command (e.g., "clov ls")
+    clov_cmd TEXT NOT NULL,             -- CLOV command (e.g., "clov files")
     input_tokens INTEGER NOT NULL,     -- Estimated input tokens
     output_tokens INTEGER NOT NULL,    -- Actual output tokens
     saved_tokens INTEGER NOT NULL,     -- input_tokens - output_tokens
     savings_pct REAL NOT NULL,         -- (saved/input) * 100
-    exec_time_ms INTEGER DEFAULT 0     -- Execution time in milliseconds
+    exec_time_ms INTEGER DEFAULT 0,    -- Execution time in milliseconds
+    tokenizer_profile TEXT,            -- Optional selected tokenizer profile
+    approx_input_tokens INTEGER,       -- Compatibility baseline token count
+    approx_output_tokens INTEGER,      -- Compatibility baseline token count
+    profile_input_tokens INTEGER,      -- Profile-aware input token count
+    profile_output_tokens INTEGER,     -- Profile-aware output token count
+    parse_mode TEXT,                   -- MCP parse mode (if applicable)
+    filter_stage TEXT,                 -- Filter stage label (if applicable)
+    output_class TEXT,                 -- Output classification (if applicable)
+    fallback_reason TEXT               -- Reason filtering fell back (if applicable)
 );
 
 CREATE INDEX idx_timestamp ON commands(timestamp);
@@ -550,7 +559,7 @@ let _ = conn.execute(
 If you see "database is locked" errors:
 - Ensure only one CLOV process writes at a time
 - Check file permissions on `~/.local/share/clov/tracking.db`
-- Delete and recreate: `rm ~/.local/share/clov/tracking.db && clov gain`
+- Delete and recreate: `rm ~/.local/share/clov/tracking.db && clov pulse`
 
 ### Missing exec_time_ms column
 

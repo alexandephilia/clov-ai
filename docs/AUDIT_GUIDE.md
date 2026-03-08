@@ -4,7 +4,7 @@ Complete guide to analyzing your clov token savings with temporal breakdowns and
 
 ## Overview
 
-The `clov gain` command provides comprehensive analytics for tracking your token savings across time periods.
+The `clov pulse` command provides comprehensive analytics for tracking your token savings across time periods. (`clov gain` remains an alias.)
 
 **Database Location**: `~/.local/share/clov/history.db`
 **Retention Policy**: 90 days
@@ -14,21 +14,21 @@ The `clov gain` command provides comprehensive analytics for tracking your token
 
 ```bash
 # Default summary view
-clov gain
+clov pulse
 
 # Temporal breakdowns
-clov gain --daily          # All days since tracking started
-clov gain --weekly         # Aggregated by week
-clov gain --monthly        # Aggregated by month
-clov gain --all            # Show all breakdowns at once
+clov pulse --daily          # All days since tracking started
+clov pulse --weekly         # Aggregated by week
+clov pulse --monthly        # Aggregated by month
+clov pulse --all            # Show all breakdowns at once
 
 # Export formats
-clov gain --all --format json > savings.json
-clov gain --all --format csv > savings.csv
+clov pulse --all --format json > savings.json
+clov pulse --all --format csv > savings.csv
 
 # Combined flags
-clov gain --graph --history --quota    # Classic view with extras
-clov gain --daily --weekly --monthly   # Multiple breakdowns
+clov pulse --graph --history --quota    # Classic view with extras
+clov pulse --daily --weekly --monthly   # Multiple breakdowns
 ```
 
 ## Command Options
@@ -171,17 +171,17 @@ month,commands,input_tokens,output_tokens,saved_tokens,savings_pct
 
 ```bash
 # Generate weekly report every Monday
-clov gain --weekly --format csv > reports/week-$(date +%Y-%W).csv
+clov pulse --weekly --format csv > reports/week-$(date +%Y-%W).csv
 
 # Compare this week vs last week
-clov gain --weekly | tail -3
+clov pulse --weekly | tail -3
 ```
 
 ### Monthly Cost Analysis
 
 ```bash
 # Export monthly data for budget review
-clov gain --monthly --format json | jq '.monthly[] |
+clov pulse --monthly --format json | jq '.monthly[] |
   {month, saved_tokens, quota_pct: (.saved_tokens / 6000000 * 100)}'
 ```
 
@@ -192,7 +192,7 @@ import pandas as pd
 import subprocess
 
 # Get CSV data
-result = subprocess.run(['clov', 'gain', '--all', '--format', 'csv'],
+result = subprocess.run(['clov', 'pulse', '--all', '--format', 'csv'],
                        capture_output=True, text=True)
 
 # Parse daily data
@@ -208,7 +208,7 @@ daily_df.plot(x='date', y='savings_pct', kind='line')
 
 ### Excel Analysis
 
-1. Export CSV: `clov gain --all --format csv > clov-data.csv`
+1. Export CSV: `clov pulse --all --format csv > clov-data.csv`
 2. Open in Excel
 3. Create pivot tables:
    - Daily trends (line chart)
@@ -219,7 +219,7 @@ daily_df.plot(x='date', y='savings_pct', kind='line')
 
 ```bash
 # Generate dashboard data daily via cron
-0 0 * * * clov gain --all --format json > /var/www/dashboard/clov-stats.json
+0 0 * * * clov pulse --all --format json > /var/www/dashboard/clov-stats.json
 
 # Serve with static site
 cat > index.html <<'EOF'
@@ -268,9 +268,9 @@ Savings %       = (Saved / Input) × 100
 | `clov git status` | 77-93% | Compact stat format |
 | `clov eslint` | 84% | Group by rule |
 | `clov vitest run` | 94-99% | Show failures only |
-| `clov find` | 75% | Tree format |
+| `clov scan` | 75% | Tree format |
 | `clov pnpm list` | 70-90% | Compact dependencies |
-| `clov grep` | 70% | Truncate + group |
+| `clov search` | 70% | Truncate + group |
 
 ## Database Management
 
@@ -341,7 +341,7 @@ jobs:
         run: cargo install --path .
       - name: Generate report
         run: |
-          clov gain --weekly --format json > stats/week-$(date +%Y-%W).json
+          clov pulse --weekly --format json > stats/week-$(date +%Y-%W).json
       - name: Commit stats
         run: |
           git add stats/
@@ -357,7 +357,7 @@ import json
 import requests
 
 def send_clov_stats():
-    result = subprocess.run(['clov', 'gain', '--format', 'json'],
+    result = subprocess.run(['clov', 'pulse', '--format', 'json'],
                            capture_output=True, text=True)
     data = json.loads(result.stdout)
 
@@ -391,11 +391,11 @@ clov git status
 
 ```bash
 # Check for pipe errors
-clov gain --format json 2>&1 | tee /tmp/clov-debug.log | jq .
+clov pulse --format json 2>&1 | tee /tmp/clov-debug.log | jq .
 
 # Use release build to avoid warnings
 cargo build --release
-./target/release/clov gain --format json
+./target/release/clov pulse --format json
 ```
 
 ### Incorrect statistics
@@ -419,7 +419,7 @@ print(f'clov estimate: {len(text) // 4}')
 
 ## Best Practices
 
-1. **Regular Exports**: `clov gain --all --format json > monthly-$(date +%Y%m).json`
+1. **Regular Exports**: `clov pulse --all --format json > monthly-$(date +%Y%m).json`
 2. **Trend Analysis**: Compare week-over-week savings to identify optimization opportunities
 3. **Command Profiling**: Use `--history` to see which commands save the most
 4. **Backup Before Cleanup**: Always backup before manual database operations
