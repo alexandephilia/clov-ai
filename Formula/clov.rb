@@ -4,10 +4,16 @@
 # Homebrew formula for clov - Clov Token Omitter
 # To install: brew tap alexandephilia/clov && brew install clov
 class Clov < Formula
-  desc "High-performance CLI proxy to minimize LLM token consumption"
+  desc "MCP Proxy to minimize LLM token consumption"
   homepage "https://github.com/alexandephilia/clov-ai"
-  version "0.34.2"
   license "MIT"
+
+  # The main repo creates a unified tarball via GitHub release
+  # We use a dummy URL for the core formula since the CLI downloads the platform specific binaries
+  url "https://github.com/alexandephilia/clov-ai/archive/refs/tags/v0.34.4.tar.gz"
+  version "0.34.4"
+
+  depends_on "rust" => :build
 
   on_macos do
     on_intel do

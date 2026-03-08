@@ -7,7 +7,7 @@ _CLOV includes work derived from [RTK](https://github.com/rtk-ai/rtk/), extended
 </p>
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Version](https://img.shields.io/badge/version-0.34.2-blue.svg)](https://github.com/alexandephilia/clov-ai/releases/tag/v0.34.2)
+[![Version](https://img.shields.io/badge/version-0.34.4-blue.svg)](https://github.com/alexandephilia/clov-ai/releases/tag/v0.34.4)
 [![Claude Code](https://img.shields.io/badge/Claude_Code-integrated-7B2D8B?logo=anthropic&logoColor=white)](https://claude.ai/code)
 
 <p align="center">
@@ -19,7 +19,6 @@ _CLOV includes work derived from [RTK](https://github.com/rtk-ai/rtk/), extended
 
 MCP (Model Context Protocol) servers are brilliant, but their outputs are an uncontrolled firehose of context-destroying noise. When your AI agent pulls web search results or database dumps, it swallows navigation chrome, tracking parameters, and megabytes of unstructured JSON.
 
-
 `clov` is the apex predator for context bloat. It is a highly specialized, structure-aware JSON-RPC proxy built _specifically_ to intercept and compress MCP responses before they annihilate your LLM's context window.
 
 As a secondary capability, `clov` intercepts raw terminal streams (git, cargo, npm, etc.), mercilessly executing ANSI codes and redundant progress bars.
@@ -30,7 +29,7 @@ Deploy `clov` between your AI agent and the world. Reclaim up to **95%** of your
 
 ## The Economics of Context
 
-![clov savings](clov_1.jpg)
+![clov savings](clov_2.jpg)
 
 When an AI coder hits an MCP search tool, a single raw response easily spikes over 50,000 tokens. `clov` intercepts, analyzes the structure, and prunes it intelligently.
 
