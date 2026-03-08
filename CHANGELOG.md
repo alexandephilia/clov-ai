@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.34.4](https://github.com/alexandephilia/clov-ai/compare/v0.34.3...v0.34.4) (2026-03-08)
+
+
+### Bug Fixes
+
+* **pulse:** use modern minimal separators instead of full boxes ([10fe9e6](https://github.com/alexandephilia/clov-ai/commit/10fe9e6bfe6499b7f0aab1808e795710f77250b9))
+
 ## [0.34.3](https://github.com/alexandephilia/clov-ai/compare/v0.34.2...v0.34.3) (2026-03-08)
 
 
