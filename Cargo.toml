@@ -1,6 +1,6 @@
 [package]
 name = "clov"
-version = "0.34.0"
+version = "0.34.1"
 edition = "2021"
 authors = ["alexandephilia"]
 description = "clov: Universal MCP Filter & CLI Proxy to minimize LLM token consumption"

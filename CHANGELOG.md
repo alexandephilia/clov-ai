@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.34.1](https://github.com/alexandephilia/clov-ai/compare/v0.34.0...v0.34.1) (2026-03-08)
+
+
+### Bug Fixes
+
+* **cli:** require command for passthrough ([c266916](https://github.com/alexandephilia/clov-ai/commit/c266916b0b5960d4b645f8314916af28cf92f87d))
+
 ## [0.34.0](https://github.com/alexandephilia/clov-ai/compare/v0.33.0...v0.34.0) (2026-03-08)
 
 
