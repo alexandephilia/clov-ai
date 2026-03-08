@@ -90,7 +90,7 @@ struct Cli {
 #[derive(Subcommand)]
 enum Commands {
     /// List directory contents with token-optimized output (proxy to native ls)
-    #[command(name = "files", visible_alias = "ls")]
+    #[command(name = "files")]
     Ls {
         /// Arguments passed to ls (supports all native ls flags like -l, -a, -h, -R)
         #[arg(trailing_var_arg = true, allow_hyphen_values = true)]
@@ -98,7 +98,7 @@ enum Commands {
     },
 
     /// Directory tree with token-optimized output (proxy to native tree)
-    #[command(name = "map", visible_alias = "tree")]
+    #[command(name = "map")]
     Tree {
         /// Arguments passed to tree (supports all native tree flags like -L, -d, -a)
         #[arg(trailing_var_arg = true, allow_hyphen_values = true)]
@@ -106,7 +106,7 @@ enum Commands {
     },
 
     /// Read file with intelligent filtering
-    #[command(name = "view", visible_alias = "read")]
+    #[command(name = "view")]
     Read {
         /// File to read
         file: PathBuf,
@@ -122,7 +122,7 @@ enum Commands {
     },
 
     /// Generate 2-line technical summary (heuristic-based)
-    #[command(name = "brief", visible_alias = "smart")]
+    #[command(name = "brief")]
     Smart {
         /// File to analyze
         file: PathBuf,
@@ -204,7 +204,7 @@ enum Commands {
     },
 
     /// Run command and show only errors/warnings
-    #[command(name = "fail", visible_alias = "err")]
+    #[command(name = "fail")]
     Err {
         /// Command to run
         #[arg(trailing_var_arg = true, allow_hyphen_values = true)]
@@ -212,7 +212,7 @@ enum Commands {
     },
 
     /// Run tests and show only failures
-    #[command(name = "check", visible_alias = "test")]
+    #[command(name = "check")]
     Test {
         /// Test command (e.g. cargo test)
         #[arg(trailing_var_arg = true, allow_hyphen_values = true)]
@@ -220,7 +220,7 @@ enum Commands {
     },
 
     /// Show JSON structure without values
-    #[command(name = "schema", visible_alias = "json")]
+    #[command(name = "schema")]
     Json {
         /// JSON file
         file: PathBuf,
@@ -230,7 +230,7 @@ enum Commands {
     },
 
     /// Summarize project dependencies
-    #[command(name = "graph", visible_alias = "deps")]
+    #[command(name = "graph")]
     Deps {
         /// Project path
         #[arg(default_value = ".")]
@@ -238,7 +238,7 @@ enum Commands {
     },
 
     /// Show environment variables (filtered, sensitive masked)
-    #[command(name = "vars", visible_alias = "env")]
+    #[command(name = "vars")]
     Env {
         /// Filter by name (e.g. PATH, AWS)
         #[arg(short, long)]
@@ -249,7 +249,7 @@ enum Commands {
     },
 
     /// Find files with compact tree output (accepts native find flags like -name, -type)
-    #[command(name = "scan", visible_alias = "find")]
+    #[command(name = "scan")]
     Find {
         /// All find arguments (supports both CLOV and native find syntax)
         #[arg(trailing_var_arg = true, allow_hyphen_values = true)]
@@ -257,7 +257,7 @@ enum Commands {
     },
 
     /// Ultra-condensed diff (only changed lines)
-    #[command(name = "patch", visible_alias = "diff")]
+    #[command(name = "patch")]
     Diff {
         /// First file or - for stdin (unified diff)
         file1: PathBuf,
@@ -266,7 +266,7 @@ enum Commands {
     },
 
     /// Filter and deduplicate log output
-    #[command(name = "logs", visible_alias = "log")]
+    #[command(name = "logs")]
     Log {
         /// Log file (omit for stdin)
         file: Option<PathBuf>,
@@ -285,7 +285,7 @@ enum Commands {
     },
 
     /// Run command and show heuristic summary
-    #[command(name = "digest", visible_alias = "summary")]
+    #[command(name = "digest")]
     Summary {
         /// Command to run and summarize
         #[arg(trailing_var_arg = true, allow_hyphen_values = true)]
@@ -293,7 +293,7 @@ enum Commands {
     },
 
     /// Compact grep - strips whitespace, truncates, groups by file
-    #[command(name = "search", visible_alias = "grep")]
+    #[command(name = "search")]
     Grep {
         /// Pattern to search
         pattern: String,
@@ -321,7 +321,7 @@ enum Commands {
     },
 
     /// Initialize clov instructions in CLAUDE.md
-    #[command(name = "hook", visible_alias = "init")]
+    #[command(name = "hook")]
     Init {
         /// Add to global ~/.claude/CLAUDE.md instead of local
         #[arg(short, long)]
@@ -353,7 +353,7 @@ enum Commands {
     },
 
     /// Download with compact output (strips progress bars)
-    #[command(name = "fetch", visible_alias = "wget")]
+    #[command(name = "fetch")]
     Wget {
         /// URL to download
         url: String,
@@ -366,7 +366,7 @@ enum Commands {
     },
 
     /// Word/line/byte count with compact output (strips paths and padding)
-    #[command(name = "count", visible_alias = "wc")]
+    #[command(name = "count")]
     Wc {
         /// Arguments passed to wc (files, flags like -l, -w, -c)
         #[arg(trailing_var_arg = true, allow_hyphen_values = true)]
@@ -374,7 +374,7 @@ enum Commands {
     },
 
     /// Show token savings summary and history
-    #[command(name = "pulse", visible_alias = "gain")]
+    #[command(name = "pulse")]
     Gain {
         /// Filter statistics to current project (current working directory) // added
         #[arg(short, long)]
@@ -412,7 +412,7 @@ enum Commands {
     },
 
     /// Claude Code savings: spending (ccusage) vs savings (clov) analysis
-    #[command(name = "spend", visible_alias = "cc-savings")]
+    #[command(name = "spend")]
     CcSavings {
         /// Show detailed daily breakdown
         #[arg(short, long)]
@@ -432,7 +432,7 @@ enum Commands {
     },
 
     /// Show or create configuration file
-    #[command(name = "settings", visible_alias = "config")]
+    #[command(name = "settings")]
     Config {
         /// Create default config file
         #[arg(long)]
@@ -521,7 +521,7 @@ enum Commands {
     },
 
     /// Discover missed CLOV savings from Claude Code history
-    #[command(name = "inspect", visible_alias = "discover")]
+    #[command(name = "inspect")]
     Discover {
         /// Filter by project path (substring match)
         #[arg(short, long)]
@@ -541,7 +541,7 @@ enum Commands {
     },
 
     /// Learn CLI corrections from Claude Code error history
-    #[command(name = "adapt", visible_alias = "learn")]
+    #[command(name = "adapt")]
     Learn {
         /// Filter by project path (substring match)
         #[arg(short, long)]
@@ -567,7 +567,7 @@ enum Commands {
     },
 
     /// Execute command without filtering but track usage
-    #[command(name = "passthrough", visible_alias = "proxy")]
+    #[command(name = "passthrough")]
     Proxy {
         /// Command and arguments to execute
         #[arg(trailing_var_arg = true, allow_hyphen_values = true)]
@@ -575,7 +575,7 @@ enum Commands {
     },
 
     /// Verify hook integrity (SHA-256 check)
-    #[command(name = "doctor", visible_alias = "verify")]
+    #[command(name = "doctor")]
     Verify,
 
     /// Ruff linter/formatter with compact output
@@ -627,7 +627,7 @@ enum Commands {
     },
 
     /// Show hook rewrite audit metrics (requires CLOV_HOOK_AUDIT=1)
-    #[command(name = "audit-hooks", visible_alias = "hook-audit")]
+    #[command(name = "audit-hooks")]
     HookAudit {
         /// Show entries from last N days (0 = all time)
         #[arg(short, long, default_value = "7")]
@@ -640,15 +640,15 @@ enum Commands {
     /// Exits 1 with no output if the command has no CLOV equivalent.
     ///
     /// Used by Claude Code, Gemini CLI, and other LLM hooks:
-    ///   REWRITTEN=$(clov rewrite "$CMD") || exit 0
-    #[command(name = "route", visible_alias = "rewrite")]
+    ///   REWRITTEN=$(clov route "$CMD") || exit 0
+    #[command(name = "route")]
     Rewrite {
         /// Raw command to rewrite (e.g. "git status", "cargo test && git push")
         cmd: String,
     },
 
     /// MCP proxy with token-optimized response filtering
-    #[command(name = "bridge", visible_alias = "mcp")]
+    #[command(name = "bridge")]
     Mcp {
         #[command(subcommand)]
         action: McpAction,
@@ -1044,14 +1044,14 @@ enum GtCommands {
 /// CLOV-only subcommands that should never fall back to raw execution.
 /// If Clap fails to parse these, show the Clap error directly.
 const CLOV_META_COMMANDS: &[&str] = &[
-    "gain",
-    "discover",
-    "learn",
-    "init",
-    "config",
-    "proxy",
-    "hook-audit",
-    "cc-savings",
+    "pulse",
+    "inspect",
+    "adapt",
+    "hook",
+    "settings",
+    "passthrough",
+    "audit-hooks",
+    "spend",
 ];
 
 fn run_fallback(parse_error: clap::Error) -> Result<()> {
@@ -1063,7 +1063,7 @@ fn run_fallback(parse_error: clap::Error) -> Result<()> {
     }
 
     // CLOV meta-commands should never fall back to raw execution.
-    // e.g. `clov gain --badtypo` should show Clap's error, not try to run `gain` from $PATH.
+    // e.g. `clov pulse --badtypo` should show Clap's error, not try to run `pulse` from $PATH.
     if CLOV_META_COMMANDS.contains(&args[0].as_str()) {
         parse_error.exit();
     }
@@ -2145,7 +2145,7 @@ mod tests {
 
     #[test]
     fn test_gain_failures_flag_parses() {
-        let result = Cli::try_parse_from(["clov", "gain", "--failures"]);
+        let result = Cli::try_parse_from(["clov", "pulse", "--failures"]);
         assert!(result.is_ok());
         if let Ok(cli) = result {
             match cli.command {
@@ -2157,7 +2157,7 @@ mod tests {
 
     #[test]
     fn test_gain_failures_short_flag_parses() {
-        let result = Cli::try_parse_from(["clov", "gain", "-F"]);
+        let result = Cli::try_parse_from(["clov", "pulse", "-F"]);
         assert!(result.is_ok());
         if let Ok(cli) = result {
             match cli.command {
@@ -2198,7 +2198,7 @@ mod tests {
     fn test_mcp_proxy_filter_flags_parse() {
         let cli = Cli::try_parse_from([
             "clov",
-            "mcp",
+            "bridge",
             "proxy",
             "--preset",
             "claude-code-balanced",
@@ -2274,14 +2274,14 @@ mod tests {
     fn test_meta_command_list_is_complete() {
         // Verify all meta-commands are in the guard list by checking they parse with valid syntax
         let meta_cmds_that_parse = [
-            vec!["clov", "gain"],
-            vec!["clov", "discover"],
-            vec!["clov", "learn"],
-            vec!["clov", "init"],
-            vec!["clov", "config"],
-            vec!["clov", "proxy", "echo", "hi"],
-            vec!["clov", "hook-audit"],
-            vec!["clov", "cc-savings"],
+            vec!["clov", "pulse"],
+            vec!["clov", "inspect"],
+            vec!["clov", "adapt"],
+            vec!["clov", "hook"],
+            vec!["clov", "settings"],
+            vec!["clov", "passthrough", "echo", "hi"],
+            vec!["clov", "audit-hooks"],
+            vec!["clov", "spend"],
         ];
         for args in &meta_cmds_that_parse {
             let result = Cli::try_parse_from(args.iter());
@@ -2289,6 +2289,48 @@ mod tests {
                 result.is_ok(),
                 "Meta-command {:?} should parse successfully",
                 args
+            );
+        }
+    }
+
+    #[test]
+    fn test_old_command_aliases_no_longer_parse() {
+        let old_commands = [
+            "ls",
+            "tree",
+            "read",
+            "smart",
+            "err",
+            "test",
+            "json",
+            "deps",
+            "env",
+            "find",
+            "diff",
+            "log",
+            "summary",
+            "grep",
+            "init",
+            "wget",
+            "wc",
+            "gain",
+            "cc-savings",
+            "config",
+            "discover",
+            "learn",
+            "proxy",
+            "verify",
+            "hook-audit",
+            "rewrite",
+            "mcp",
+        ];
+
+        for cmd in old_commands {
+            let result = Cli::try_parse_from(["clov", cmd]);
+            assert!(
+                result.is_err(),
+                "legacy command '{}' should no longer parse",
+                cmd
             );
         }
     }

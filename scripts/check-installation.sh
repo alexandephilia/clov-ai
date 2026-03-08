@@ -37,7 +37,7 @@ echo ""
 
 # Check 3: Is it correct clov installation?
 echo "3. Verifying this is Token Omitter (not Clov Token Omitter)..."
-if clov gain &>/dev/null || clov gain --help &>/dev/null; then
+if clov pulse &>/dev/null || clov pulse --help &>/dev/null; then
     echo -e "   ${GREEN}✅ CORRECT - You have Clov Token Omitter${NC}"
     CORRECT_CLOV=true
 else
@@ -74,7 +74,7 @@ check_command() {
     fi
 }
 
-check_command "gain" "Token savings analytics"
+check_command "pulse" "Token savings analytics"
 check_command "git" "Git operations"
 check_command "gh" "GitHub CLI"
 check_command "pnpm" "pnpm support"
@@ -85,7 +85,7 @@ check_command "next" "Next.js"
 check_command "prettier" "Prettier"
 check_command "playwright" "Playwright E2E"
 check_command "prisma" "Prisma ORM"
-check_command "discover" "Discover missed savings"
+check_command "inspect" "Discover missed savings"
 
 echo ""
 
@@ -99,7 +99,7 @@ if [ -f "$HOME/.claude/CLAUDE.md" ] && grep -q "clov" "$HOME/.claude/CLAUDE.md";
     GLOBAL_INIT=true
 else
     echo -e "   ${YELLOW}⚠️${NC}  Global CLAUDE.md not initialized"
-    echo "      Run: clov init --global"
+    echo "      Run: clov hook --global"
 fi
 
 if [ -f "./CLAUDE.md" ] && grep -q "clov" "./CLAUDE.md"; then
@@ -107,7 +107,7 @@ if [ -f "./CLAUDE.md" ] && grep -q "clov" "./CLAUDE.md"; then
     LOCAL_INIT=true
 else
     echo -e "   ${YELLOW}⚠️${NC}  Local CLAUDE.md not initialized in current directory"
-    echo "      Run: clov init (in your project directory)"
+    echo "      Run: clov hook (in your project directory)"
 fi
 echo ""
 
@@ -153,8 +153,8 @@ echo ""
 
 if [ "$GLOBAL_INIT" = false ] && [ "$LOCAL_INIT" = false ]; then
     echo -e "${YELLOW}⚠️  CLOV not initialized for Claude Code${NC}"
-    echo "   Run: clov init --global (for all projects)"
-    echo "   Or:  clov init (for this project only)"
+    echo "   Run: clov hook --global (for all projects)"
+    echo "   Or:  clov hook (for this project only)"
 fi
 
 echo ""

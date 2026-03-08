@@ -107,7 +107,7 @@ pub const RULES: &[ClovRule] = &[
         subcmd_status: &[],
     },
     ClovRule {
-        clov_cmd: "clov read",
+        clov_cmd: "clov view",
         rewrite_prefixes: &["cat", "head", "tail"],
         category: "Files",
         savings_pct: 60.0,
@@ -115,7 +115,7 @@ pub const RULES: &[ClovRule] = &[
         subcmd_status: &[],
     },
     ClovRule {
-        clov_cmd: "clov grep",
+        clov_cmd: "clov search",
         rewrite_prefixes: &["rg", "grep"],
         category: "Files",
         savings_pct: 75.0,
@@ -123,7 +123,7 @@ pub const RULES: &[ClovRule] = &[
         subcmd_status: &[],
     },
     ClovRule {
-        clov_cmd: "clov ls",
+        clov_cmd: "clov files",
         rewrite_prefixes: &["ls"],
         category: "Files",
         savings_pct: 65.0,
@@ -131,7 +131,7 @@ pub const RULES: &[ClovRule] = &[
         subcmd_status: &[],
     },
     ClovRule {
-        clov_cmd: "clov find",
+        clov_cmd: "clov scan",
         rewrite_prefixes: &["find"],
         category: "Files",
         savings_pct: 70.0,
@@ -220,7 +220,7 @@ pub const RULES: &[ClovRule] = &[
         subcmd_status: &[],
     },
     ClovRule {
-        clov_cmd: "clov tree",
+        clov_cmd: "clov map",
         rewrite_prefixes: &["tree"],
         category: "Files",
         savings_pct: 70.0,
@@ -228,7 +228,7 @@ pub const RULES: &[ClovRule] = &[
         subcmd_status: &[],
     },
     ClovRule {
-        clov_cmd: "clov diff",
+        clov_cmd: "clov patch",
         rewrite_prefixes: &["diff"],
         category: "Files",
         savings_pct: 60.0,
@@ -244,7 +244,7 @@ pub const RULES: &[ClovRule] = &[
         subcmd_status: &[],
     },
     ClovRule {
-        clov_cmd: "clov wget",
+        clov_cmd: "clov fetch",
         rewrite_prefixes: &["wget"],
         category: "Network",
         savings_pct: 65.0,

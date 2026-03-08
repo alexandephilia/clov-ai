@@ -67,7 +67,7 @@ pub fn run(path: &Path, verbose: u8) -> Result<()> {
     }
 
     print!("{}", clov);
-    timer.track("cat */deps", "clov deps", &raw, &clov);
+    timer.track("cat */deps", "clov graph", &raw, &clov);
     Ok(())
 }
 

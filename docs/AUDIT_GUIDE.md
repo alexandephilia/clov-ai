@@ -4,7 +4,7 @@ Complete guide to analyzing your clov token savings with temporal breakdowns and
 
 ## Overview
 
-The `clov pulse` command provides comprehensive analytics for tracking your token savings across time periods. (`clov gain` remains an alias.)
+The `clov pulse` command provides comprehensive analytics for tracking your token savings across time periods.
 
 **Database Location**: `~/.local/share/clov/history.db`
 **Retention Policy**: 90 days

@@ -63,7 +63,7 @@ pub fn run(
     println!("{}", clov_output);
     timer.track(
         &format!("cat {}", file.display()),
-        "clov read",
+        "clov view",
         &content,
         &clov_output,
     );
@@ -128,7 +128,7 @@ pub fn run_stdin(
     };
     println!("{}", clov_output);
 
-    timer.track("cat - (stdin)", "clov read -", &content, &clov_output);
+    timer.track("cat - (stdin)", "clov view -", &content, &clov_output);
     Ok(())
 }
 

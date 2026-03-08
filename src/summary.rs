@@ -33,7 +33,7 @@ pub fn run(command: &str, verbose: u8) -> Result<()> {
 
     let summary = summarize_output(&raw, command, output.status.success());
     println!("{}", summary);
-    timer.track(command, "clov summary", &raw, &summary);
+    timer.track(command, "clov digest", &raw, &summary);
     Ok(())
 }
 

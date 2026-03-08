@@ -117,42 +117,42 @@ assert_contains "clov --help" "Usage:" clov --help
 
 section "Ls"
 
-assert_ok      "clov ls ."                     clov ls .
-assert_ok      "clov ls -la ."                 clov ls -la .
-assert_ok      "clov ls -lh ."                 clov ls -lh .
-assert_ok      "clov ls -l src/"               clov ls -l src/
-assert_ok      "clov ls src/ -l (flag after)"  clov ls src/ -l
-assert_ok      "clov ls multi paths"           clov ls src/ scripts/
-assert_contains "clov ls -a shows hidden"      ".git" clov ls -a .
-assert_contains "clov ls shows sizes"          "K"  clov ls src/
-assert_contains "clov ls shows dirs with /"    "/" clov ls .
+assert_ok      "clov files ."                     clov files .
+assert_ok      "clov files -la ."                 clov files -la .
+assert_ok      "clov files -lh ."                 clov files -lh .
+assert_ok      "clov files -l src/"               clov files -l src/
+assert_ok      "clov files src/ -l (flag after)"  clov files src/ -l
+assert_ok      "clov files multi paths"           clov files src/ scripts/
+assert_contains "clov files -a shows hidden"      ".git" clov files -a .
+assert_contains "clov files shows sizes"          "K"  clov files src/
+assert_contains "clov files shows dirs with /"    "/" clov files .
 
 # ── 2b. Tree ─────────────────────────────────────────
 
 section "Tree"
 
 if command -v tree >/dev/null 2>&1; then
-    assert_ok      "clov tree ."                clov tree .
-    assert_ok      "clov tree -L 2 ."           clov tree -L 2 .
-    assert_ok      "clov tree -d -L 1 ."        clov tree -d -L 1 .
-    assert_contains "clov tree shows src/"      "src" clov tree -L 1 .
+    assert_ok      "clov map ."                clov map .
+    assert_ok      "clov map -L 2 ."           clov map -L 2 .
+    assert_ok      "clov map -d -L 1 ."        clov map -d -L 1 .
+    assert_contains "clov map shows src/"      "src" clov map -L 1 .
 else
-    skip_test "clov tree" "tree not installed"
+    skip_test "clov map" "tree not installed"
 fi
 
 # ── 3. Read ──────────────────────────────────────────
 
 section "Read"
 
-assert_ok      "clov read Cargo.toml"          clov read Cargo.toml
-assert_ok      "clov read --level none Cargo.toml"  clov read --level none Cargo.toml
-assert_ok      "clov read --level aggressive Cargo.toml" clov read --level aggressive Cargo.toml
-assert_ok      "clov read -n Cargo.toml"       clov read -n Cargo.toml
-assert_ok      "clov read --max-lines 5 Cargo.toml" clov read --max-lines 5 Cargo.toml
+assert_ok      "clov view Cargo.toml"          clov view Cargo.toml
+assert_ok      "clov view --level none Cargo.toml"  clov view --level none Cargo.toml
+assert_ok      "clov view --level aggressive Cargo.toml" clov view --level aggressive Cargo.toml
+assert_ok      "clov view -n Cargo.toml"       clov view -n Cargo.toml
+assert_ok      "clov view --max-lines 5 Cargo.toml" clov view --max-lines 5 Cargo.toml
 
 section "Read (stdin support)"
 
-assert_ok      "clov read stdin pipe"          bash -c 'echo "fn main() {}" | clov read -'
+assert_ok      "clov view stdin pipe"          bash -c 'echo "fn main() {}" | clov view -'
 
 # ── 4. Git ───────────────────────────────────────────
 
@@ -242,54 +242,54 @@ fi
 
 # ── 10. Grep ─────────────────────────────────────────
 
-section "Grep"
+section "Search"
 
-assert_ok      "clov grep pattern"             clov grep "pub fn" src/
-assert_contains "clov grep finds results"      "pub fn" clov grep "pub fn" src/
-assert_ok      "clov grep with file type"      clov grep "pub fn" src/ -t rust
+assert_ok      "clov search pattern"             clov search "pub fn" src/
+assert_contains "clov search finds results"      "pub fn" clov search "pub fn" src/
+assert_ok      "clov search with file type"      clov search "pub fn" src/ -t rust
 
-section "Grep (extra args passthrough)"
+section "Search (extra args passthrough)"
 
-assert_ok      "clov grep -i case insensitive" clov grep "fn" src/ -i
-assert_ok      "clov grep -A context lines"    clov grep "fn run" src/ -A 2
+assert_ok      "clov search -i case insensitive" clov search "fn" src/ -i
+assert_ok      "clov search -A context lines"    clov search "fn run" src/ -A 2
 
 # ── 11. Find ─────────────────────────────────────────
 
-section "Find"
+section "Scan"
 
-assert_ok      "clov find *.rs"                clov find "*.rs" src/
-assert_contains "clov find shows files"        ".rs" clov find "*.rs" src/
+assert_ok      "clov scan *.rs"                clov scan "*.rs" src/
+assert_contains "clov scan shows files"        ".rs" clov scan "*.rs" src/
 
 # ── 12. Json ─────────────────────────────────────────
 
-section "Json"
+section "Schema"
 
 # Create temp JSON file for testing
 TMPJSON=$(mktemp /tmp/clov-test-XXXXX.json)
 echo '{"name":"test","count":42,"items":[1,2,3]}' > "$TMPJSON"
 
-assert_ok      "clov json file"                clov json "$TMPJSON"
-assert_contains "clov json shows schema"       "string" clov json "$TMPJSON"
+assert_ok      "clov schema file"                clov schema "$TMPJSON"
+assert_contains "clov schema shows schema"       "string" clov schema "$TMPJSON"
 
 rm -f "$TMPJSON"
 
 # ── 13. Deps ─────────────────────────────────────────
 
-section "Deps"
+section "Graph"
 
-assert_ok      "clov deps ."                   clov deps .
-assert_contains "clov deps shows Cargo"        "Cargo" clov deps .
+assert_ok      "clov graph ."                   clov graph .
+assert_contains "clov graph shows Cargo"        "Cargo" clov graph .
 
 # ── 14. Env ──────────────────────────────────────────
 
-section "Env"
+section "Vars"
 
-assert_ok      "clov env"                      clov env
-assert_ok      "clov env --filter PATH"        clov env --filter PATH
+assert_ok      "clov vars"                      clov vars
+assert_ok      "clov vars --filter PATH"        clov vars --filter PATH
 
 # ── 16. Log ──────────────────────────────────────────
 
-section "Log"
+section "Logs"
 
 TMPLOG=$(mktemp /tmp/clov-log-XXXXX.log)
 for i in $(seq 1 20); do
@@ -297,50 +297,50 @@ for i in $(seq 1 20); do
 done
 echo "[2025-01-01 12:00:01] ERROR: something failed" >> "$TMPLOG"
 
-assert_ok      "clov log file"                 clov log "$TMPLOG"
+assert_ok      "clov logs file"                 clov logs "$TMPLOG"
 
 rm -f "$TMPLOG"
 
 # ── 17. Summary ──────────────────────────────────────
 
-section "Summary"
+section "Digest"
 
-assert_ok      "clov summary echo hello"       clov summary echo hello
+assert_ok      "clov digest echo hello"       clov digest echo hello
 
 # ── 18. Err ──────────────────────────────────────────
 
-section "Err"
+section "Fail"
 
-assert_ok      "clov err echo ok"              clov err echo ok
+assert_ok      "clov fail echo ok"              clov fail echo ok
 
 # ── 19. Test runner ──────────────────────────────────
 
-section "Test runner"
+section "Check runner"
 
-assert_ok      "clov test echo ok"             clov test echo ok
+assert_ok      "clov check echo ok"             clov check echo ok
 
 # ── 20. Gain ─────────────────────────────────────────
 
-section "Gain"
+section "Pulse"
 
-assert_ok      "clov gain"                     clov gain
-assert_ok      "clov gain --history"           clov gain --history
+assert_ok      "clov pulse"                     clov pulse
+assert_ok      "clov pulse --history"           clov pulse --history
 
 # ── 21. Config & Init ────────────────────────────────
 
-section "Config & Init"
+section "Settings & Hook"
 
-assert_ok      "clov config"                   clov config
-assert_ok      "clov init --show"              clov init --show
+assert_ok      "clov settings"                   clov settings
+assert_ok      "clov hook --show"                clov hook --show
 
 # ── 22. Wget ─────────────────────────────────────────
 
 section "Wget"
 
 if command -v wget >/dev/null 2>&1; then
-    assert_ok  "clov wget stdout"              clov wget https://httpbin.org/robots.txt -O
+    assert_ok  "clov fetch stdout"              clov fetch https://httpbin.org/robots.txt -O
 else
-    skip_test "clov wget" "wget not installed"
+    skip_test "clov fetch" "wget not installed"
 fi
 
 # ── 23. Tsc / Lint / Prettier / Next / Playwright ───
@@ -417,7 +417,7 @@ fi
 
 section "Global flags"
 
-assert_ok      "clov -u ls ."                  clov -u ls .
+assert_ok      "clov -u files ."               clov -u files .
 assert_ok      "clov --skip-env npm --help"    clov --skip-env npm --help
 
 # ── 30. CcEconomics ─────────────────────────────────
@@ -430,8 +430,8 @@ assert_ok      "clov cc-economics"             clov cc-economics
 
 section "Learn"
 
-assert_ok      "clov learn --help"             clov learn --help
-assert_ok      "clov learn (no sessions)"      clov learn --since 0 2>&1 || true
+assert_ok      "clov adapt --help"             clov adapt --help
+assert_ok      "clov adapt (no sessions)"      clov adapt --since 0 2>&1 || true
 
 # ══════════════════════════════════════════════════════
 # Report

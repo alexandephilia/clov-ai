@@ -91,7 +91,7 @@ test_rewrite "npx playwright test" \
 
 test_rewrite "ls -la" \
   "ls -la" \
-  "clov ls -la"
+  "clov files -la"
 
 test_rewrite "curl -s https://example.com" \
   "curl -s https://example.com" \
@@ -99,15 +99,15 @@ test_rewrite "curl -s https://example.com" \
 
 test_rewrite "cat package.json" \
   "cat package.json" \
-  "clov read package.json"
+  "clov view package.json"
 
 test_rewrite "grep -rn pattern src/" \
   "grep -rn pattern src/" \
-  "clov grep -rn pattern src/"
+  "clov search -rn pattern src/"
 
 test_rewrite "rg pattern src/" \
   "rg pattern src/" \
-  "clov grep pattern src/"
+  "clov search pattern src/"
 
 test_rewrite "cargo test" \
   "cargo test" \
@@ -139,7 +139,7 @@ test_rewrite "multi env + vitest" \
 
 test_rewrite "env + ls" \
   "LANG=C ls -la" \
-  "LANG=C clov ls -la"
+  "LANG=C clov files -la"
 
 test_rewrite "env + npm run" \
   "NODE_ENV=test npm run test:e2e" \

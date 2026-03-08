@@ -26,7 +26,7 @@ pub fn run(file1: &Path, file2: &Path, verbose: u8) -> Result<()> {
         println!("{}", clov);
         timer.track(
             &format!("diff {} {}", file1.display(), file2.display()),
-            "clov diff",
+            "clov patch",
             &raw,
             &clov,
         );
@@ -60,7 +60,7 @@ pub fn run(file1: &Path, file2: &Path, verbose: u8) -> Result<()> {
     print!("{}", clov);
     timer.track(
         &format!("diff {} {}", file1.display(), file2.display()),
-        "clov diff",
+        "clov patch",
         &raw,
         &clov,
     );
@@ -79,7 +79,7 @@ pub fn run_stdin(_verbose: u8) -> Result<()> {
     let condensed = condense_unified_diff(&input);
     println!("{}", condensed);
 
-    timer.track("diff (stdin)", "clov diff (stdin)", &input, &condensed);
+    timer.track("diff (stdin)", "clov patch (stdin)", &input, &condensed);
 
     Ok(())
 }

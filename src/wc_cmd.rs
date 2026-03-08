@@ -45,7 +45,7 @@ pub fn run(args: &[String], verbose: u8) -> Result<()> {
 
     timer.track(
         &format!("wc {}", args.join(" ")),
-        &format!("clov wc {}", args.join(" ")),
+        &format!("clov count {}", args.join(" ")),
         &raw,
         &filtered,
     );

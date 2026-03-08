@@ -61,7 +61,7 @@ pub fn run(
         println!("{}", msg);
         timer.track(
             &format!("grep -rn '{}' {}", pattern, path),
-            "clov grep",
+            "clov search",
             &raw_output,
             &msg,
         );
@@ -128,7 +128,7 @@ pub fn run(
     print!("{}", clov_output);
     timer.track(
         &format!("grep -rn '{}' {}", pattern, path),
-        "clov grep",
+        "clov search",
         &raw_output,
         &clov_output,
     );

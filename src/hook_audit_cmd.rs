@@ -240,7 +240,7 @@ mod tests {
 
     #[test]
     fn test_token_savings() {
-        // Simulate what clov hook-audit would output vs raw log dump
+        // Simulate what clov audit-hooks would output vs raw log dump
         let raw_log = r#"2026-02-16T14:30:01Z | rewrite | git status | clov git status
 2026-02-16T14:30:02Z | skip:no_match | echo hello | -
 2026-02-16T14:30:03Z | rewrite | cargo test | clov cargo test

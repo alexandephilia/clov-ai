@@ -8,7 +8,7 @@
 //! This module provides:
 //! - SHA-256 hash computation and storage at install time
 //! - Runtime verification before command execution
-//! - Manual verification via `clov verify`
+//! - Manual verification via `clov doctor`
 //!
 //! Reference: SA-2025-CLOV-001 (Finding F-01)
 
@@ -25,7 +25,7 @@ const HASH_FILENAME: &str = ".clov-hook.sha256";
 pub enum IntegrityStatus {
     /// Hash matches — hook is unmodified since last install/update
     Verified,
-    /// Hash mismatch — hook has been modified outside of `clov init`
+    /// Hash mismatch — hook has been modified outside of `clov hook`
     Tampered { expected: String, actual: String },
     /// Hook exists but no stored hash (installed before integrity checks)
     NoBaseline,
@@ -185,7 +185,7 @@ pub fn resolve_hook_path() -> Result<PathBuf> {
         .context("Cannot determine home directory. Is $HOME set?")
 }
 
-/// Run integrity check and print results (for `clov verify` subcommand)
+/// Run integrity check and print results (for `clov doctor` subcommand)
 pub fn run_verify(verbose: u8) -> Result<()> {
     let hook_path = resolve_hook_path()?;
     let hash_file = hash_path(&hook_path);
@@ -208,25 +208,25 @@ pub fn run_verify(verbose: u8) -> Result<()> {
             eprintln!("  Expected: {}", expected);
             eprintln!("  Actual:   {}", actual);
             eprintln!();
-            eprintln!("  The hook file has been modified outside of `clov init`.");
+            eprintln!("  The hook file has been modified outside of `clov hook`.");
             eprintln!("  This could indicate tampering or a manual edit.");
             eprintln!();
-            eprintln!("  To restore: clov init -g --auto-patch");
+            eprintln!("  To restore: clov hook -g --auto-patch");
             eprintln!("  To inspect: cat {}", hook_path.display());
             std::process::exit(1);
         }
         IntegrityStatus::NoBaseline => {
             println!("WARN  no baseline hash found");
             println!("      Hook exists but was installed before integrity checks.");
-            println!("      Run `clov init -g` to establish baseline.");
+            println!("      Run `clov hook -g` to establish baseline.");
         }
         IntegrityStatus::NotInstalled => {
             println!("SKIP  CLOV hook not installed");
-            println!("      Run `clov init -g` to install.");
+            println!("      Run `clov hook -g` to install.");
         }
         IntegrityStatus::OrphanedHash => {
             eprintln!("WARN  hash file exists but hook is missing");
-            eprintln!("      Run `clov init -g` to reinstall.");
+            eprintln!("      Run `clov hook -g` to reinstall.");
         }
     }
 
@@ -241,7 +241,7 @@ pub fn run_verify(verbose: u8) -> Result<()> {
 /// - `OrphanedHash`: warn to stderr, continue
 ///
 /// No env-var bypass is provided — if the hook is legitimately modified,
-/// re-run `clov init -g --auto-patch` to re-establish the baseline.
+/// re-run `clov hook -g --auto-patch` to re-establish the baseline.
 pub fn runtime_check() -> Result<()> {
     match verify_hook()? {
         IntegrityStatus::Verified | IntegrityStatus::NotInstalled => {
@@ -265,13 +265,13 @@ pub fn runtime_check() -> Result<()> {
             eprintln!("  The hook at ~/.claude/hooks/clov-rewrite.sh has been modified.");
             eprintln!("  This may indicate tampering. CLOV will not execute.");
             eprintln!();
-            eprintln!("  To restore:  clov init -g --auto-patch");
-            eprintln!("  To inspect:  clov verify");
+            eprintln!("  To restore:  clov hook -g --auto-patch");
+            eprintln!("  To inspect:  clov doctor");
             std::process::exit(1);
         }
         IntegrityStatus::OrphanedHash => {
             eprintln!("clov: warning: hash file exists but hook is missing");
-            eprintln!("  Run `clov init -g` to reinstall.");
+            eprintln!("  Run `clov hook -g` to reinstall.");
             // Don't block — hook is gone, nothing to exploit
         }
     }

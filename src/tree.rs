@@ -97,7 +97,7 @@ pub fn run(args: &[String], verbose: u8) -> Result<()> {
     }
 
     print!("{}", filtered);
-    timer.track("tree", "clov tree", &raw, &filtered);
+    timer.track("tree", "clov map", &raw, &filtered);
 
     Ok(())
 }

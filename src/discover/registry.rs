@@ -395,7 +395,7 @@ fn rewrite_compound(cmd: &str) -> Option<String> {
     }
 }
 
-/// Rewrite `head -N file` → `clov read file --max-lines N`.
+/// Rewrite `head -N file` → `clov view file --max-lines N`.
 /// Returns `None` if the command doesn't match this pattern (fall through to generic logic).
 fn rewrite_head_numeric(cmd: &str) -> Option<String> {
     // Match: head -<digits> <file>  (with optional env prefix)
@@ -407,12 +407,12 @@ fn rewrite_head_numeric(cmd: &str) -> Option<String> {
     if let Some(caps) = HEAD_N.captures(cmd) {
         let n = caps.get(1)?.as_str();
         let file = caps.get(2)?.as_str();
-        return Some(format!("clov read {} --max-lines {}", file, n));
+        return Some(format!("clov view {} --max-lines {}", file, n));
     }
     if let Some(caps) = HEAD_LINES.captures(cmd) {
         let n = caps.get(1)?.as_str();
         let file = caps.get(2)?.as_str();
-        return Some(format!("clov read {} --max-lines {}", file, n));
+        return Some(format!("clov view {} --max-lines {}", file, n));
     }
     // head with any other flag (e.g. -c, -q): skip rewriting to avoid clap errors
     if cmd.starts_with("head -") {
@@ -435,10 +435,10 @@ fn rewrite_segment(seg: &str) -> Option<String> {
         return Some(trimmed.to_string());
     }
 
-    // Special case: `head -N file` / `head --lines=N file` → `clov read file --max-lines N`
-    // Must intercept before generic prefix replacement, which would produce `clov read -20 file`.
+    // Special case: `head -N file` / `head --lines=N file` → `clov view file --max-lines N`
+    // Must intercept before generic prefix replacement, which would produce `clov view -20 file`.
     // Only intercept when head has a flag (-N, --lines=N, -c, etc.); plain `head file` falls
-    // through to the generic rewrite below and produces `clov read file` as expected.
+    // through to the generic rewrite below and produces `clov view file` as expected.
     if trimmed.starts_with("head -") {
         return rewrite_head_numeric(trimmed);
     }
@@ -552,7 +552,7 @@ mod tests {
         assert_eq!(
             classify_command("cat src/main.rs"),
             Classification::Supported {
-                clov_equivalent: "clov read",
+                clov_equivalent: "clov view",
                 category: "Files",
                 estimated_savings_pct: 60.0,
                 status: ClovStatus::Existing,
@@ -710,7 +710,7 @@ mod tests {
         assert_eq!(
             classify_command("find . -name foo"),
             Classification::Supported {
-                clov_equivalent: "clov find",
+                clov_equivalent: "clov scan",
                 category: "Files",
                 estimated_savings_pct: 70.0,
                 status: ClovStatus::Existing,
@@ -940,7 +940,7 @@ mod tests {
     fn test_rewrite_cat_file() {
         assert_eq!(
             rewrite_command("cat src/main.rs"),
-            Some("clov read src/main.rs".into())
+            Some("clov view src/main.rs".into())
         );
     }
 
@@ -948,7 +948,7 @@ mod tests {
     fn test_rewrite_rg_pattern() {
         assert_eq!(
             rewrite_command("rg \"fn main\""),
-            Some("clov grep \"fn main\"".into())
+            Some("clov search \"fn main\"".into())
         );
     }
 
@@ -1001,10 +1001,10 @@ mod tests {
 
     #[test]
     fn test_rewrite_head_numeric_flag() {
-        // head -20 file → clov read file --max-lines 20 (not clov read -20 file)
+        // head -20 file → clov view file --max-lines 20 (not clov view -20 file)
         assert_eq!(
             rewrite_command("head -20 src/main.rs"),
-            Some("clov read src/main.rs --max-lines 20".into())
+            Some("clov view src/main.rs --max-lines 20".into())
         );
     }
 
@@ -1012,16 +1012,16 @@ mod tests {
     fn test_rewrite_head_lines_long_flag() {
         assert_eq!(
             rewrite_command("head --lines=50 src/lib.rs"),
-            Some("clov read src/lib.rs --max-lines 50".into())
+            Some("clov view src/lib.rs --max-lines 50".into())
         );
     }
 
     #[test]
     fn test_rewrite_head_no_flag_still_rewrites() {
-        // plain `head file` → `clov read file` (no numeric flag)
+        // plain `head file` → `clov view file` (no numeric flag)
         assert_eq!(
             rewrite_command("head src/main.rs"),
-            Some("clov read src/main.rs".into())
+            Some("clov view src/main.rs".into())
         );
     }
 
@@ -1115,7 +1115,7 @@ mod tests {
         assert!(matches!(
             classify_command("tree src/"),
             Classification::Supported {
-                clov_equivalent: "clov tree",
+                clov_equivalent: "clov map",
                 ..
             }
         ));
@@ -1126,7 +1126,7 @@ mod tests {
         assert!(matches!(
             classify_command("diff file1.txt file2.txt"),
             Classification::Supported {
-                clov_equivalent: "clov diff",
+                clov_equivalent: "clov patch",
                 ..
             }
         ));
@@ -1134,14 +1134,14 @@ mod tests {
 
     #[test]
     fn test_rewrite_tree() {
-        assert_eq!(rewrite_command("tree src/"), Some("clov tree src/".into()));
+        assert_eq!(rewrite_command("tree src/"), Some("clov map src/".into()));
     }
 
     #[test]
     fn test_rewrite_diff() {
         assert_eq!(
             rewrite_command("diff file1.txt file2.txt"),
-            Some("clov diff file1.txt file2.txt".into())
+            Some("clov patch file1.txt file2.txt".into())
         );
     }
 
@@ -1587,7 +1587,7 @@ mod tests {
     fn test_rewrite_find_with_flags() {
         assert_eq!(
             rewrite_command("find . -name '*.rs' -type f"),
-            Some("clov find . -name '*.rs' -type f".into())
+            Some("clov scan . -name '*.rs' -type f".into())
         );
     }
 

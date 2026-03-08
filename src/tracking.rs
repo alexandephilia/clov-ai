@@ -19,7 +19,7 @@
 //! let timer = TimedExecution::start();
 //! let input = "raw output";
 //! let output = "filtered output";
-//! timer.track("ls -la", "clov ls", input, output);
+//! timer.track("ls -la", "clov files", input, output);
 //!
 //! // Query statistics
 //! let tracker = Tracker::new().unwrap();
@@ -84,7 +84,7 @@ const HISTORY_DAYS: i64 = 90;
 /// use clov::tracking::Tracker;
 ///
 /// let tracker = Tracker::new()?;
-/// tracker.record("ls -la", "clov ls", 1000, 200, 50)?;
+/// tracker.record("ls -la", "clov files", 1000, 200, 50)?;
 ///
 /// let summary = tracker.get_summary()?;
 /// println!("Total saved: {} tokens", summary.total_saved);
@@ -159,7 +159,7 @@ pub struct TrackMetadata {
 pub struct CommandRecord {
     /// UTC timestamp when command was executed
     pub timestamp: DateTime<Utc>,
-    /// CLOV command that was executed (e.g., "clov ls")
+    /// CLOV command that was executed (e.g., "clov files")
     pub clov_cmd: String,
     /// Number of tokens saved (input - output)
     pub saved_tokens: usize,
@@ -195,7 +195,7 @@ pub struct GainSummary {
 
 /// Daily statistics for token savings and execution metrics.
 ///
-/// Serializable to JSON for export via `clov gain --daily --format json`.
+/// Serializable to JSON for export via `clov pulse --daily --format json`.
 ///
 /// # JSON Schema
 ///
@@ -233,7 +233,7 @@ pub struct DayStats {
 
 /// Weekly statistics for token savings and execution metrics.
 ///
-/// Serializable to JSON for export via `clov gain --weekly --format json`.
+/// Serializable to JSON for export via `clov pulse --weekly --format json`.
 /// Weeks start on Sunday (SQLite default).
 #[derive(Debug, Serialize)]
 pub struct WeekStats {
@@ -259,7 +259,7 @@ pub struct WeekStats {
 
 /// Monthly statistics for token savings and execution metrics.
 ///
-/// Serializable to JSON for export via `clov gain --monthly --format json`.
+/// Serializable to JSON for export via `clov pulse --monthly --format json`.
 #[derive(Debug, Serialize)]
 pub struct MonthStats {
     /// Month identifier (YYYY-MM)
@@ -423,7 +423,7 @@ impl Tracker {
     /// # Arguments
     ///
     /// - `original_cmd`: The standard command (e.g., "ls -la")
-    /// - `clov_cmd`: The CLOV command used (e.g., "clov ls")
+    /// - `clov_cmd`: The CLOV command used (e.g., "clov files")
     /// - `input_tokens`: Estimated tokens from standard command output
     /// - `output_tokens`: Actual tokens from CLOV output
     /// - `exec_time_ms`: Execution time in milliseconds
@@ -434,7 +434,7 @@ impl Tracker {
     /// use clov::tracking::Tracker;
     ///
     /// let tracker = Tracker::new()?;
-    /// tracker.record("ls -la", "clov ls", 1000, 200, 50)?;
+    /// tracker.record("ls -la", "clov files", 1000, 200, 50)?;
     /// # Ok::<(), anyhow::Error>(())
     /// ```
     pub fn record(
@@ -569,7 +569,7 @@ impl Tracker {
         Ok(())
     }
 
-    /// Get parse failure summary for `clov gain --failures`.
+    /// Get parse failure summary for `clov pulse --failures`.
     pub fn get_parse_failure_summary(&self) -> Result<ParseFailureSummary> {
         let total: i64 = self
             .conn
@@ -1132,7 +1132,7 @@ pub fn estimate_tokens(text: &str) -> usize {
 /// let timer = TimedExecution::start();
 /// let input = execute_standard_command()?;
 /// let output = execute_clov_command()?;
-/// timer.track("ls -la", "clov ls", &input, &output);
+/// timer.track("ls -la", "clov files", &input, &output);
 /// # Ok::<(), anyhow::Error>(())
 /// ```
 pub struct TimedExecution {
@@ -1171,7 +1171,7 @@ impl TimedExecution {
     /// # Arguments
     ///
     /// - `original_cmd`: Standard command (e.g., "ls -la")
-    /// - `clov_cmd`: CLOV command used (e.g., "clov ls")
+    /// - `clov_cmd`: CLOV command used (e.g., "clov files")
     /// - `input`: Standard command output (for token estimation)
     /// - `output`: CLOV command output (for token estimation)
     ///
@@ -1183,7 +1183,7 @@ impl TimedExecution {
     /// let timer = TimedExecution::start();
     /// let input = "long output...";
     /// let output = "short output";
-    /// timer.track("ls -la", "clov ls", input, output);
+    /// timer.track("ls -la", "clov files", input, output);
     /// ```
     pub fn track(&self, original_cmd: &str, clov_cmd: &str, input: &str, output: &str) {
         let elapsed_ms = self.start.elapsed().as_millis() as u64;
@@ -1255,7 +1255,7 @@ pub fn args_display(args: &[OsString]) -> String {
 /// # Arguments
 ///
 /// - `original_cmd`: Standard command (e.g., "ls -la")
-/// - `clov_cmd`: CLOV command used (e.g., "clov ls")
+/// - `clov_cmd`: CLOV command used (e.g., "clov files")
 /// - `input`: Standard command output (for token estimation)
 /// - `output`: CLOV command output (for token estimation)
 ///
@@ -1264,11 +1264,11 @@ pub fn args_display(args: &[OsString]) -> String {
 /// ```no_run
 /// # use clov::tracking::{track, TimedExecution};
 /// // Old (deprecated)
-/// track("ls -la", "clov ls", "input", "output");
+/// track("ls -la", "clov files", "input", "output");
 ///
 /// // New (preferred)
 /// let timer = TimedExecution::start();
-/// timer.track("ls -la", "clov ls", "input", "output");
+/// timer.track("ls -la", "clov files", "input", "output");
 /// ```
 #[deprecated(note = "Use TimedExecution instead")]
 #[allow(dead_code)]
@@ -1477,12 +1477,12 @@ mod tests {
     fn test_timed_execution_records_time() {
         let timer = TimedExecution::start();
         std::thread::sleep(std::time::Duration::from_millis(10));
-        timer.track("test cmd", "clov test", "raw input data", "filtered");
+        timer.track("test cmd", "clov check", "raw input data", "filtered");
 
         // Verify via DB that record exists
         let tracker = Tracker::new().expect("Failed to create tracker");
         let recent = tracker.get_recent(5).expect("Failed to get recent");
-        assert!(recent.iter().any(|r| r.clov_cmd == "clov test"));
+        assert!(recent.iter().any(|r| r.clov_cmd == "clov check"));
     }
 
     // 6. TimedExecution::track_passthrough records with 0 tokens

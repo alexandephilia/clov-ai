@@ -41,7 +41,7 @@ fi
 
 # Fetch clov data
 echo -e "${YELLOW}Fetching token savings data from clov...${NC}"
-if ! clov_json=$(clov gain --monthly --format json 2>/dev/null); then
+if ! clov_json=$(clov pulse --monthly --format json 2>/dev/null); then
     echo -e "${RED}Failed to fetch clov data${NC}"
     exit 1
 fi

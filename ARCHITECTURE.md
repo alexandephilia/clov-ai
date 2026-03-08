@@ -923,7 +923,7 @@ Flow:
    │ Top commands:                       │
    │   • clov git status    (234 uses)    │
    │   • clov lint          (156 uses)    │
-   │   • clov test          (89 uses)     │
+   │   • clov check         (89 uses)     │
    └──────────────────────────────────────┘
 
    Note: Time column shows average execution
@@ -1141,7 +1141,7 @@ Write template:
 │ Use `clov` prefix for commands:      │
 │ - clov git status                    │
 │ - clov lint                          │
-│ - clov test                          │
+│ - clov check                         │
 │                                     │
 │ Benefits: 60-90% token reduction    │
 └─────────────────────────────────────┘

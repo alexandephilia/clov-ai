@@ -39,12 +39,12 @@ pub fn run(url: &str, args: &[String], verbose: u8) -> Result<()> {
             format_size(size)
         );
         println!("{}", msg);
-        timer.track(&format!("wget {}", url), "clov wget", &raw_output, &msg);
+        timer.track(&format!("wget {}", url), "clov fetch", &raw_output, &msg);
     } else {
         let error = parse_error(&stderr, &stdout);
         let msg = format!("⬇️ {} FAILED: {}", compact_url(url), error);
         println!("{}", msg);
-        timer.track(&format!("wget {}", url), "clov wget", &raw_output, &msg);
+        timer.track(&format!("wget {}", url), "clov fetch", &raw_output, &msg);
     }
 
     Ok(())
@@ -97,7 +97,7 @@ pub fn run_stdout(url: &str, args: &[String], verbose: u8) -> Result<()> {
         print!("{}", clov_output);
         timer.track(
             &format!("wget -O - {}", url),
-            "clov wget -o",
+            "clov fetch -o",
             &raw_output,
             &clov_output,
         );
@@ -106,7 +106,12 @@ pub fn run_stdout(url: &str, args: &[String], verbose: u8) -> Result<()> {
         let error = parse_error(&stderr, "");
         let msg = format!("⬇️ {} FAILED: {}", compact_url(url), error);
         println!("{}", msg);
-        timer.track(&format!("wget -O - {}", url), "clov wget -o", &stderr, &msg);
+        timer.track(
+            &format!("wget -O - {}", url),
+            "clov fetch -o",
+            &stderr,
+            &msg,
+        );
     }
 
     Ok(())

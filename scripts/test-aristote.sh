@@ -97,33 +97,33 @@ printf "Date: %s\n\n" "$(date '+%Y-%m-%d %H:%M')"
 
 # ── 1. File exploration ──────────────────────────────
 
-section "Ls & Find"
+section "Files & Scan"
 
-assert_ok       "clov ls project root"           clov ls "$ARISTOTE"
-assert_ok       "clov ls src/"                   clov ls "$ARISTOTE/src"
-assert_ok       "clov ls --depth 3"              clov ls --depth 3 "$ARISTOTE/src"
-assert_contains "clov ls shows components/"      "components" clov ls "$ARISTOTE/src"
-assert_ok       "clov find *.tsx"                clov find "*.tsx" "$ARISTOTE/src"
-assert_ok       "clov find *.ts"                 clov find "*.ts" "$ARISTOTE/src"
-assert_contains "clov find finds App.tsx"        "App.tsx" clov find "*.tsx" "$ARISTOTE/src"
+assert_ok       "clov files project root"           clov files "$ARISTOTE"
+assert_ok       "clov files src/"                   clov files "$ARISTOTE/src"
+assert_ok       "clov files --depth 3"              clov files --depth 3 "$ARISTOTE/src"
+assert_contains "clov files shows components/"      "components" clov files "$ARISTOTE/src"
+assert_ok       "clov scan *.tsx"                   clov scan "*.tsx" "$ARISTOTE/src"
+assert_ok       "clov scan *.ts"                    clov scan "*.ts" "$ARISTOTE/src"
+assert_contains "clov scan finds App.tsx"           "App.tsx" clov scan "*.tsx" "$ARISTOTE/src"
 
 # ── 2. Read ──────────────────────────────────────────
 
-section "Read"
+section "View"
 
-assert_ok       "clov read tsconfig.json"        clov read "$ARISTOTE/tsconfig.json"
-assert_ok       "clov read package.json"         clov read "$ARISTOTE/package.json"
-assert_ok       "clov read App.tsx"              clov read "$ARISTOTE/src/App.tsx"
-assert_ok       "clov read --level aggressive"   clov read --level aggressive "$ARISTOTE/src/App.tsx"
-assert_ok       "clov read --max-lines 10"       clov read --max-lines 10 "$ARISTOTE/src/App.tsx"
+assert_ok       "clov view tsconfig.json"        clov view "$ARISTOTE/tsconfig.json"
+assert_ok       "clov view package.json"         clov view "$ARISTOTE/package.json"
+assert_ok       "clov view App.tsx"              clov view "$ARISTOTE/src/App.tsx"
+assert_ok       "clov view --level aggressive"   clov view --level aggressive "$ARISTOTE/src/App.tsx"
+assert_ok       "clov view --max-lines 10"       clov view --max-lines 10 "$ARISTOTE/src/App.tsx"
 
 # ── 3. Grep ──────────────────────────────────────────
 
-section "Grep"
+section "Search"
 
-assert_ok       "clov grep import"               clov grep "import" "$ARISTOTE/src"
-assert_ok       "clov grep with type filter"     clov grep "useState" "$ARISTOTE/src" -t tsx
-assert_contains "clov grep finds components"     "import" clov grep "import" "$ARISTOTE/src"
+assert_ok       "clov search import"               clov search "import" "$ARISTOTE/src"
+assert_ok       "clov search with type filter"     clov search "useState" "$ARISTOTE/src" -t tsx
+assert_contains "clov search finds components"     "import" clov search "import" "$ARISTOTE/src"
 
 # ── 4. Git ───────────────────────────────────────────
 
@@ -136,24 +136,24 @@ assert_ok       "clov git branch"                bash -c "cd $ARISTOTE && clov g
 
 # ── 5. Deps ──────────────────────────────────────────
 
-section "Deps"
+section "Graph"
 
-assert_ok       "clov deps"                      clov deps "$ARISTOTE"
-assert_contains "clov deps shows package.json"   "package.json" clov deps "$ARISTOTE"
+assert_ok       "clov graph"                     clov graph "$ARISTOTE"
+assert_contains "clov graph shows package.json"  "package.json" clov graph "$ARISTOTE"
 
 # ── 6. Json ──────────────────────────────────────────
 
-section "Json"
+section "Schema"
 
-assert_ok       "clov json tsconfig"             clov json "$ARISTOTE/tsconfig.json"
-assert_ok       "clov json package.json"         clov json "$ARISTOTE/package.json"
+assert_ok       "clov schema tsconfig"           clov schema "$ARISTOTE/tsconfig.json"
+assert_ok       "clov schema package.json"       clov schema "$ARISTOTE/package.json"
 
 # ── 7. Env ───────────────────────────────────────────
 
-section "Env"
+section "Vars"
 
-assert_ok       "clov env"                       clov env
-assert_ok       "clov env --filter NODE"         clov env --filter NODE
+assert_ok       "clov vars"                      clov vars
+assert_ok       "clov vars --filter NODE"        clov vars --filter NODE
 
 # ── 8. Tsc ───────────────────────────────────────────
 
@@ -189,24 +189,24 @@ fi
 
 # ── 11. Diff ─────────────────────────────────────────
 
-section "Diff"
+section "Patch"
 
 # Diff two config files that exist in the project
-assert_ok       "clov diff tsconfigs"            clov diff "$ARISTOTE/tsconfig.json" "$ARISTOTE/tsconfig.app.json"
+assert_ok       "clov patch tsconfigs"           clov patch "$ARISTOTE/tsconfig.json" "$ARISTOTE/tsconfig.app.json"
 
 # ── 12. Summary & Err ────────────────────────────────
 
-section "Summary & Err"
+section "Digest & Fail"
 
-assert_ok       "clov summary ls"                clov summary ls "$ARISTOTE/src"
-assert_ok       "clov err ls"                    clov err ls "$ARISTOTE/src"
+assert_ok       "clov digest ls"                 clov digest ls "$ARISTOTE/src"
+assert_ok       "clov fail ls"                   clov fail ls "$ARISTOTE/src"
 
 # ── 13. Gain ─────────────────────────────────────────
 
-section "Gain (after above commands)"
+section "Pulse (after above commands)"
 
-assert_ok       "clov gain"                      clov gain
-assert_ok       "clov gain --history"            clov gain --history
+assert_ok       "clov pulse"                     clov pulse
+assert_ok       "clov pulse --history"           clov pulse --history
 
 # ══════════════════════════════════════════════════════
 # Report

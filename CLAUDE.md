@@ -118,7 +118,7 @@ main.rs (CLI entry)
 - SQLite-based persistent storage (~/.local/share/clov/tracking.db)
 - Records: original_cmd, clov_cmd, input_tokens, output_tokens, savings_pct
 - 90-day retention policy with automatic cleanup
-- Powers the `clov pulse` analytics command (`clov gain` remains an alias)
+- Powers the `clov pulse` analytics command
 - **Configurable database path**: Via `CLOV_DB_PATH` env var or `config.toml`
   - Priority: env var > config file > default location
 
@@ -126,7 +126,7 @@ main.rs (CLI entry)
 
 - Manages CLAUDE.md initialization (global vs local)
 - Reads ~/.config/clov/config.toml for user preferences
-- `clov hook` command bootstraps LLM integration (`clov init` remains an alias)
+- `clov hook` command bootstraps LLM integration
 - **New**: `tracking.database_path` field for custom DB location
 
 **5. Tee Output Recovery** (src/tee.rs)

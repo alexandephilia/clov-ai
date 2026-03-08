@@ -23,7 +23,7 @@ fn glob_match_inner(pat: &[u8], name: &[u8]) -> bool {
     }
 }
 
-/// Parsed arguments from either native find or CLOV find syntax.
+/// Parsed arguments from either native find or CLOV scan syntax.
 #[derive(Debug)]
 struct FindArgs {
     pattern: String,
@@ -84,7 +84,7 @@ fn parse_find_args(args: &[String]) -> Result<FindArgs> {
 
     if has_unsupported_find_flags(args) {
         anyhow::bail!(
-            "clov find does not support compound predicates or actions (e.g. -not, -exec). Use `find` directly."
+            "clov scan does not support compound predicates or actions (e.g. -not, -exec). Use `find` directly."
         );
     }
 
@@ -130,7 +130,7 @@ fn parse_native_find_args(args: &[String]) -> Result<FindArgs> {
                 }
             }
             flag if flag.starts_with('-') => {
-                eprintln!("clov find: unknown flag '{}', ignored", flag);
+                eprintln!("clov scan: unknown flag '{}', ignored", flag);
             }
             _ => {}
         }
@@ -276,7 +276,7 @@ pub fn run(
         println!("{}", msg);
         timer.track(
             &format!("find {} -name '{}'", path, effective_pattern),
-            "clov find",
+            "clov scan",
             &raw_output,
             &msg,
         );
@@ -370,7 +370,7 @@ pub fn run(
     let clov_output = format!("{}F {}D + {}", total_files, dirs_count, ext_line);
     timer.track(
         &format!("find {} -name '{}'", path, effective_pattern),
-        "clov find",
+        "clov scan",
         &raw_output,
         &clov_output,
     );
@@ -546,7 +546,7 @@ mod tests {
 
     #[test]
     fn run_from_args_clov_syntax() {
-        // Simulates: clov find *.rs src
+        // Simulates: clov scan *.rs src
         let result = run_from_args(&args(&["*.rs", "src"]), 0);
         assert!(result.is_ok());
     }

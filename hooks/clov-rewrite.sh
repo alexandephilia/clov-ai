@@ -2,7 +2,7 @@
 # CLOV Claude Code hook — rewrites commands to use clov for token savings.
 # Requires: clov >= 0.26.0, jq
 #
-# This is a thin delegating hook: all rewrite logic lives in `clov rewrite`,
+# This is a thin delegating hook: all rewrite logic lives in `clov route`,
 # which is the single source of truth (src/discover/registry.rs).
 # To add or change rewrite rules, edit the Rust registry — not this file.
 
@@ -35,8 +35,8 @@ if [ -z "$CMD" ]; then
 fi
 
 # Delegate all rewrite logic to the Rust binary.
-# clov rewrite exits 1 when there's no rewrite — hook passes through silently.
-REWRITTEN=$(clov rewrite "$CMD" 2>/dev/null) || exit 0
+# clov route exits 1 when there's no rewrite — hook passes through silently.
+REWRITTEN=$(clov route "$CMD" 2>/dev/null) || exit 0
 
 # No change — nothing to do.
 if [ "$CMD" = "$REWRITTEN" ]; then

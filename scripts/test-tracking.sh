@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Test tracking end-to-end: run commands, verify they appear in clov gain --history
+# Test tracking end-to-end: run commands, verify they appear in clov pulse --history
 set -euo pipefail
 
 # Workaround for macOS bash pipe handling in strict mode
@@ -27,30 +27,30 @@ echo ""
 
 # 1. Commandes avec filtrage réel — doivent apparaitre dans history
 echo "── Optimized commands (token savings) ──"
-clov ls . >/dev/null 2>&1
-check "clov ls tracked" "clov ls" clov gain --history
+clov files . >/dev/null 2>&1
+check "clov files tracked" "clov files" clov pulse --history
 
 clov git status >/dev/null 2>&1
-check "clov git status tracked" "clov git status" clov gain --history
+check "clov git status tracked" "clov git status" clov pulse --history
 
 clov git log -5 >/dev/null 2>&1
-check "clov git log tracked" "clov git log" clov gain --history
+check "clov git log tracked" "clov git log" clov pulse --history
 
 # Git passthrough (timing-only)
 echo ""
 echo "── Passthrough commands (timing-only) ──"
 clov git tag --list >/dev/null 2>&1
-check "git passthrough tracked" "git tag --list" clov gain --history
+check "git passthrough tracked" "git tag --list" clov pulse --history
 
 # gh commands (if authenticated)
 echo ""
 echo "── GitHub CLI tracking ──"
 if command -v gh >/dev/null 2>&1 && gh auth status >/dev/null 2>&1; then
     clov gh pr list >/dev/null 2>&1 || true
-    check "clov gh pr list tracked" "clov gh pr" clov gain --history
+    check "clov gh pr list tracked" "clov gh pr" clov pulse --history
 
     clov gh run list >/dev/null 2>&1 || true
-    check "clov gh run list tracked" "clov gh run" clov gain --history
+    check "clov gh run list tracked" "clov gh run" clov pulse --history
 else
     echo "  SKIP  gh (not authenticated)"
 fi
@@ -58,17 +58,17 @@ fi
 # Stdin commands
 echo ""
 echo "── Stdin commands ──"
-echo -e "line1\nline2\nline1\nERROR: bad\nline1" | clov log >/dev/null 2>&1
-check "clov log stdin tracked" "clov log" clov gain --history
+echo -e "line1\nline2\nline1\nERROR: bad\nline1" | clov logs >/dev/null 2>&1
+check "clov logs stdin tracked" "clov logs" clov pulse --history
 
 # Summary — verify passthrough doesn't dilute
 echo ""
 echo "── Summary integrity ──"
-output=$(clov gain 2>&1)
+output=$(clov pulse 2>&1)
 if echo "$output" | grep -q "Tokens saved"; then
-    PASS=$((PASS+1)); printf "  ${GREEN}PASS${NC}  clov gain summary works\n"
+    PASS=$((PASS+1)); printf "  ${GREEN}PASS${NC}  clov pulse summary works\n"
 else
-    FAIL=$((FAIL+1)); printf "  ${RED}FAIL${NC}  clov gain summary\n"
+    FAIL=$((FAIL+1)); printf "  ${RED}FAIL${NC}  clov pulse summary\n"
 fi
 
 echo ""

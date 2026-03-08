@@ -1,13 +1,13 @@
 use crate::discover::registry;
 
-/// Run the `clov rewrite` command.
+/// Run the `clov route` command.
 ///
 /// Prints the CLOV-rewritten command to stdout and exits 0.
 /// Exits 1 (without output) if the command has no CLOV equivalent.
 ///
 /// Used by shell hooks to rewrite commands transparently:
 /// ```bash
-/// REWRITTEN=$(clov rewrite "$CMD") || exit 0
+/// REWRITTEN=$(clov route "$CMD") || exit 0
 /// [ "$CMD" = "$REWRITTEN" ] && exit 0  # already CLOV, skip
 /// ```
 pub fn run(cmd: &str) -> anyhow::Result<()> {

@@ -64,7 +64,7 @@ clov next build          # Next.js build with route metrics (87%)
 clov cargo test          # Cargo test failures only (90%)
 clov vitest run          # Vitest failures only (99.5%)
 clov playwright test     # Playwright failures only (94%)
-clov test <cmd>          # Generic test wrapper - failures only
+clov check <cmd>         # Generic test wrapper - failures only
 ```
 
 ### Git (59-80% savings)
@@ -106,21 +106,21 @@ clov prisma              # Prisma without ASCII art (88%)
 
 ### Files & Search (60-75% savings)
 ```bash
-clov ls <path>           # Tree format, compact (65%)
-clov read <file>         # Code reading with filtering (60%)
-clov grep <pattern>      # Search grouped by file (75%)
-clov find <pattern>      # Find grouped by directory (70%)
+clov files <path>        # Tree format, compact (65%)
+clov view <file>         # Code reading with filtering (60%)
+clov search <pattern>    # Search grouped by file (75%)
+clov scan <pattern>      # Find grouped by directory (70%)
 ```
 
 ### Analysis & Debug (70-90% savings)
 ```bash
-clov err <cmd>           # Filter errors only from any command
-clov log <file>          # Deduplicated logs with counts
-clov json <file>         # JSON structure without values
-clov deps                # Dependency overview
-clov env                 # Environment variables compact
-clov summary <cmd>       # Smart summary of command output
-clov diff                # Ultra-compact diffs
+clov fail <cmd>          # Filter errors only from any command
+clov logs <file>         # Deduplicated logs with counts
+clov schema <file>       # JSON structure without values
+clov graph               # Dependency overview
+clov vars                # Environment variables compact
+clov digest <cmd>        # Smart summary of command output
+clov patch               # Ultra-compact diffs
 ```
 
 ### Infrastructure (85% savings)
@@ -135,17 +135,17 @@ clov kubectl logs        # Deduplicated pod logs
 ### Network (65-70% savings)
 ```bash
 clov curl <url>          # Compact HTTP responses (70%)
-clov wget <url>          # Compact download output (65%)
+clov fetch <url>         # Compact download output (65%)
 ```
 
 ### Meta Commands
 ```bash
-clov gain                # View token savings statistics
-clov gain --history      # View command history with savings
-clov discover            # Analyze Claude Code sessions for missed CLOV usage
-clov proxy <cmd>         # Run command without filtering (for debugging)
-clov init                # Add CLOV instructions to CLAUDE.md
-clov init --global       # Add CLOV to ~/.claude/CLAUDE.md
+clov pulse               # View token savings statistics
+clov pulse --history     # View command history with savings
+clov inspect             # Analyze Claude Code sessions for missed CLOV usage
+clov passthrough <cmd>   # Run command without filtering (for debugging)
+clov hook                # Add CLOV instructions to CLAUDE.md
+clov hook --global       # Add CLOV to ~/.claude/CLAUDE.md
 ```
 
 ## Token Savings Overview
@@ -165,7 +165,7 @@ Overall average: **60-90% token reduction** on common development operations.
 <!-- /clov-instructions -->
 "##;
 
-/// Main entry point for `clov init`
+/// Main entry point for `clov hook`
 pub fn run(
     global: bool,
     claude_md: bool,
@@ -825,9 +825,9 @@ fn run_claude_md_mode(global: bool, verbose: u8) -> Result<()> {
 
                 eprintln!("    Action: Manually remove the incomplete block, then re-run:");
                 if global {
-                    eprintln!("            clov init -g --claude-md");
+                    eprintln!("            clov hook -g --claude-md");
                 } else {
-                    eprintln!("            clov init --claude-md");
+                    eprintln!("            clov hook --claude-md");
                 }
                 return Ok(());
             }
@@ -989,7 +989,7 @@ fn remove_clov_block(content: &str) -> (String, bool) {
         }
 
         eprintln!("    Action: Manually remove the incomplete block, then re-run:");
-        eprintln!("            clov init -g");
+        eprintln!("            clov hook -g");
         (content.to_string(), false)
     } else {
         (content.to_string(), false)
@@ -1025,7 +1025,7 @@ pub fn show_config() -> Result<()> {
             let hook_content = fs::read_to_string(&hook_path)?;
             let has_guards =
                 hook_content.contains("command -v clov") && hook_content.contains("command -v jq");
-            let is_thin_delegator = hook_content.contains("clov rewrite");
+            let is_thin_delegator = hook_content.contains("clov route");
 
             if !is_executable {
                 println!(
@@ -1038,7 +1038,7 @@ pub fn show_config() -> Result<()> {
                     hook_path.display()
                 );
                 println!(
-                    "   → Run `clov init --global` to upgrade to the single source of truth hook"
+                    "   → Run `clov hook --global` to upgrade to the single source of truth hook"
                 );
             } else if is_executable && has_guards {
                 println!(
@@ -1071,10 +1071,10 @@ pub fn show_config() -> Result<()> {
             println!("✅ Integrity: hook hash verified");
         }
         Ok(integrity::IntegrityStatus::Tampered { .. }) => {
-            println!("❌ Integrity: hook modified outside clov init (run: clov verify)");
+            println!("❌ Integrity: hook modified outside clov hook (run: clov doctor)");
         }
         Ok(integrity::IntegrityStatus::NoBaseline) => {
-            println!("⚠️  Integrity: no baseline hash (run: clov init -g to establish)");
+            println!("⚠️  Integrity: no baseline hash (run: clov hook -g to establish)");
         }
         Ok(integrity::IntegrityStatus::NotInstalled)
         | Ok(integrity::IntegrityStatus::OrphanedHash) => {
@@ -1092,7 +1092,7 @@ pub fn show_config() -> Result<()> {
             println!("✅ Global (~/.claude/CLAUDE.md): @CLOV.md reference");
         } else if content.contains("<!-- clov-instructions") {
             println!(
-                "⚠️  Global (~/.claude/CLAUDE.md): old CLOV block (run: clov init -g to migrate)"
+                "⚠️  Global (~/.claude/CLAUDE.md): old CLOV block (run: clov hook -g to migrate)"
             );
         } else {
             println!("⚪ Global (~/.claude/CLAUDE.md): exists but clov not configured");
@@ -1124,7 +1124,7 @@ pub fn show_config() -> Result<()> {
                     println!("✅ settings.json: CLOV hook configured");
                 } else {
                     println!("⚠️  settings.json: exists but CLOV hook not configured");
-                    println!("    Run: clov init -g --auto-patch");
+                    println!("    Run: clov hook -g --auto-patch");
                 }
             } else {
                 println!("⚠️  settings.json: exists but invalid JSON");
@@ -1137,13 +1137,13 @@ pub fn show_config() -> Result<()> {
     }
 
     println!("\nUsage:");
-    println!("  clov init              # Full injection into local CLAUDE.md");
-    println!("  clov init -g           # Hook + CLOV.md + @CLOV.md + settings.json (recommended)");
-    println!("  clov init -g --auto-patch    # Same as above but no prompt");
-    println!("  clov init -g --no-patch      # Skip settings.json (manual setup)");
-    println!("  clov init -g --uninstall     # Remove all CLOV artifacts");
-    println!("  clov init -g --claude-md     # Legacy: full injection into ~/.claude/CLAUDE.md");
-    println!("  clov init -g --hook-only     # Hook only, no CLOV.md");
+    println!("  clov hook              # Full injection into local CLAUDE.md");
+    println!("  clov hook -g           # Hook + CLOV.md + @CLOV.md + settings.json (recommended)");
+    println!("  clov hook -g --auto-patch    # Same as above but no prompt");
+    println!("  clov hook -g --no-patch      # Skip settings.json (manual setup)");
+    println!("  clov hook -g --uninstall     # Remove all CLOV artifacts");
+    println!("  clov hook -g --claude-md     # Legacy: full injection into ~/.claude/CLAUDE.md");
+    println!("  clov hook -g --hook-only     # Hook only, no CLOV.md");
 
     Ok(())
 }
@@ -1194,10 +1194,10 @@ mod tests {
         // Guards (clov/jq availability checks) must appear before the actual delegation call.
         // The thin delegating hook no longer uses set -euo pipefail.
         let jq_pos = REWRITE_HOOK.find("command -v jq").unwrap();
-        let clov_delegate_pos = REWRITE_HOOK.find("clov rewrite \"$CMD\"").unwrap();
+        let clov_delegate_pos = REWRITE_HOOK.find("clov route \"$CMD\"").unwrap();
         assert!(
             jq_pos < clov_delegate_pos,
-            "Guards must appear before clov rewrite delegation"
+            "Guards must appear before clov route delegation"
         );
     }
 
