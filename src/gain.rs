@@ -113,13 +113,14 @@ pub fn run(
                 .max()
                 .unwrap_or(1);
 
+            let mut blocks = Vec::new();
             for (idx, (cmd, count, saved, pct, avg_time)) in summary.by_command.iter().enumerate() {
                 let share_pct = if summary.total_saved > 0 {
                     (*saved as f64 / summary.total_saved as f64) * 100.0
                 } else {
                     0.0
                 };
-                let block = TacticalBlock {
+                blocks.push(TacticalBlock {
                     rank: idx + 1,
                     cmd: normalize_display_command(cmd),
                     count: *count,
@@ -127,9 +128,9 @@ pub fn run(
                     pct: *pct,
                     avg_time: *avg_time,
                     share_pct,
-                };
-                print_tactical_block(&block, max_saved);
+                });
             }
+            print_command_grid(&blocks, max_saved);
             println!();
         }
 
@@ -307,41 +308,27 @@ struct TacticalBlock {
     share_pct: f64,
 }
 
-/// Print a tactical block for a single command. // added
-fn print_tactical_block(block: &TacticalBlock, max_saved: usize) {
-    let title = format!("┌─ {:02} / {} ", block.rank, block.cmd);
-    let line_width = 60usize;
-    let title_chars = title.chars().count();
-    let tail_len = line_width.saturating_sub(title_chars + 1);
-    let tail = "─".repeat(tail_len);
-    let title_line = format!("{title}{tail}┐");
+/// Print a compact grid of command cards. // added
+fn print_command_grid(blocks: &[TacticalBlock], max_saved: usize) {
+    const COLS: usize = 3;
+    const CARD_WIDTH: usize = 24;
 
-    let left_1 = format!("calls {:>9}", block.count);
-    let right_1 = format!("saved {:>10}", format_tokens(block.saved));
-    let left_2 = format!("avg cut {:>7}", format!("{:.1}%", block.pct));
-    let right_2 = format!("avg time {:>7}", format_duration(block.avg_time));
-    let left_3 = format!("rank {:>11}", format!("#{}", block.rank));
-    let right_3 = format!("savings share {:>5}", format!("{:.1}%", block.share_pct));
-    let impact = heat_strip(block.saved, max_saved, 12);
+    for row in blocks.chunks(COLS) {
+        let cards: Vec<Vec<String>> = row
+            .iter()
+            .map(|block| render_command_card(block, max_saved, CARD_WIDTH))
+            .collect();
 
-    println!("{}", style_block_border(&title_line));
-    println!(
-        "{}",
-        style_block_row(&format!("│ {:<22} {:<25} │", left_1, right_1))
-    );
-    println!(
-        "{}",
-        style_block_row(&format!("│ {:<22} {:<25} │", left_2, right_2))
-    );
-    println!(
-        "{}",
-        style_block_row(&format!("│ {:<22} {:<25} │", left_3, right_3))
-    );
-    println!("{}", style_block_row(&format!("│ impact {:<48} │", impact)));
-    println!(
-        "{}",
-        style_block_border("└──────────────────────────────────────────────────────────┘")
-    );
+        for line_idx in 0..cards[0].len() {
+            let joined = cards
+                .iter()
+                .map(|card| format!("{:<width$}", card[line_idx], width = CARD_WIDTH))
+                .collect::<Vec<_>>()
+                .join("  ");
+            println!("{}", joined.trim_end());
+        }
+        println!();
+    }
 }
 
 fn normalize_display_command(cmd: &str) -> String {
@@ -369,20 +356,67 @@ fn normalize_display_command(cmd: &str) -> String {
         .replace("clov hook-audit", "clov audit-hooks")
         .replace("clov rewrite", "clov route")
         .replace("clov mcp", "clov bridge")
+        .replace("clov-mcp-crawling_exa", "bridge:crawling_exa")
+        .replace("clov-mcp-web_search", "bridge:web_search")
 }
 
-fn style_block_border(line: &str) -> String {
-    if !std::io::stdout().is_terminal() {
-        return line.to_string();
-    }
-    line.bright_black().to_string()
+fn render_command_card(block: &TacticalBlock, max_saved: usize, width: usize) -> Vec<String> {
+    let name = block
+        .cmd
+        .strip_prefix("clov ")
+        .unwrap_or(&block.cmd)
+        .to_string();
+    let header = format!(
+        "{} {}",
+        style_rank(block.rank),
+        style_card_name(&truncate_card_text(&name, width.saturating_sub(5)))
+    );
+    vec![
+        header,
+        format!("{} calls", pad_left(block.count.to_string(), 6)),
+        format!("{} saved", pad_left(format_tokens(block.saved), 7)),
+        format!(
+            "{}  {}",
+            pad_left(format!("{:.1}% cut", block.pct), 10),
+            pad_left(format_duration(block.avg_time), 5)
+        ),
+        format!(
+            "{}  {}",
+            heat_strip(block.saved, max_saved, 12),
+            pad_left(format!("{:.1}%", block.share_pct), 5)
+        ),
+    ]
 }
 
-fn style_block_row(line: &str) -> String {
+fn style_rank(rank: usize) -> String {
     if !std::io::stdout().is_terminal() {
-        return line.to_string();
+        return format!("[{rank:02}]");
     }
-    line.to_string()
+    format!("[{rank:02}]").bright_yellow().bold().to_string()
+}
+
+fn style_card_name(name: &str) -> String {
+    if !std::io::stdout().is_terminal() {
+        return name.to_string();
+    }
+    name.bright_cyan().bold().to_string()
+}
+
+fn truncate_card_text(text: &str, width: usize) -> String {
+    let len = text.chars().count();
+    if len <= width {
+        return text.to_string();
+    }
+    if width <= 3 {
+        return text.chars().take(width).collect();
+    }
+    let mut out: String = text.chars().take(width - 3).collect();
+    out.push_str("...");
+    out
+}
+
+fn pad_left(text: String, width: usize) -> String {
+    format!("{text:>width$}")
 }
 
 /// Resolve project scope from --project flag. // added
