@@ -129,35 +129,35 @@ printf "   %-24s │ %-40s │ %-40s │ %s\n" "TEST" "SHELL" "CLOV" "TOKENS"
 echo "───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────"
 
 # ===================
-# ls
+# files
 # ===================
-section "ls"
-bench "ls" "ls -la" "$CLOV ls"
-bench "ls src/" "ls -la src/" "$CLOV ls src/"
-bench "ls -l src/" "ls -l src/" "$CLOV ls -l src/"
-bench "ls -la src/" "ls -la src/" "$CLOV ls -la src/"
-bench "ls -lh src/" "ls -lh src/" "$CLOV ls -lh src/"
-bench "ls src/ -l" "ls -l src/" "$CLOV ls src/ -l"
-bench "ls -a" "ls -la" "$CLOV ls -a"
-bench "ls multi" "ls -la src/ scripts/" "$CLOV ls src/ scripts/"
+section "files"
+bench "files" "ls -la" "$CLOV files"
+bench "files src/" "ls -la src/" "$CLOV files src/"
+bench "files -l src/" "ls -l src/" "$CLOV files -l src/"
+bench "files -la src/" "ls -la src/" "$CLOV files -la src/"
+bench "files -lh src/" "ls -lh src/" "$CLOV files -lh src/"
+bench "files src/ -l" "ls -l src/" "$CLOV files src/ -l"
+bench "files -a" "ls -la" "$CLOV files -a"
+bench "files multi" "ls -la src/ scripts/" "$CLOV files src/ scripts/"
 
 # ===================
-# read
+# view
 # ===================
-section "read"
-bench "read" "cat src/main.rs" "$CLOV read src/main.rs"
-bench "read -l minimal" "cat src/main.rs" "$CLOV read src/main.rs -l minimal"
-bench "read -l aggressive" "cat src/main.rs" "$CLOV read src/main.rs -l aggressive"
-bench "read -n" "cat -n src/main.rs" "$CLOV read src/main.rs -n"
+section "view"
+bench "view" "cat src/main.rs" "$CLOV view src/main.rs"
+bench "view -l minimal" "cat src/main.rs" "$CLOV view src/main.rs -l minimal"
+bench "view -l aggressive" "cat src/main.rs" "$CLOV view src/main.rs -l aggressive"
+bench "view -n" "cat -n src/main.rs" "$CLOV view src/main.rs -n"
 
 # ===================
-# find
+# scan
 # ===================
-section "find"
-bench "find *" "find . -type f" "$CLOV find '*'"
-bench "find *.rs" "find . -name '*.rs' -type f" "$CLOV find '*.rs'"
-bench "find --max 10" "find . -not -path './target/*' -not -path './.git/*' -type f | head -10" "$CLOV find '*' --max 10"
-bench "find --max 100" "find . -not -path './target/*' -not -path './.git/*' -type f | head -100" "$CLOV find '*' --max 100"
+section "scan"
+bench "scan *" "find . -type f" "$CLOV scan '*'"
+bench "scan *.rs" "find . -name '*.rs' -type f" "$CLOV scan '*.rs'"
+bench "scan --max 10" "find . -not -path './target/*' -not -path './.git/*' -type f | head -10" "$CLOV scan '*' --max 10"
+bench "scan --max 100" "find . -not -path './target/*' -not -path './.git/*' -type f | head -100" "$CLOV scan '*' --max 100"
 
 # ===================
 # git
@@ -169,19 +169,19 @@ bench "git log -n 5" "git log -5" "$CLOV git log -n 5"
 bench "git diff" "git diff HEAD~1 2>/dev/null || echo ''" "$CLOV git diff HEAD~1"
 
 # ===================
-# grep
+# search
 # ===================
-section "grep"
-bench "grep fn" "grep -rn 'fn ' src/ || true" "$CLOV grep 'fn ' src/"
-bench "grep struct" "grep -rn 'struct ' src/ || true" "$CLOV grep 'struct ' src/"
-bench "grep -l 40" "grep -rn 'fn ' src/ || true" "$CLOV grep 'fn ' src/ -l 40"
-bench "grep --max 20" "grep -rn 'fn ' src/ | head -20 || true" "$CLOV grep 'fn ' src/ --max 20"
-bench "grep -c" "grep -ron 'fn ' src/ || true" "$CLOV grep 'fn ' src/ -c"
+section "search"
+bench "search fn" "grep -rn 'fn ' src/ || true" "$CLOV search 'fn ' src/"
+bench "search struct" "grep -rn 'struct ' src/ || true" "$CLOV search 'struct ' src/"
+bench "search -l 40" "grep -rn 'fn ' src/ || true" "$CLOV search 'fn ' src/ -l 40"
+bench "search --max 20" "grep -rn 'fn ' src/ | head -20 || true" "$CLOV search 'fn ' src/ --max 20"
+bench "search -c" "grep -ron 'fn ' src/ || true" "$CLOV search 'fn ' src/ -c"
 
 # ===================
-# json
+# schema
 # ===================
-section "json"
+section "schema"
 cat > /tmp/clov_bench.json << 'JSONEOF'
 {
   "name": "clov",
@@ -198,40 +198,40 @@ cat > /tmp/clov_bench.json << 'JSONEOF'
   }
 }
 JSONEOF
-bench "json" "cat /tmp/clov_bench.json" "$CLOV json /tmp/clov_bench.json"
-bench "json -d 2" "cat /tmp/clov_bench.json" "$CLOV json /tmp/clov_bench.json -d 2"
+bench "schema" "cat /tmp/clov_bench.json" "$CLOV schema /tmp/clov_bench.json"
+bench "schema -d 2" "cat /tmp/clov_bench.json" "$CLOV schema /tmp/clov_bench.json -d 2"
 rm -f /tmp/clov_bench.json
 
 # ===================
-# deps
+# graph
 # ===================
-section "deps"
-bench "deps" "cat Cargo.toml" "$CLOV deps"
+section "graph"
+bench "graph" "cat Cargo.toml" "$CLOV graph"
 
 # ===================
-# env
+# vars
 # ===================
-section "env"
-bench "env" "env" "$CLOV env"
-bench "env -f PATH" "env | grep PATH" "$CLOV env -f PATH"
-bench "env --show-all" "env" "$CLOV env --show-all"
+section "vars"
+bench "vars" "env" "$CLOV vars"
+bench "vars -f PATH" "env | grep PATH" "$CLOV vars -f PATH"
+bench "vars --show-all" "env" "$CLOV vars --show-all"
 
 # ===================
-# err
+# fail
 # ===================
-section "err"
-bench "err cargo build" "cargo build 2>&1 || true" "$CLOV err cargo build"
+section "fail"
+bench "fail cargo build" "cargo build 2>&1 || true" "$CLOV fail cargo build"
 
 # ===================
-# test
+# check
 # ===================
-section "test"
-bench "test cargo test" "cargo test 2>&1 || true" "$CLOV test cargo test"
+section "check"
+bench "check cargo test" "cargo test 2>&1 || true" "$CLOV check cargo test"
 
 # ===================
-# log
+# logs
 # ===================
-section "log"
+section "logs"
 LOG_FILE="/tmp/clov_bench_sample.log"
 cat > "$LOG_FILE" << 'LOGEOF'
 2024-01-15 10:00:01 INFO  Application started
@@ -248,15 +248,15 @@ cat > "$LOG_FILE" << 'LOGEOF'
 2024-01-15 10:00:12 INFO  Processing request
 2024-01-15 10:00:13 INFO  Request completed
 LOGEOF
-bench "log" "cat $LOG_FILE" "$CLOV log $LOG_FILE"
+bench "logs" "cat $LOG_FILE" "$CLOV logs $LOG_FILE"
 rm -f "$LOG_FILE"
 
 # ===================
-# summary
+# digest
 # ===================
-section "summary"
-bench "summary cargo --help" "cargo --help" "$CLOV summary cargo --help"
-bench "summary rustc --help" "rustc --help 2>/dev/null || echo 'rustc not found'" "$CLOV summary rustc --help"
+section "digest"
+bench "digest cargo --help" "cargo --help" "$CLOV digest cargo --help"
+bench "digest rustc --help" "rustc --help 2>/dev/null || echo 'rustc not found'" "$CLOV digest rustc --help"
 
 # ===================
 # Modern JavaScript Stack (skip si pas de package.json)
@@ -381,8 +381,8 @@ def test_process_data_none():
     assert process_data(None) == []
 PYEOF
 
-  bench "ruff check" "ruff check . 2>&1 || true" "$CLOV test ruff check ."
-  bench "pytest" "pytest -v 2>&1 || true" "$CLOV test pytest -v"
+  bench "ruff check" "ruff check . 2>&1 || true" "$CLOV check ruff check ."
+  bench "pytest" "pytest -v 2>&1 || true" "$CLOV check pytest -v"
 
   cd - > /dev/null
   rm -rf "$PYTHON_FIXTURE"
@@ -445,8 +445,8 @@ func TestMultiply(t *testing.T) {
 }
 GOEOF
 
-  bench "golangci-lint" "golangci-lint run 2>&1 || true" "$CLOV test golangci-lint run"
-  bench "go test" "go test -v 2>&1 || true" "$CLOV test go test -v"
+  bench "golangci-lint" "golangci-lint run 2>&1 || true" "$CLOV check golangci-lint run"
+  bench "go test" "go test -v 2>&1 || true" "$CLOV check go test -v"
 
   cd - > /dev/null
   rm -rf "$GO_FIXTURE"
