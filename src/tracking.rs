@@ -35,7 +35,7 @@ use chrono::{DateTime, Utc};
 use rusqlite::{params, Connection};
 use serde::Serialize;
 use std::ffi::OsString;
-use std::path::PathBuf;
+use std::path::{Path, PathBuf};
 use std::time::Instant;
 
 // ── Project path helpers ── // added: project-scoped tracking support
@@ -142,6 +142,14 @@ impl TokenMetrics {
             profile_output_tokens: None,
         }
     }
+}
+
+#[derive(Clone, Debug, Default, Eq, PartialEq)]
+pub struct TrackMetadata {
+    pub parse_mode: Option<String>,
+    pub filter_stage: Option<String>,
+    pub output_class: Option<String>,
+    pub fallback_reason: Option<String>,
 }
 
 /// Individual command record from tracking history.
@@ -297,11 +305,15 @@ impl Tracker {
     /// ```
     pub fn new() -> Result<Self> {
         let db_path = get_db_path()?;
+        Self::open_at_path(&db_path)
+    }
+
+    fn open_at_path(db_path: &Path) -> Result<Self> {
         if let Some(parent) = db_path.parent() {
             std::fs::create_dir_all(parent)?;
         }
 
-        let conn = Connection::open(&db_path)?;
+        let conn = Connection::open(db_path)?;
         conn.execute(
             "CREATE TABLE IF NOT EXISTS commands (
                 id INTEGER PRIMARY KEY,
@@ -348,6 +360,10 @@ impl Tracker {
             "ALTER TABLE commands ADD COLUMN profile_output_tokens INTEGER",
             [],
         );
+        let _ = conn.execute("ALTER TABLE commands ADD COLUMN parse_mode TEXT", []);
+        let _ = conn.execute("ALTER TABLE commands ADD COLUMN filter_stage TEXT", []);
+        let _ = conn.execute("ALTER TABLE commands ADD COLUMN output_class TEXT", []);
+        let _ = conn.execute("ALTER TABLE commands ADD COLUMN fallback_reason TEXT", []);
         let _ = conn.execute(
             "UPDATE commands SET approx_input_tokens = input_tokens WHERE approx_input_tokens IS NULL",
             [],
@@ -392,6 +408,11 @@ impl Tracker {
         )?;
 
         Ok(Self { conn })
+    }
+
+    #[cfg(test)]
+    fn new_for_test(db_path: &Path) -> Result<Self> {
+        Self::open_at_path(db_path)
     }
 
     /// Record a command execution with token counts and timing.
@@ -439,6 +460,23 @@ impl Tracker {
         metrics: &TokenMetrics,
         exec_time_ms: u64,
     ) -> Result<()> {
+        self.record_with_details(
+            original_cmd,
+            clov_cmd,
+            metrics,
+            exec_time_ms,
+            &TrackMetadata::default(),
+        )
+    }
+
+    pub fn record_with_details(
+        &self,
+        original_cmd: &str,
+        clov_cmd: &str,
+        metrics: &TokenMetrics,
+        exec_time_ms: u64,
+        metadata: &TrackMetadata,
+    ) -> Result<()> {
         let saved = metrics
             .approx_input_tokens
             .saturating_sub(metrics.approx_output_tokens);
@@ -465,8 +503,12 @@ impl Tracker {
                 approx_input_tokens,
                 approx_output_tokens,
                 profile_input_tokens,
-                profile_output_tokens
-             ) VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11, ?12, ?13, ?14)",
+                profile_output_tokens,
+                parse_mode,
+                filter_stage,
+                output_class,
+                fallback_reason
+             ) VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11, ?12, ?13, ?14, ?15, ?16, ?17, ?18)",
             params![
                 Utc::now().to_rfc3339(),
                 original_cmd,
@@ -482,6 +524,10 @@ impl Tracker {
                 metrics.approx_output_tokens as i64,
                 metrics.profile_input_tokens.map(|value| value as i64),
                 metrics.profile_output_tokens.map(|value| value as i64),
+                metadata.parse_mode.as_deref(),
+                metadata.filter_stage.as_deref(),
+                metadata.output_class.as_deref(),
+                metadata.fallback_reason.as_deref(),
             ],
         )?;
 
@@ -1243,10 +1289,28 @@ pub fn track_with_profile(
     output: &str,
     tokenizer_profile: Option<TokenizerProfile>,
 ) {
+    track_with_profile_and_metadata(
+        original_cmd,
+        clov_cmd,
+        input,
+        output,
+        tokenizer_profile,
+        TrackMetadata::default(),
+    );
+}
+
+pub fn track_with_profile_and_metadata(
+    original_cmd: &str,
+    clov_cmd: &str,
+    input: &str,
+    output: &str,
+    tokenizer_profile: Option<TokenizerProfile>,
+    metadata: TrackMetadata,
+) {
     let metrics = TokenMetrics::from_texts(input, output, tokenizer_profile);
 
     if let Ok(tracker) = Tracker::new() {
-        let _ = tracker.record_with_metrics(original_cmd, clov_cmd, &metrics, 0);
+        let _ = tracker.record_with_details(original_cmd, clov_cmd, &metrics, 0, &metadata);
     }
 }
 
@@ -1277,6 +1341,56 @@ mod tests {
         assert_eq!(metrics.approx_input_tokens, estimate_tokens(input));
         assert!(metrics.profile_input_tokens.is_some());
         assert!(metrics.profile_output_tokens.is_some());
+    }
+
+    #[test]
+    fn track_metadata_is_persisted_on_command_rows() {
+        let temp_dir = tempfile::tempdir().expect("tempdir");
+        let db_path = temp_dir.path().join("tracking.db");
+        let tracker = Tracker::new_for_test(&db_path).expect("Failed to create tracker");
+        let metrics = TokenMetrics::from_texts(
+            "{\"raw\":true}",
+            "{\"filtered\":true}",
+            Some(TokenizerProfile::Claude),
+        );
+        tracker
+            .record_with_details(
+                "mcp-call",
+                "clov-mcp-search",
+                &metrics,
+                0,
+                &TrackMetadata {
+                    parse_mode: Some("content-length".to_string()),
+                    filter_stage: Some("mcp-proxy".to_string()),
+                    output_class: Some("tool-response".to_string()),
+                    fallback_reason: None,
+                },
+            )
+            .expect("Failed to record command");
+
+        let row = tracker
+            .conn
+            .query_row(
+                "SELECT parse_mode, filter_stage, output_class, tokenizer_profile
+                 FROM commands
+                 ORDER BY id DESC
+                 LIMIT 1",
+                [],
+                |row| {
+                    Ok((
+                        row.get::<_, Option<String>>(0)?,
+                        row.get::<_, Option<String>>(1)?,
+                        row.get::<_, Option<String>>(2)?,
+                        row.get::<_, Option<String>>(3)?,
+                    ))
+                },
+            )
+            .expect("Failed to query metadata row");
+
+        assert_eq!(row.0.as_deref(), Some("content-length"));
+        assert_eq!(row.1.as_deref(), Some("mcp-proxy"));
+        assert_eq!(row.2.as_deref(), Some("tool-response"));
+        assert_eq!(row.3.as_deref(), Some("claude"));
     }
 
     // 2. args_display — format OsString vec

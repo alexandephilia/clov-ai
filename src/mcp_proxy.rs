@@ -24,6 +24,15 @@ enum MessageFormat {
     NewlineDelimited,
 }
 
+impl MessageFormat {
+    fn as_str(self) -> &'static str {
+        match self {
+            Self::ContentLength => "content-length",
+            Self::NewlineDelimited => "newline-delimited",
+        }
+    }
+}
+
 #[derive(Debug, Eq, PartialEq)]
 struct WireMessage {
     payload: String,
@@ -123,10 +132,29 @@ fn proxy_server_to_client<R: BufRead, W: Write>(
 ) -> Result<()> {
     while let Some(mut message) = read_mcp_message(&mut reader)? {
         if !no_filter {
-            if let Ok(msg) = serde_json::from_str::<Value>(&message.payload) {
-                let filtered =
-                    filter_tool_response(msg, pending_requests, verbose, &filter_context);
-                message.payload = serde_json::to_string(&filtered).unwrap_or(message.payload);
+            match serde_json::from_str::<Value>(&message.payload) {
+                Ok(msg) => {
+                    let filtered = filter_tool_response(
+                        msg,
+                        pending_requests,
+                        verbose,
+                        &filter_context,
+                        message.format,
+                    );
+                    message.payload = serde_json::to_string(&filtered).unwrap_or(message.payload);
+                }
+                Err(err) => {
+                    if verbose > 0 {
+                        eprintln!("[clov-mcp] passthrough on invalid JSON payload: {err}");
+                    }
+                    if let Ok(tracker) = crate::tracking::Tracker::new() {
+                        let _ = tracker.record_parse_failure(
+                            "mcp-proxy",
+                            &format!("invalid JSON payload: {err}"),
+                            true,
+                        );
+                    }
+                }
             }
         }
 
@@ -253,6 +281,7 @@ fn filter_tool_response(
     pending: &Arc<Mutex<HashMap<Value, String>>>,
     verbose: u8,
     context: &crate::universal_filter::FilterContext,
+    parse_mode: MessageFormat,
 ) -> Value {
     if !is_tool_call_response(&msg) {
         return msg;
@@ -322,12 +351,18 @@ fn filter_tool_response(
     }
 
     if total_input > 0 {
-        crate::tracking::track_with_profile(
+        crate::tracking::track_with_profile_and_metadata(
             "mcp-call",
             &format!("clov-mcp-{}", tool_name),
             &tracking_input,
             &tracking_output,
             Some(context.tokenizer_profile),
+            crate::tracking::TrackMetadata {
+                parse_mode: Some(parse_mode.as_str().to_string()),
+                filter_stage: Some("mcp-proxy".to_string()),
+                output_class: Some("tool-response".to_string()),
+                fallback_reason: None,
+            },
         );
     }
 
@@ -457,7 +492,13 @@ mod tests {
             }
         });
 
-        let filtered = filter_tool_response(message, &pending, 0, &test_context());
+        let filtered = filter_tool_response(
+            message,
+            &pending,
+            0,
+            &test_context(),
+            MessageFormat::NewlineDelimited,
+        );
         let text = filtered["result"]["content"][0]["text"].as_str().unwrap();
         assert!(text.contains("Useful body text"));
         assert!(!text.contains("Privacy"));
@@ -485,6 +526,25 @@ mod tests {
             pending.lock().unwrap().get(&Value::from(1)).cloned(),
             Some("search".to_string())
         );
+    }
+
+    #[test]
+    fn passes_through_invalid_json_payloads_without_crashing() {
+        let input = b"{not-json}\n";
+        let mut output = Vec::new();
+        let pending = Arc::new(Mutex::new(HashMap::new()));
+
+        proxy_server_to_client(
+            Cursor::new(input),
+            &mut output,
+            &pending,
+            false,
+            0,
+            test_context(),
+        )
+        .unwrap();
+
+        assert_eq!(String::from_utf8(output).unwrap(), "{not-json}\n");
     }
 
     #[test]
@@ -517,7 +577,13 @@ mod tests {
             }
         });
 
-        let filtered = filter_tool_response(message, &pending, 0, &test_context());
+        let filtered = filter_tool_response(
+            message,
+            &pending,
+            0,
+            &test_context(),
+            MessageFormat::NewlineDelimited,
+        );
         let text = filtered["result"]["content"][0]["text"].as_str().unwrap();
 
         assert!(
@@ -567,7 +633,13 @@ mod tests {
             }
         });
 
-        let filtered = filter_tool_response(message, &pending, 0, &test_context());
+        let filtered = filter_tool_response(
+            message,
+            &pending,
+            0,
+            &test_context(),
+            MessageFormat::NewlineDelimited,
+        );
         let text = filtered["result"]["content"][0]["text"].as_str().unwrap();
 
         assert!(text.contains("Orchestrate teams of Claude Code sessions"));
@@ -611,7 +683,13 @@ mod tests {
             }
         });
 
-        let default_filtered = filter_tool_response(message.clone(), &pending, 0, &test_context());
+        let default_filtered = filter_tool_response(
+            message.clone(),
+            &pending,
+            0,
+            &test_context(),
+            MessageFormat::NewlineDelimited,
+        );
         pending
             .lock()
             .unwrap()
@@ -625,7 +703,13 @@ mod tests {
             max_array_items: 2,
             max_object_keys: 12,
         };
-        let constrained_filtered = filter_tool_response(message, &pending, 0, &constrained);
+        let constrained_filtered = filter_tool_response(
+            message,
+            &pending,
+            0,
+            &constrained,
+            MessageFormat::NewlineDelimited,
+        );
 
         let default_rows = default_filtered["result"]["structuredContent"]["rows"]
             .as_array()
