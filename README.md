@@ -17,7 +17,6 @@ _CLOV includes work derived from [RTK](https://github.com/rtk-ai/rtk/), extended
 
 MCP (Model Context Protocol) servers are brilliant, but their outputs are an uncontrolled firehose of context-destroying noise. When your AI agent pulls web search results or database dumps, it swallows navigation chrome, tracking parameters, and megabytes of unstructured JSON.
 
-![clov preview](clov_1.jpg)
 
 `clov` is the apex predator for context bloat. It is a highly specialized, structure-aware JSON-RPC proxy built _specifically_ to intercept and compress MCP responses before they annihilate your LLM's context window.
 
@@ -158,6 +157,8 @@ clov init --global
 When your AI executes `git log`, `npm test`, or `cargo clippy`, `clov` intercepts the invocation transparently, executing the process, tearing out the ANSI codes, deleting the progress bars, and feeding only pure signal back to the LLM.
 
 ### Covered Toolchains:
+
+![clov preview](clov_1.jpg)
 
 - **Version Control**: Condenses `git` statuses, tightens PR views (`gh`).
 - **Web Stacks**: Mutes `npm`, `pnpm`, `eslint`, `tsc`, `Next.js`, `vitest`.
