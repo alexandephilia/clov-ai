@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.34.2](https://github.com/alexandephilia/clov-ai/compare/v0.34.1...v0.34.2) (2026-03-08)
+
+
+### Bug Fixes
+
+* **ci:** update benchmark script for current CLI ([b0255ab](https://github.com/alexandephilia/clov-ai/commit/b0255abd577c4993fdd18d94ce1883dc1795921d))
+
 ## [0.34.1](https://github.com/alexandephilia/clov-ai/compare/v0.34.0...v0.34.1) (2026-03-08)
 
 
