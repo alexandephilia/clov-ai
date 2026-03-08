@@ -26,7 +26,7 @@ fn glob_match_inner(pat: &[u8], name: &[u8]) -> bool {
 /// Parsed arguments from either native find or CLOV scan syntax.
 #[derive(Debug)]
 struct FindArgs {
-    pattern: String,
+    patterns: Vec<String>,
     path: String,
     max_results: usize,
     max_depth: Option<usize>,
@@ -37,7 +37,7 @@ struct FindArgs {
 impl Default for FindArgs {
     fn default() -> Self {
         Self {
-            pattern: "*".to_string(),
+            patterns: vec!["*".to_string()],
             path: ".".to_string(),
             max_results: 50,
             max_depth: None,
@@ -63,7 +63,7 @@ fn has_native_find_flags(args: &[String]) -> bool {
 /// Native find flags that CLOV cannot handle correctly.
 /// These involve compound predicates, actions, or semantics we don't support.
 const UNSUPPORTED_FIND_FLAGS: &[&str] = &[
-    "-not", "!", "-or", "-o", "-and", "-a", "-exec", "-execdir", "-delete", "-print0", "-newer",
+    "-not", "!", "-and", "-a", "-exec", "-execdir", "-delete", "-print0", "-newer",
     "-perm", "-size", "-mtime", "-mmin", "-atime", "-amin", "-ctime", "-cmin", "-empty", "-link",
     "-regex", "-iregex",
 ];
@@ -110,14 +110,26 @@ fn parse_native_find_args(args: &[String]) -> Result<FindArgs> {
         match args[i].as_str() {
             "-name" => {
                 if let Some(val) = next_arg(args, &mut i) {
-                    parsed.pattern = val;
+                    if parsed.patterns.len() == 1 && parsed.patterns[0] == "*" {
+                        parsed.patterns = vec![val];
+                    } else {
+                        parsed.patterns.push(val);
+                    }
                 }
             }
             "-iname" => {
                 if let Some(val) = next_arg(args, &mut i) {
-                    parsed.pattern = val;
+                    if parsed.patterns.len() == 1 && parsed.patterns[0] == "*" {
+                        parsed.patterns = vec![val];
+                    } else {
+                        parsed.patterns.push(val);
+                    }
                     parsed.case_insensitive = true;
                 }
+            }
+            "-o" | "-or" => {
+                // We treat -o as a no-op or separator, because our logic
+                // defaults to OR when multiple names are provided.
             }
             "-type" => {
                 if let Some(val) = next_arg(args, &mut i) {
@@ -143,7 +155,7 @@ fn parse_native_find_args(args: &[String]) -> Result<FindArgs> {
 /// Parse CLOV syntax: `find <pattern> [path] [-m max] [-t type]`
 fn parse_clov_find_args(args: &[String]) -> Result<FindArgs> {
     let mut parsed = FindArgs {
-        pattern: args[0].clone(),
+        patterns: vec![args[0].clone()],
         ..FindArgs::default()
     };
     let mut i = 1;
@@ -178,7 +190,7 @@ fn parse_clov_find_args(args: &[String]) -> Result<FindArgs> {
 pub fn run_from_args(args: &[String], verbose: u8) -> Result<()> {
     let parsed = parse_find_args(args)?;
     run(
-        &parsed.pattern,
+        &parsed.patterns,
         &parsed.path,
         parsed.max_results,
         parsed.max_depth,
@@ -189,7 +201,7 @@ pub fn run_from_args(args: &[String], verbose: u8) -> Result<()> {
 }
 
 pub fn run(
-    pattern: &str,
+    patterns: &[String],
     path: &str,
     max_results: usize,
     max_depth: Option<usize>,
@@ -199,11 +211,13 @@ pub fn run(
 ) -> Result<()> {
     let timer = tracking::TimedExecution::start();
 
-    // Treat "." as match-all
-    let effective_pattern = if pattern == "." { "*" } else { pattern };
+    let mut effective_patterns = Vec::new();
+    for p in patterns {
+        effective_patterns.push(if p == "." { "*".to_string() } else { p.clone() });
+    }
 
     if verbose > 0 {
-        eprintln!("find: {} in {}", effective_pattern, path);
+        eprintln!("find: {:?} in {}", effective_patterns, path);
     }
 
     let want_dirs = file_type == "d";
@@ -246,11 +260,18 @@ pub fn run(
             None => continue,
         };
 
-        let matches = if case_insensitive {
-            glob_match(&effective_pattern.to_lowercase(), &name.to_lowercase())
-        } else {
-            glob_match(effective_pattern, &name)
-        };
+        let mut matches = false;
+        for p in &effective_patterns {
+            let m = if case_insensitive {
+                glob_match(&p.to_lowercase(), &name.to_lowercase())
+            } else {
+                glob_match(p, &name)
+            };
+            if m {
+                matches = true;
+                break;
+            }
+        }
         if !matches {
             continue;
         }
@@ -272,10 +293,10 @@ pub fn run(
     let raw_output = files.join("\n");
 
     if files.is_empty() {
-        let msg = format!("0 for '{}'", effective_pattern);
+        let msg = format!("0 matches found");
         println!("{}", msg);
         timer.track(
-            &format!("find {} -name '{}'", path, effective_pattern),
+            &format!("find {} -name '{:?}'", path, effective_patterns),
             "clov scan",
             &raw_output,
             &msg,
@@ -369,7 +390,7 @@ pub fn run(
 
     let clov_output = format!("{}F {}D + {}", total_files, dirs_count, ext_line);
     timer.track(
-        &format!("find {} -name '{}'", path, effective_pattern),
+        &format!("find {} -name '{:?}'", path, effective_patterns),
         "clov scan",
         &raw_output,
         &clov_output,
@@ -428,7 +449,8 @@ mod tests {
     #[test]
     fn dot_becomes_star() {
         // run() converts "." to "*" internally, test the logic
-        let effective = if "." == "." { "*" } else { "." };
+        let dot = ".".to_string();
+        let effective = if dot == "." { "*" } else { &dot };
         assert_eq!(effective, "*");
     }
 
@@ -437,7 +459,7 @@ mod tests {
     #[test]
     fn parse_native_find_name() {
         let parsed = parse_find_args(&args(&[".", "-name", "*.rs"])).unwrap();
-        assert_eq!(parsed.pattern, "*.rs");
+        assert_eq!(parsed.patterns, vec!["*.rs".to_string()]);
         assert_eq!(parsed.path, ".");
         assert_eq!(parsed.file_type, "f");
         assert_eq!(parsed.max_results, 50);
@@ -446,7 +468,7 @@ mod tests {
     #[test]
     fn parse_native_find_name_and_type() {
         let parsed = parse_find_args(&args(&["src", "-name", "*.rs", "-type", "f"])).unwrap();
-        assert_eq!(parsed.pattern, "*.rs");
+        assert_eq!(parsed.patterns, vec!["*.rs".to_string()]);
         assert_eq!(parsed.path, "src");
         assert_eq!(parsed.file_type, "f");
     }
@@ -454,14 +476,14 @@ mod tests {
     #[test]
     fn parse_native_find_type_d() {
         let parsed = parse_find_args(&args(&[".", "-type", "d"])).unwrap();
-        assert_eq!(parsed.pattern, "*");
+        assert_eq!(parsed.patterns, vec!["*".to_string()]);
         assert_eq!(parsed.file_type, "d");
     }
 
     #[test]
     fn parse_native_find_maxdepth() {
         let parsed = parse_find_args(&args(&[".", "-name", "*.toml", "-maxdepth", "2"])).unwrap();
-        assert_eq!(parsed.pattern, "*.toml");
+        assert_eq!(parsed.patterns, vec!["*.toml".to_string()]);
         assert_eq!(parsed.max_depth, Some(2));
         assert_eq!(parsed.max_results, 50); // max_results unchanged by -maxdepth
     }
@@ -469,7 +491,7 @@ mod tests {
     #[test]
     fn parse_native_find_iname() {
         let parsed = parse_find_args(&args(&[".", "-iname", "Makefile"])).unwrap();
-        assert_eq!(parsed.pattern, "Makefile");
+        assert_eq!(parsed.patterns, vec!["Makefile".to_string()]);
         assert!(parsed.case_insensitive);
     }
 
@@ -483,7 +505,7 @@ mod tests {
     fn parse_native_find_no_path() {
         // `find -name "*.rs"` without explicit path defaults to "."
         let parsed = parse_find_args(&args(&["-name", "*.rs"])).unwrap();
-        assert_eq!(parsed.pattern, "*.rs");
+        assert_eq!(parsed.patterns, vec!["*.rs".to_string()]);
         assert_eq!(parsed.path, ".");
     }
 
@@ -508,21 +530,21 @@ mod tests {
     #[test]
     fn parse_clov_syntax_pattern_only() {
         let parsed = parse_find_args(&args(&["*.rs"])).unwrap();
-        assert_eq!(parsed.pattern, "*.rs");
+        assert_eq!(parsed.patterns, vec!["*.rs".to_string()]);
         assert_eq!(parsed.path, ".");
     }
 
     #[test]
     fn parse_clov_syntax_pattern_and_path() {
         let parsed = parse_find_args(&args(&["*.rs", "src"])).unwrap();
-        assert_eq!(parsed.pattern, "*.rs");
+        assert_eq!(parsed.patterns, vec!["*.rs".to_string()]);
         assert_eq!(parsed.path, "src");
     }
 
     #[test]
     fn parse_clov_syntax_with_flags() {
         let parsed = parse_find_args(&args(&["*.rs", "src", "-m", "10", "-t", "d"])).unwrap();
-        assert_eq!(parsed.pattern, "*.rs");
+        assert_eq!(parsed.patterns, vec!["*.rs".to_string()]);
         assert_eq!(parsed.path, "src");
         assert_eq!(parsed.max_results, 10);
         assert_eq!(parsed.file_type, "d");
@@ -531,7 +553,7 @@ mod tests {
     #[test]
     fn parse_empty_args() {
         let parsed = parse_find_args(&args(&[])).unwrap();
-        assert_eq!(parsed.pattern, "*");
+        assert_eq!(parsed.patterns, vec!["*".to_string()]);
         assert_eq!(parsed.path, ".");
     }
 
@@ -563,34 +585,49 @@ mod tests {
     #[test]
     fn find_rs_files_in_src() {
         // Should find .rs files without error
-        let result = run("*.rs", "src", 100, None, "f", false, 0);
+        let result = run(&["*.rs".to_string()], "src", 100, None, "f", false, 0);
         assert!(result.is_ok());
     }
 
     #[test]
     fn find_dot_pattern_works() {
         // "." pattern should not error (was broken before)
-        let result = run(".", "src", 10, None, "f", false, 0);
+        let result = run(&[".".to_string()], "src", 10, None, "f", false, 0);
         assert!(result.is_ok());
     }
 
     #[test]
     fn find_no_matches() {
-        let result = run("*.xyz_nonexistent", "src", 50, None, "f", false, 0);
+        let result = run(&["*.xyz_nonexistent".to_string()], "src", 50, None, "f", false, 0);
         assert!(result.is_ok());
     }
 
     #[test]
     fn find_respects_max() {
         // With max=2, should not error
-        let result = run("*.rs", "src", 2, None, "f", false, 0);
+        let result = run(&["*.rs".to_string()], "src", 2, None, "f", false, 0);
+        assert!(result.is_ok());
+    }
+
+    #[test]
+    fn find_multi_pattern() {
+        // Should find both .rs and .toml
+        let result = run(
+            &["*.rs".to_string(), "*.toml".to_string()],
+            ".",
+            100,
+            None,
+            "f",
+            false,
+            0,
+        );
         assert!(result.is_ok());
     }
 
     #[test]
     fn find_gitignored_excluded() {
         // target/ is in .gitignore — files inside should not appear
-        let result = run("*", ".", 1000, None, "f", false, 0);
+        let result = run(&["*".to_string()], ".", 1000, None, "f", false, 0);
         assert!(result.is_ok());
         // We can't easily capture stdout in unit tests, but at least
         // verify it runs without error. The smoke tests verify content.
