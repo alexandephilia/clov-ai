@@ -68,9 +68,9 @@ pub fn run(
     if !daily && !weekly && !monthly && !all {
         // added: scope-aware styled header // changed: merged upstream styled + project scope
         let title = if project_scope.is_some() {
-            "CLOV Token Savings (Project Scope)"
+            "Context Limiter & Output Vetter (Project)"
         } else {
-            "CLOV Token Savings (Global Scope)"
+            "Context Limiter & Output Vetter (Global)"
         };
         println!("{}", styled(title, true));
         println!("{}", "═".repeat(60));
