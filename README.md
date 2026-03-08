@@ -11,9 +11,7 @@ _`CLOV` includes work derived from [RTK](https://github.com/rtk-ai/rtk/), extend
   <img src="assets/clov.png" width="400" alt="clov mascot">
 </p>
 
-<p align="left">
-  <img src="https://readme-typing-svg.herokuapp.com?font=JetBrains+Mono&weight=600&size=25&duration=2000&pause=1000&color=FFFF&Left=true&vLeft=true&width=500&lines=Less+Bloated.+Save+Smarter.;CLI Commands+%26+MCPs Support" alt="Typing SVG" />
-</p>
+[![Typing SVG](https://readme-typing-svg.herokuapp.com?font=JetBrains+Mono&weight=600&size=25&pause=1000&color=F7F7F7&width=435&lines=Less+Bloated.+Save+Smarter.;CLI+Commands+%26+MCPs+Support)](https://git.io/typing-svg)
 
 <p align="left">
   <strong>Quick install</strong><br/>
