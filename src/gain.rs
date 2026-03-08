@@ -104,7 +104,7 @@ pub fn run(
         println!();
 
         if !summary.by_command.is_empty() {
-            println!("{}", styled("Top Command Blocks", true));
+            println!("{}", styled("List of Commands", true));
             println!("────────────────────────────────────────────────────────────");
             let max_saved = summary
                 .by_command
@@ -336,21 +336,26 @@ fn pad_visible(s: &str, target: usize) -> String {
     }
 }
 
-/// Print each command block as its own box-drawn card (single column).
+/// Print each command block with a subtle separator instead of a full box.
 fn print_command_grid(blocks: &[TacticalBlock], max_saved: usize) {
-    const INNER: usize = 58; // inner width (60 total with box borders)
+    const INNER: usize = 60; // Total width to match top separator
+    let separator = "╌".repeat(INNER);
 
-    let top    = format!("┌{}┐", "─".repeat(INNER));
-    let bottom = format!("└{}┘", "─".repeat(INNER));
-
-    for block in blocks {
+    for (i, block) in blocks.iter().enumerate() {
         let lines = render_command_card(block, max_saved, INNER);
-        println!("{}", top);
         for line in &lines {
             let padded = pad_visible(line, INNER);
-            println!("│{}│", padded);
+            println!("{}", padded);
         }
-        println!("{}", bottom);
+        
+        // Don't print separator after the very last item
+        if i < blocks.len() - 1 {
+            if std::io::stdout().is_terminal() {
+                println!("{}", separator.bright_black());
+            } else {
+                println!("{}", separator);
+            }
+        }
     }
 }
 
@@ -396,7 +401,7 @@ fn render_command_card(block: &TacticalBlock, max_saved: usize, width: usize) ->
         style_rank(block.rank),
         style_card_name(&truncate_card_text(&name, 30))
     );
-    let calls = format!("{} calls ", block.count);
+    let calls = format!("{} calls", block.count);
     let gap1 = width.saturating_sub(visible_len(&rank_name) + calls.len());
     let line1 = format!("{}{}{}", rank_name, " ".repeat(gap1), calls);
 
@@ -416,8 +421,8 @@ fn render_command_card(block: &TacticalBlock, max_saved: usize, width: usize) ->
     // Line 3: heat strip + share %
     let strip = heat_strip(block.saved, max_saved, 36);
     let share = format!("{:.1}%", block.share_pct);
-    let gap3 = width.saturating_sub(visible_len(&strip) + share.len() + 8); // 6 leading + 2 trailing
-    let line3 = format!("      {}{}{} ", strip, " ".repeat(gap3), share);
+    let gap3 = width.saturating_sub(visible_len(&strip) + share.len() + 6); // 6 leading spaces
+    let line3 = format!("      {}{}{}", strip, " ".repeat(gap3), share);
 
     vec![line1, line2, line3]
 }
