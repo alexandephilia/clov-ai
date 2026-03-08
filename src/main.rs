@@ -321,7 +321,7 @@ enum Commands {
     },
 
     /// Initialize clov instructions in CLAUDE.md
-    #[command(name = "hook")]
+    #[command(name = "hook", alias = "init")]
     Init {
         /// Add to global ~/.claude/CLAUDE.md instead of local
         #[arg(short, long)]
