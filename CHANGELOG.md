@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.31.0](https://github.com/alexandephilia/clov-ai/compare/v0.30.0...v0.31.0) (2026-03-08)
+
+
+### Features
+
+* **cli:** rename primary clov command surface ([e9bc0e5](https://github.com/alexandephilia/clov-ai/commit/e9bc0e5d9c4ed581adc79ae5a62ea106e83c7dc5))
+
 ## [0.30.0](https://github.com/alexandephilia/clov-ai/compare/v0.29.5...v0.30.0) (2026-03-08)
 
 
