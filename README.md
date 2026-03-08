@@ -7,7 +7,7 @@ _CLOV includes work derived from [RTK](https://github.com/rtk-ai/rtk/), extended
 </p>
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Version](https://img.shields.io/badge/version-0.34.1-blue.svg)](https://github.com/alexandephilia/clov-ai/releases/tag/v0.34.1)
+[![Version](https://img.shields.io/badge/version-0.34.2-blue.svg)](https://github.com/alexandephilia/clov-ai/releases/tag/v0.34.2)
 [![Claude Code](https://img.shields.io/badge/Claude_Code-integrated-7B2D8B?logo=anthropic&logoColor=white)](https://claude.ai/code)
 
 <p align="center">
