@@ -308,26 +308,49 @@ struct TacticalBlock {
     share_pct: f64,
 }
 
-/// Print a compact grid of command cards. // added
-fn print_command_grid(blocks: &[TacticalBlock], max_saved: usize) {
-    const COLS: usize = 3;
-    const CARD_WIDTH: usize = 24;
-
-    for row in blocks.chunks(COLS) {
-        let cards: Vec<Vec<String>> = row
-            .iter()
-            .map(|block| render_command_card(block, max_saved, CARD_WIDTH))
-            .collect();
-
-        for line_idx in 0..cards[0].len() {
-            let joined = cards
-                .iter()
-                .map(|card| format!("{:<width$}", card[line_idx], width = CARD_WIDTH))
-                .collect::<Vec<_>>()
-                .join("  ");
-            println!("{}", joined.trim_end());
+/// Calculate visible length of a string, stripping ANSI escape sequences.
+fn visible_len(s: &str) -> usize {
+    let mut len = 0usize;
+    let mut in_escape = false;
+    for ch in s.chars() {
+        if in_escape {
+            if ch.is_ascii_alphabetic() {
+                in_escape = false;
+            }
+        } else if ch == '\x1b' {
+            in_escape = true;
+        } else {
+            len += 1;
         }
-        println!();
+    }
+    len
+}
+
+/// Pad a string to a target visible width, ignoring ANSI escapes.
+fn pad_visible(s: &str, target: usize) -> String {
+    let vlen = visible_len(s);
+    if vlen >= target {
+        s.to_string()
+    } else {
+        format!("{}{}", s, " ".repeat(target - vlen))
+    }
+}
+
+/// Print each command block as its own box-drawn card (single column).
+fn print_command_grid(blocks: &[TacticalBlock], max_saved: usize) {
+    const INNER: usize = 58; // inner width (60 total with box borders)
+
+    let top    = format!("┌{}┐", "─".repeat(INNER));
+    let bottom = format!("└{}┘", "─".repeat(INNER));
+
+    for block in blocks {
+        let lines = render_command_card(block, max_saved, INNER);
+        println!("{}", top);
+        for line in &lines {
+            let padded = pad_visible(line, INNER);
+            println!("│{}│", padded);
+        }
+        println!("{}", bottom);
     }
 }
 
@@ -366,26 +389,37 @@ fn render_command_card(block: &TacticalBlock, max_saved: usize, width: usize) ->
         .strip_prefix("clov ")
         .unwrap_or(&block.cmd)
         .to_string();
-    let header = format!(
-        "{} {}",
+
+    // Line 1: rank + name (left) ... call count (right)
+    let rank_name = format!(
+        " {} {}",
         style_rank(block.rank),
-        style_card_name(&truncate_card_text(&name, width.saturating_sub(5)))
+        style_card_name(&truncate_card_text(&name, 30))
     );
-    vec![
-        header,
-        format!("{} calls", pad_left(block.count.to_string(), 6)),
-        format!("{} saved", pad_left(format_tokens(block.saved), 7)),
-        format!(
-            "{}  {}",
-            pad_left(format!("{:.1}% cut", block.pct), 10),
-            pad_left(format_duration(block.avg_time), 5)
-        ),
-        format!(
-            "{}  {}",
-            heat_strip(block.saved, max_saved, 12),
-            pad_left(format!("{:.1}%", block.share_pct), 5)
-        ),
-    ]
+    let calls = format!("{} calls ", block.count);
+    let gap1 = width.saturating_sub(visible_len(&rank_name) + calls.len());
+    let line1 = format!("{}{}{}", rank_name, " ".repeat(gap1), calls);
+
+    // Line 2: saved + cut% + avg time
+    let stats = format!(
+        "      {} saved · {:.1}% cut · avg {}",
+        format_tokens(block.saved),
+        block.pct,
+        format_duration(block.avg_time)
+    );
+    let line2 = if stats.len() > width {
+        format!("{}", &stats[..width])
+    } else {
+        stats
+    };
+
+    // Line 3: heat strip + share %
+    let strip = heat_strip(block.saved, max_saved, 36);
+    let share = format!("{:.1}%", block.share_pct);
+    let gap3 = width.saturating_sub(visible_len(&strip) + share.len() + 8); // 6 leading + 2 trailing
+    let line3 = format!("      {}{}{} ", strip, " ".repeat(gap3), share);
+
+    vec![line1, line2, line3]
 }
 
 fn style_rank(rank: usize) -> String {
@@ -415,9 +449,7 @@ fn truncate_card_text(text: &str, width: usize) -> String {
     out
 }
 
-fn pad_left(text: String, width: usize) -> String {
-    format!("{text:>width$}")
-}
+
 
 /// Resolve project scope from --project flag. // added
 fn resolve_project_scope(project: bool) -> Result<Option<String>> {
