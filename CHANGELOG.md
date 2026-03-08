@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.35.0](https://github.com/alexandephilia/clov-ai/compare/v0.34.4...v0.35.0) (2026-03-08)
+
+
+### Features
+
+* **scan:** add support for multiple glob patterns and the OR (-o) operator ([17c0173](https://github.com/alexandephilia/clov-ai/commit/17c0173b82950863f3feb3cd87f2bb3b145f9e70))
+
 ## [0.34.4](https://github.com/alexandephilia/clov-ai/compare/v0.34.3...v0.34.4) (2026-03-08)
 
 
