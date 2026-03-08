@@ -15,6 +15,8 @@ _CLOV includes work derived from [RTK](https://github.com/rtk-ai/rtk/), extended
   <code>brew tap alexandephilia/clov && brew install clov</code>
 </p>
 
+> Primary command names now use the CLOV surface (`pulse`, `hook`, `bridge`, `settings`, `doctor`, `inspect`). Legacy names like `gain`, `init`, `mcp`, `config`, `verify`, and `discover` still work as aliases.
+
 MCP (Model Context Protocol) servers are brilliant, but their outputs are an uncontrolled firehose of context-destroying noise. When your AI agent pulls web search results or database dumps, it swallows navigation chrome, tracking parameters, and megabytes of unstructured JSON.
 
 
@@ -68,7 +70,7 @@ _(Pre-compiled binaries for all architectures are available in standard releases
 
 ![clov mcp preview](clov_3.jpg)
 
-To armor your MCP servers, wrap their invocation command with the `clov mcp proxy` bridge. `clov` operates as a transparent JSON-RPC layer, handling MCP stdio framing (`Content-Length` and newline-delimited payloads) and compacting both text and structured tool results on the wire.
+To armor your MCP servers, wrap their invocation command with the `clov bridge proxy` bridge. `clov` operates as a transparent JSON-RPC layer, handling MCP stdio framing (`Content-Length` and newline-delimited payloads) and compacting both text and structured tool results on the wire.
 
 ![clov mcp preview](clov_5.jpg)
 
@@ -81,7 +83,7 @@ Configuration example for your AI agent (e.g., `~/.claude/settings.json`):
   "web-search-engine": {
     "command": "/opt/homebrew/bin/clov",
     "args": [
-      "mcp",
+      "bridge",
       "proxy",
       "--preset", "claude-code-balanced",
       "--max-tokens", "4096",
@@ -94,7 +96,7 @@ Configuration example for your AI agent (e.g., `~/.claude/settings.json`):
   "sql-connector": {
     "command": "/opt/homebrew/bin/clov",
     "args": [
-      "mcp",
+      "bridge",
       "proxy",
       "--preset", "gemini-search-heavy",
       "--max-tokens", "6000",
@@ -106,7 +108,7 @@ Configuration example for your AI agent (e.g., `~/.claude/settings.json`):
 }
 ```
 
-Dynamic knobs available on `clov mcp proxy`:
+Dynamic knobs available on `clov bridge proxy`:
 
 - `--preset <name>`: load named defaults like `claude-code-balanced`, `openai-balanced`, or `gemini-search-heavy`
 - `--max-tokens <N>`: target token budget before truncation
@@ -151,7 +153,7 @@ max_array_items = 8
 
 ```bash
 # Establish global terminal intercept hooks
-clov init --global
+clov hook --global
 ```
 
 When your AI executes `git log`, `npm test`, or `cargo clippy`, `clov` intercepts the invocation transparently, executing the process, tearing out the ANSI codes, deleting the progress bars, and feeding only pure signal back to the LLM.
@@ -176,9 +178,9 @@ _If `clov` doesn't recognize a command, it bypasses filtering automatically._
 `clov` tracks your token economy rigorously. No cloud pings. No data theft. 100% local SQLite metrics.
 
 ```bash
-clov gain             # Lifetime efficiency readouts
-clov gain --graph     # 30-day visual velocity charting
-clov gain --all       # Granular temporal exports
+clov pulse             # Lifetime efficiency readouts
+clov pulse --graph     # 30-day visual velocity charting
+clov pulse --all       # Granular temporal exports
 ```
 
 ---
@@ -188,9 +190,9 @@ clov gain --all       # Granular temporal exports
 `clov` requires no configuration, but command-line veterans can manipulate the tracking database and telemetry environments via `~/.config/clov/config.toml`.
 
 ```bash
-clov config --create    # Scaffold custom parameters
-clov verify             # Validate hook integrity hashes
-clov discover           # Scan AI logs for missed optimization vectors
+clov settings --create  # Scaffold custom parameters
+clov doctor             # Validate hook integrity hashes
+clov inspect            # Scan AI logs for missed optimization vectors
 ```
 
 ### Full-Fidelity Output Recovery (Tee Mode)

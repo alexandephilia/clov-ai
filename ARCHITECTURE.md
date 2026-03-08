@@ -102,7 +102,7 @@ Claude Code             settings.json        clov-rewrite.sh        CLOV binary
      │  Claude never sees the rewrite — it only sees optimized output.
 
 Files:
-  ~/.claude/hooks/clov-rewrite.sh  ← thin delegator (calls `clov rewrite`, ~50 lines)
+  ~/.claude/hooks/clov-rewrite.sh  ← thin delegator (calls `clov route`, ~50 lines)
   ~/.claude/settings.json         ← hook registry (PreToolUse registration)
   ~/.claude/CLOV.md                ← minimal context hint (10 lines)
 
@@ -899,7 +899,7 @@ Flow:
 
 6. REPORTING (gain.rs)
    ────────
-   $ clov gain
+   $ clov pulse
 
    Query:
    SELECT
@@ -1104,14 +1104,14 @@ Modules with Exit Code Preservation:
    • Local:  ./CLAUDE.md (project-specific)
 
    Purpose: Instruct LLM (Claude Code) to use clov prefix
-   Created by: clov init [--global]
+   Created by: clov hook [--global]
 
    Template (init.rs:40-60):
    # CLAUDE.md
    Use `clov` prefix for all commands:
    - clov git status
-   - clov grep "pattern"
-   - clov read file.rs
+   - clov search "pattern"
+   - clov view file.rs
 
    Benefits: 60-90% token reduction
 ```
@@ -1120,10 +1120,10 @@ Modules with Exit Code Preservation:
 
 ```
 ┌────────────────────────────────────────────────────────────────────────┐
-│                      clov init Workflow                                 │
+│                      clov hook Workflow                                 │
 └────────────────────────────────────────────────────────────────────────┘
 
-$ clov init [--global]
+$ clov hook [--global]
       ↓
 Check existing CLAUDE.md:
   • --global? → ~/.config/clov/CLAUDE.md
@@ -1307,8 +1307,8 @@ Runtime Overhead (estimated):
 │ Operation            │ clov Overhead │ Total Time   │
 ├──────────────────────┼──────────────┼──────────────┤
 │ clov git status       │ +8ms         │ 58ms         │
-│ clov grep "pattern"   │ +12ms        │ 145ms        │
-│ clov read file.rs     │ +5ms         │ 15ms         │
+│ clov search "pattern" │ +12ms        │ 145ms        │
+│ clov view file.rs     │ +5ms         │ 15ms         │
 │ clov lint             │ +15ms        │ 2.5s         │
 └──────────────────────┴──────────────┴──────────────┘
 

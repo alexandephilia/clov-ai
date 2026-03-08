@@ -118,7 +118,7 @@ main.rs (CLI entry)
 - SQLite-based persistent storage (~/.local/share/clov/tracking.db)
 - Records: original_cmd, clov_cmd, input_tokens, output_tokens, savings_pct
 - 90-day retention policy with automatic cleanup
-- Powers the `clov gain` analytics command
+- Powers the `clov pulse` analytics command (`clov gain` remains an alias)
 - **Configurable database path**: Via `CLOV_DB_PATH` env var or `config.toml`
   - Priority: env var > config file > default location
 
@@ -126,7 +126,7 @@ main.rs (CLI entry)
 
 - Manages CLAUDE.md initialization (global vs local)
 - Reads ~/.config/clov/config.toml for user preferences
-- `clov init` command bootstraps LLM integration
+- `clov hook` command bootstraps LLM integration (`clov init` remains an alias)
 - **New**: `tracking.database_path` field for custom DB location
 
 **5. Tee Output Recovery** (src/tee.rs)
@@ -156,14 +156,14 @@ main.rs:Commands enum
   → Result<()> propagates errors
 ```
 
-**Tracking**: All proxy commands appear in `clov gain --history` with 0% savings (input = output) but preserve usage statistics.
+**Tracking**: All proxy commands appear in `clov pulse --history` with 0% savings (input = output) but preserve usage statistics.
 
 ### MCP Proxy Mode
 
 **Purpose**: Filter and optimize MCP tool responses before they reach the LLM context.
 
 **Usage**: Router your MCP server via clov in `settings.json`:
-`clov mcp proxy <real-mcp-command> [args...]`
+`clov bridge proxy <real-mcp-command> [args...]`
 
 **Features**:
 
